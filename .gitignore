@@ -23,6 +23,10 @@ pnpm-debug.log*
 # Cached requests
 .cache
 
+# content
+# 内容
+src/content/
+
 # IDE environments
 .vscode/
 .idea/
