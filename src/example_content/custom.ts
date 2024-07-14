@@ -6,7 +6,7 @@ import type { Metadata, Config } from "@/content/types";
 // Set your website address here, please start with 'http://' or 'https://'
 // 如果暂时不想设置，请保持默认值：'http://example.com'
 // If you do not want to set it yet, please keep the default value: 'http://example.com'
-export const SITE = "http://example.com";
+export const SITE: string = "http://example.com";
 
 // 网站相关信息
 // Website related information
@@ -16,7 +16,7 @@ export const CONFIG: Config = {
   FAVICON: "favicon.ico",
 
   // 设置网站的默认语言
-  // Set the default language for your website
+  // Set the default language for your website, for example "en"
   DEFAULT_LOCALE: "zh-cn",
 
   // 网站标题
