@@ -4,9 +4,35 @@ import '@/styles/custom.css';
 import { CONFIG } from '@/content/custom';
 import { ViewTransitions } from 'astro:transitions';
 
-const { title, description } = Astro.props;
+type Props = {
+	title?: string;
+	description?: string;
+	date?: string | Date | undefined;
+	author?: string;
+	categories?: string[];
+  tags?: string[];
+	draft?: boolean;
+	image?: { src: string, alt?: string };
+	cover?: { src: string, alt?: string };
+	pageType?: 'website' | 'article' | 'profile' | 'product' | 'blog' ;
+};
+
+const { description, author, image, cover, pageType } = Astro.props;
+
+// 如果标题过长，就仅使用页面标题，否则，标题会包含站点名称
+// If the title is too long, just use the page title, otherwise the title will include the site name
+const title = Astro.props.title
+  ? (Astro.props.title.length + CONFIG.TITLE.length + 3) <= 55 && CONFIG.ADD_TITLE
+    ? [Astro.props.title, CONFIG.TITLE].join(' | ')
+    : Astro.props.title
+  : CONFIG.TITLE
+
 const favicon = CONFIG.FAVICON ? CONFIG.FAVICON : 'favicon.ico';
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+
+
+
 ---
 
 {/* Global Metadata */}
@@ -14,11 +40,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <meta name='viewport' content='width=device-width, initial-scale=1' />
 <link rel='icon' href={ favicon } />
 <link rel='sitemap' href='/sitemap-index.xml' />
-<title>{title}</title>
-<meta name='description' content={description} />
+<title>{ title }</title>
+<meta name='description' content={ description } />
 
 {/* hreflang */}
-<link rel="alternate" hreflang={ CONFIG.DEFAULT_LOCALE } href={ canonicalURL } />
+<link rel='alternate' hreflang={ CONFIG.DEFAULT_LOCALE } href={ canonicalURL } />
 <link rel='alternate' hreflang='x-default' href={ canonicalURL } />
 <link rel='canonical' href={ canonicalURL } item-prop='url' />
 

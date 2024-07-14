@@ -3,8 +3,9 @@ export type Config = {
   DEFAULT_LOCALE: string;
   TITLE: string;
   DESCRIPTION: string;
-  VIEW_TRANSITIONS: boolean;
   AUTHOR: string;
+  ADD_TITLE: boolean;
+  VIEW_TRANSITIONS: boolean;
 };
 
 export type Metadata = {
