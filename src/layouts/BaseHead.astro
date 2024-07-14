@@ -6,6 +6,7 @@ import { ViewTransitions } from 'astro:transitions';
 
 const { title, description } = Astro.props;
 const favicon = CONFIG.FAVICON ? CONFIG.FAVICON : 'favicon.ico';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 {/* Global Metadata */}
@@ -15,6 +16,11 @@ const favicon = CONFIG.FAVICON ? CONFIG.FAVICON : 'favicon.ico';
 <link rel='sitemap' href='/sitemap-index.xml' />
 <title>{title}</title>
 <meta name='description' content={description} />
+
+{/* hreflang */}
+<link rel="alternate" hreflang={ CONFIG.DEFAULT_LOCALE } href={ canonicalURL } />
+<link rel='alternate' hreflang='x-default' href={ canonicalURL } />
+<link rel='canonical' href={ canonicalURL } item-prop='url' />
 
 {
   // 是否启用视图过渡动画
