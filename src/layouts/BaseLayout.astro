@@ -1,0 +1,19 @@
+---
+import { CONFIG } from '@/content/custom';
+import BaseHead from '@/layouts/BaseHead.astro'
+
+type Props = {
+  title: string;
+  description: string;
+};
+
+const { title, description } = Astro.props;
+---
+<!doctype html>
+<html lang={ CONFIG.DEFAULT_LOCALE } >
+
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+
+</html>

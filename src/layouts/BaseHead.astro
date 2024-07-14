@@ -1,0 +1,23 @@
+---
+import '@/styles/global.css';
+import '@/styles/custom.css';
+import { CONFIG } from '@/content/custom';
+import { ViewTransitions } from 'astro:transitions';
+
+const { title, description } = Astro.props;
+const favicon = CONFIG.FAVICON ? CONFIG.FAVICON : 'favicon.ico';
+---
+
+{/* Global Metadata */}
+<meta charset='utf-8' />
+<meta name='viewport' content='width=device-width, initial-scale=1' />
+<link rel='icon' href={ favicon } />
+<link rel='sitemap' href='/sitemap-index.xml' />
+<title>{title}</title>
+<meta name='description' content={description} />
+
+{
+  // 是否启用视图过渡动画
+  // Use view transitions
+  CONFIG?.VIEW_TRANSITIONS && <ViewTransitions />
+}
