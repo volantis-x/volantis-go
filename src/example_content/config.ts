@@ -25,10 +25,8 @@ const blogCollection = defineCollection({
     categories: z.array(z.string()).default(['others']),
     tags: z.array(z.string()).default(['others']),
     draft: z.boolean().default(false).optional(),
-    image: z.object({
-      src: z.string(),
-      alt: z.string().optional(),
-    }).optional(),
+    image: z.object({src: z.string(),alt: z.string().optional(),}).optional(),
+    cover: z.object({src: z.string(),alt: z.string().optional(),}).optional(),
     pageType: z.enum([
       'website',
       'article',
