@@ -17,7 +17,7 @@ type Props = {
 	pageType?: 'website' | 'article' | 'profile' | 'product' | 'blog' ;
 };
 
-const { description, author, image, cover, pageType } = Astro.props;
+const { description, image, cover, pageType } = Astro.props;
 
 // 如果标题过长，就仅使用页面标题，否则，标题会包含站点名称
 // If the title is too long, just use the page title, otherwise the title will include the site name
@@ -28,10 +28,11 @@ const title = Astro.props.title
   : CONFIG.TITLE
 
 const favicon = CONFIG.FAVICON ? CONFIG.FAVICON : 'favicon.ico';
+const author = Astro.props.author || CONFIG.AUTHOR || ''
+
+// 规格化当前页面链接地址
+// Normalize the current page link address (URL)
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-
-
-
 
 ---
 
@@ -42,11 +43,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <link rel='sitemap' href='/sitemap-index.xml' />
 <title>{ title }</title>
 <meta name='description' content={ description } />
+{author && <meta name='author' content={ author } />}
 
 {/* hreflang */}
 <link rel='alternate' hreflang={ CONFIG.DEFAULT_LOCALE } href={ canonicalURL } />
 <link rel='alternate' hreflang='x-default' href={ canonicalURL } />
 <link rel='canonical' href={ canonicalURL } item-prop='url' />
+
+{/* other */}
+<meta name='format-detection' content='telphone=no, email=no' />
 
 {
   // 是否启用视图过渡动画
