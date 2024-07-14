@@ -4,6 +4,7 @@ export type Config = {
   TITLE: string;
   DESCRIPTION: string;
   VIEW_TRANSITIONS: boolean;
+  AUTHOR: string;
 };
 
 export type Metadata = {

@@ -26,6 +26,9 @@ export const CONFIG: Config = {
   // 是否启用视图过渡动画: true = 启用, false = 禁用.
   // Use view transitions: true = enable, false = Disable
   VIEW_TRANSITIONS: true,
+  // 默认作者
+  // Default author
+  AUTHOR: 'Admin',
 };
 
 // 网站首页的页面信息
@@ -38,3 +41,4 @@ export const HOME: Metadata = {
   // Description of website homepage
   DESCRIPTION: 'Welcome to Volantis GO',
 };
+
