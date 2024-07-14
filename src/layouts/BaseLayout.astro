@@ -1,18 +1,18 @@
 ---
-import { CONFIG } from '@/content/custom';
-import BaseHead from '@/layouts/BaseHead.astro'
+import { CONFIG } from "@/content/custom";
+import BaseHead from "@/layouts/BaseHead.astro";
 
 type Props = {
-	title?: string;
-	description?: string;
-	date?: string | Date | undefined;
-	author?: string;
-	categories?: string[];
+  title?: string;
+  description?: string;
+  date?: string | Date | undefined;
+  author?: string;
+  categories?: string[];
   tags?: string[];
-	draft?: boolean;
-	image?: { src: string, alt?: string };
-	cover?: { src: string, alt?: string };
-	pageType?: 'website' | 'article' | 'profile' | 'product' | 'blog'
+  draft?: boolean;
+  image?: { src: string; alt?: string };
+  cover?: { src: string; alt?: string };
+  pageType?: "website" | "article" | "profile" | "product" | "blog";
 };
 
 const {
@@ -24,25 +24,22 @@ const {
   tags,
   image,
   cover,
-  pageType = 'website',
+  pageType = "website",
 } = Astro.props;
-
 ---
 
 <!doctype html>
-<html lang={ CONFIG.DEFAULT_LOCALE } >
-
+<html lang={CONFIG.DEFAULT_LOCALE}>
   <head>
     <BaseHead
-      title = { title },
-      description = { description },
-      author = { author },
-      image = { image },
-      cover = { cover },
-      pageType = { pageType }
+      title={title}
+      description={description}
+      author={author}
+      image={image}
+      cover={cover}
+      pageType={pageType}
     />
   </head>
 
   <slot />
-
 </html>
