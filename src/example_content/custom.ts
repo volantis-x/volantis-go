@@ -35,6 +35,10 @@ export const CONFIG: Config = {
   // Whether to enable adding the website title after the page title, and only increase it when the number of words is small
   ADD_TITLE: true,
 
+  // 分隔符选择: true = "|" , false = "-" , 只有 ADD_TITLE = true 时生效.
+  // Delimiter selection: true = "|" , false = "-" , only takes effect when ADD_TITLE = true.
+  DELIMITER: false,
+
   // 是否启用视图过渡动画: true = 启用, false = 禁用.
   // Use view transitions: true = enable, false = Disable
   VIEW_TRANSITIONS: true,

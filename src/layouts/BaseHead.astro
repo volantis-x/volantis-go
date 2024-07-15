@@ -20,12 +20,13 @@ type Props = {
 const { description, pageType } = Astro.props;
 const favicon = CONFIG.FAVICON ? CONFIG.FAVICON : "favicon.ico";
 const author = Astro.props.author || CONFIG.AUTHOR || "";
+const joinDelimiter = CONFIG.DELIMITER ? ` | ` : ` - `;
 
 // 如果标题过长，就仅使用页面标题，否则，标题会包含站点名称
 // If the title is too long, just use the page title, otherwise the title will include the site name
 const title = Astro.props.title
   ? Astro.props.title.length + CONFIG.TITLE.length + 3 <= 55 && CONFIG.ADD_TITLE
-    ? [Astro.props.title, CONFIG.TITLE].join(" | ")
+    ? [Astro.props.title, CONFIG.TITLE].join(joinDelimiter)
     : Astro.props.title
   : CONFIG.TITLE;
 
@@ -37,6 +38,7 @@ const image = Astro.props.image
   : { src: new URL(favicon, Astro.site), alt: "" };
 
 // 图片处理：当有图片时使用提供的图片，否则使用默认图片
+// Image processing: Use the provided image when there is an image, otherwise use the default image
 const resolvedImage = cover?.src
   ? {
       src: new URL(cover.src, Astro.site).toString(),

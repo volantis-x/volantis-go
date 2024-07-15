@@ -5,6 +5,7 @@ export type Config = {
   DESCRIPTION: string;
   AUTHOR: string;
   ADD_TITLE: boolean;
+  DELIMITER: boolean;
   VIEW_TRANSITIONS: boolean;
 };
 
