@@ -19,6 +19,14 @@ export const CONFIG: Config = {
   // Set the default language for your website, for example "en"
   DEFAULT_LOCALE: "zh-cn",
 
+  // 全站文本内容书写方向:
+  // ltr = 从左到右，默认值，用于从左向右书写的语言（比如英语、中文等）
+  // rtl = 从右到左，用于从右向左书写的语言（比如阿拉伯语）
+  // The writing direction of the text content of the whole site:
+  // ltr = left to right, default value, used for languages ​​written from left to right (such as English, Chinese, etc.)
+  // rtl = right-to-left, for languages ​​written from right to left (such as Arabic)
+  DIR: "ltr",
+
   // 网站标题
   // Website title
   TITLE: "Volantis GO",

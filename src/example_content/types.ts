@@ -1,6 +1,7 @@
 export type Config = {
   FAVICON: string;
   DEFAULT_LOCALE: string;
+  DIR: string;
   TITLE: string;
   DESCRIPTION: string;
   AUTHOR: string;

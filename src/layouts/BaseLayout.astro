@@ -26,10 +26,12 @@ const {
   cover,
   pageType = "website",
 } = Astro.props;
+
+const dir = CONFIG.DIR === "rtl" ? "rtl" : "ltr";
 ---
 
 <!doctype html>
-<html lang={CONFIG.DEFAULT_LOCALE}>
+<html lang={CONFIG.DEFAULT_LOCALE} dir={dir}>
   <head>
     <BaseHead
       title={title}
