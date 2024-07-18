@@ -3,8 +3,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/components/*": ["./src/layouts/components/*"],
-      "@/*": ["./src/*"]
-    }
+      "@/components/*": ["src/layouts/components/*"],
+      "@/*": ["src/*"]
+    },
+    "plugins": [
+      {
+        "name": "@astrojs/ts-plugin"
+      }
+    ]
   }
 }
