@@ -22,14 +22,16 @@ const favicon = CONFIG.FAVICON ? CONFIG.FAVICON : "favicon.ico";
 const author = Astro.props.author || CONFIG.AUTHOR || "";
 const joinDelimiter = CONFIG.DELIMITER ? ` | ` : ` - `;
 
-// 如果标题过长，就仅使用页面标题，否则，标题会包含站点名称
-// If the title is too long, just use the page title, otherwise the title will include the site name
+// 如果标题过长，就仅使用页面标题，否则，标题会包含站点名称（仅在 custom 里开启添加标题）
+// If the title is too long, just use the page title, otherwise the title will include the site name (Only enable adding title in custom)
 const title = Astro.props.title
   ? Astro.props.title.length + CONFIG.TITLE.length + 3 <= 55 && CONFIG.ADD_TITLE
     ? [Astro.props.title, CONFIG.TITLE].join(joinDelimiter)
     : Astro.props.title
   : CONFIG.TITLE;
 
+// 如果没有图片则使用网站图标
+// If there is no image, use a favicon
 const cover = Astro.props.cover
   ? Astro.props.cover
   : { src: new URL(favicon, Astro.site), alt: "" };

@@ -2,10 +2,10 @@
 // Introduce type declaration
 import type { Metadata, Config } from "@/content/types";
 
-// 在这里设置你的网站地址，请以 'http://' 或者 'https://' 开头
-// Set your website address here, please start with 'http://' or 'https://'
-// 如果暂时不想设置，请保持默认值：'http://example.com'
-// If you do not want to set it yet, please keep the default value: 'http://example.com'
+// 在这里设置你的网站地址，请以 "http://" 或者 "https://" 开头
+// Set your website address here, please start with "http://" or "https://"
+// 如果暂时不想设置，请保持默认值："http://example.com"
+// If you do not want to set it yet, please keep the default value: "http://example.com"
 export const SITE: string = "http://example.com";
 
 // 网站相关信息
