@@ -1,8 +1,8 @@
 /* 此文件几乎来自：normalize.css | MIT License | github.com/necolas/normalize.css */
 
 *,
-*::before,
-*::after {
+*:before,
+*:after {
   box-sizing: border-box;
 }
 
@@ -103,6 +103,10 @@ sub {
 
 sup {
   top: -0.5em;
+}
+
+li {
+  list-style: none;
 }
 
 img {
