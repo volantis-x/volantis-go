@@ -1,6 +1,7 @@
 ---
 import { CONFIG } from "@/content/custom";
 import BaseHead from "@/layouts/BaseHead.astro";
+import Header from "@/layouts/components/Header.astro";
 
 type Props = {
   title?: string;
@@ -43,5 +44,10 @@ const dir = CONFIG.DIR === "rtl" ? "rtl" : "ltr";
     />
   </head>
 
-  <slot />
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+  </body>
 </html>

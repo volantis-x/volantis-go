@@ -10,6 +10,13 @@ export type Config = {
   VIEW_TRANSITIONS: boolean;
 };
 
+export type MarqueeTOP = {
+  ENABLE: boolean;
+  DIRECTION: string;
+  PRIMARY_CONTENT: string;
+  SECONDARY_CONTENT: string;
+};
+
 export type Metadata = {
   TITLE: string;
   DESCRIPTION: string;

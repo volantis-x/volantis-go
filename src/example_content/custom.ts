@@ -1,6 +1,6 @@
 // 引入类型声明
 // Introduce type declaration
-import type { Metadata, Config } from "@/content/types";
+import type { Config, MarqueeTOP, Metadata } from "@/content/types";
 
 // 在这里设置你的网站地址，请以 "http://" 或者 "https://" 开头
 // Set your website address here, please start with "http://" or "https://"
@@ -50,6 +50,26 @@ export const CONFIG: Config = {
   // 是否启用视图过渡动画: true = 启用, false = 禁用.
   // Use view transitions: true = enable, false = Disable
   VIEW_TRANSITIONS: true,
+};
+
+// 顶部横条配置，启用时，全部所有页面将显示
+// Marquee top config, enabled on all pages when true
+export const MARQUEE_TOP: MarqueeTOP = {
+  // 顶部横条使用开关，只有设置为 true 才启用。不使用，请设置为 false
+  // Enable / disable marquee top
+  ENABLE: true,
+
+  // 横条内容的移动方向, left = 向左移动, right = 向右移动
+  // Direction of movement of the marquee top content, left = leftward, right = rightward
+  DIRECTION: "left",
+
+  // 横条的首要内容
+  // The primary content of the marquee top
+  PRIMARY_CONTENT: "Welcome to Volantis GO",
+
+  // 横条的次要内容
+  // Secondary content in the mobile marquee top
+  SECONDARY_CONTENT: "A content site built with Astro",
 };
 
 // 网站首页的页面信息

@@ -1,0 +1,68 @@
+---
+import { MARQUEE_TOP } from "@/content/custom";
+
+const marqueeMove =
+  MARQUEE_TOP.DIRECTION === "left" ? "marquee-move-left" : "marquee-move-right";
+---
+
+<div class="marquee-top">
+  <div class="marquee-top__wrapper">
+    {
+      [...Array(16)].map((_, _index) => (
+        <div class:list={[marqueeMove]}>
+          <strong>{MARQUEE_TOP.PRIMARY_CONTENT}</strong>
+          <span>{MARQUEE_TOP.SECONDARY_CONTENT}</span>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  @keyframes marquee_move_left {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes marquee_move_right {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  .marquee-top {
+    position: relative;
+    width: 100%;
+    height: 3.125rem;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    filter: brightness(95%);
+  }
+  .marquee-top__wrapper {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  strong,
+  span {
+    padding: 0 1rem;
+  }
+  .marquee-move-left,
+  .marquee-move-right {
+    display: inline-flex;
+    align-items: center;
+    will-change: transform;
+  }
+  .marquee-move-left {
+    animation: marquee_move_left 30000ms linear infinite;
+  }
+  .marquee-move-right {
+    animation: marquee_move_right 30000ms linear infinite;
+  }
+</style>
