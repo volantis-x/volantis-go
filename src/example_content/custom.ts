@@ -52,7 +52,7 @@ export const CONFIG: Config = {
   VIEW_TRANSITIONS: true,
 };
 
-// 顶部横条配置，启用时，全部所有页面将显示
+// 顶部横条配置，启用时，所有页面将显示
 // Marquee top config, enabled on all pages when true
 export const MARQUEE_TOP: MarqueeTOP = {
   // 顶部横条使用开关，只有设置为 true 才启用。不使用，请设置为 false
