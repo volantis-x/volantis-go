@@ -37,7 +37,7 @@ h3,
 h4,
 h5,
 h6 {
-  line-height: 1.1;
+  line-height: 1.25;
 }
 
 h1,
@@ -45,6 +45,7 @@ h2 {
   letter-spacing: -1px;
   word-spacing: -0.5px;
   text-wrap: balance;
+  font-weight: 500;
 }
 
 hr {
