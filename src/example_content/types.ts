@@ -8,6 +8,7 @@ export type Config = {
   ADD_TITLE: boolean;
   DELIMITER: boolean;
   VIEW_TRANSITIONS: boolean;
+  USE_SMALLER_FONT: boolean;
 };
 
 export type MarqueeTOP = {

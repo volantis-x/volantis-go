@@ -109,3 +109,5 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   // Use view transitions
   CONFIG?.VIEW_TRANSITIONS && <ViewTransitions />
 }
+
+{CONFIG?.USE_SMALLER_FONT && <style>html {font-size: 14px;}</style>}

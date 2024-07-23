@@ -50,6 +50,10 @@ export const CONFIG: Config = {
   // 是否启用视图过渡动画: true = 启用, false = 禁用.
   // Use view transitions: true = enable, false = Disable
   VIEW_TRANSITIONS: true,
+
+  // 是否启用较小字体大小 (true = 14px, false = 16px).
+  // Whether to use smaller font size (true = 14px, false = 16px).
+  USE_SMALLER_FONT: false,
 };
 
 // 顶部横条配置，启用时，所有页面将显示
