@@ -1,10 +1,10 @@
 // 引入类型声明
 // Introduce type declaration
-import type { MarqueeTOP } from "@/content/types";
+import type { MarqueeTop } from "@/content/types";
 
 // 顶部滚动条配置。启用后，将在所有页面显示滚动条。
 // Marquee top configuration. When enabled, a scrolling marquee will be displayed on all pages.
-export const MARQUEE_TOP: MarqueeTOP = {
+export const MARQUEE_TOP: MarqueeTop = {
   // 是否启用顶部滚动条。设置为 false 则不显示滚动条。
   // Enable/disable the marquee top. Set to false to hide the marquee.
   ENABLE: true,
