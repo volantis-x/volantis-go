@@ -22,3 +22,7 @@ export type Metadata = {
   DEFAULT_TITLE: string;
   DEFAULT_DESCRIPTION: string;
 };
+
+export type I18n = {
+  USE_I18N: boolean;
+};
