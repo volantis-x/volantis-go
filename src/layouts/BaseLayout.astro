@@ -1,5 +1,5 @@
 ---
-import { CONFIG } from "@/content/custom";
+import { CONFIG } from "@/content/site.config";
 import BaseHead from "@/layouts/BaseHead.astro";
 import Header from "@/layouts/components/Header.astro";
 
@@ -17,10 +17,10 @@ type Props = {
 };
 
 const {
-  title = CONFIG.TITLE,
-  description = CONFIG.DESCRIPTION,
+  title = CONFIG.DEFAULT_TITLE,
+  description = CONFIG.DEFAULT_DESCRIPTION,
   date,
-  author = CONFIG.AUTHOR,
+  author = CONFIG.DEFAULT_AUTHOR,
   categories,
   tags,
   image,

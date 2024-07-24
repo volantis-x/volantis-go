@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
-import { SITE } from "./src/content/custom";
+import { SITE } from "./src/content/site.config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 

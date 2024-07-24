@@ -1,7 +1,7 @@
 import { defineCollection, z } from "astro:content";
-import { CONFIG } from "@/content/custom";
+import { CONFIG } from "@/content/site.config";
 
-const DEFAULT_AUTHOR = CONFIG.AUTHOR !== undefined && CONFIG.AUTHOR;
+const DEFAULT_AUTHOR = CONFIG.DEFAULT_AUTHOR !== undefined && CONFIG.DEFAULT_AUTHOR;
 
 const blogCollection = defineCollection({
   type: "content",
