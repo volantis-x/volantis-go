@@ -1,5 +1,5 @@
 ---
-import { MARQUEE_TOP } from "@/content/custom";
+import { MARQUEE_TOP } from "@/content/header.config";
 
 const marqueeMove =
   MARQUEE_TOP.DIRECTION === "left" ? "marquee-move-left" : "marquee-move-right";
@@ -10,8 +10,8 @@ const marqueeMove =
     {
       [...Array(16)].map((_, _index) => (
         <div class:list={[marqueeMove]}>
-          <strong>{MARQUEE_TOP.PRIMARY_CONTENT}</strong>
-          <span>{MARQUEE_TOP.SECONDARY_CONTENT}</span>
+          <strong>{MARQUEE_TOP.DEFAULT_PRIMARY_CONTENT}</strong>
+          <span>{MARQUEE_TOP.DEFAULT_SECONDARY_CONTENT}</span>
         </div>
       ))
     }

@@ -2,9 +2,9 @@ export type Config = {
   FAVICON: string;
   DEFAULT_LOCALE: string;
   DIR: string;
-  TITLE: string;
-  DESCRIPTION: string;
-  AUTHOR: string;
+  DEFAULT_TITLE: string;
+  DEFAULT_DESCRIPTION: string;
+  DEFAULT_AUTHOR: string;
   ADD_TITLE: boolean;
   DELIMITER: boolean;
   VIEW_TRANSITIONS: boolean;
@@ -14,11 +14,11 @@ export type Config = {
 export type MarqueeTOP = {
   ENABLE: boolean;
   DIRECTION: string;
-  PRIMARY_CONTENT: string;
-  SECONDARY_CONTENT: string;
+  DEFAULT_PRIMARY_CONTENT: string;
+  DEFAULT_SECONDARY_CONTENT: string;
 };
 
 export type Metadata = {
-  TITLE: string;
-  DESCRIPTION: string;
+  DEFAULT_TITLE: string;
+  DEFAULT_DESCRIPTION: string;
 };
