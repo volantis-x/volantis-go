@@ -1,12 +1,17 @@
 // 引入类型声明
 // Introduce type declaration
 import type { Config, Metadata } from "@/content/types";
+import { validatedTheme } from "./types";
 
 // 在这里设置你的网站地址，请以 "http://" 或者 "https://" 开头
 // Set your website address here, please start with "http://" or "https://"
 // 如果暂时不想设置，请保持默认值："http://example.com"
 // If you do not want to set it yet, please keep the default value: "http://example.com"
 export const SITE: string = "http://example.com";
+
+// 网站主题风格，默认为 "base"
+// Website theme style, defaults to "base"
+export const UserTheme: string = "base";
 
 // 网站相关信息
 // Website related information
@@ -67,3 +72,7 @@ export const HOME: Metadata = {
   // Short homepage description, used for SEO and social media shares.
   DEFAULT_DESCRIPTION: "Welcome to Volantis GO",
 };
+
+// 输出主题风格，请不要修改此值
+// Exported theme, do not modify this value
+export const THEME: string = validatedTheme();

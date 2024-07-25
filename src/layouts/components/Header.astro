@@ -1,8 +1,9 @@
 ---
+import { THEME } from "@/content/site.config";
 import { MARQUEE_TOP } from "@/content/header.config";
 import MarqueeTop from "@/layouts/components/header/MarqueeTop.astro";
 ---
 
 <header>
-  {MARQUEE_TOP?.ENABLE && <MarqueeTop />}
+  {MARQUEE_TOP?.ENABLE && <>{THEME === "base" && <MarqueeTop />}</>}
 </header>
