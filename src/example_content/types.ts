@@ -13,6 +13,22 @@ export type Config = {
   USE_SMALLER_FONT: boolean;
 };
 
+export type MarqueeTop = {
+  ENABLE: boolean;
+  DIRECTION: string;
+  DEFAULT_PRIMARY_CONTENT?: string;
+  DEFAULT_SECONDARY_CONTENT?: string;
+};
+
+export type Metadata = {
+  DEFAULT_TITLE: string;
+  DEFAULT_DESCRIPTION: string;
+};
+
+export type I18n = {
+  USE_I18N: boolean;
+};
+
 // 注意：此处的主题验证逻辑仅用于本项目，请勿在其他项目中直接在类型定义文件中执行此类操作。
 // Note: The theme validation logic here is specific to this project.
 // Please avoid performing such operations directly within type definition files in other projects.
@@ -28,20 +44,4 @@ export const validatedTheme = (): SupportedTheme => {
     ? UserTheme
     : "base";
   return theme as SupportedTheme;
-};
-
-export type MarqueeTop = {
-  ENABLE: boolean;
-  DIRECTION: string;
-  DEFAULT_PRIMARY_CONTENT: string;
-  DEFAULT_SECONDARY_CONTENT: string;
-};
-
-export type Metadata = {
-  DEFAULT_TITLE: string;
-  DEFAULT_DESCRIPTION: string;
-};
-
-export type I18n = {
-  USE_I18N: boolean;
 };
