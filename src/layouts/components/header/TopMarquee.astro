@@ -10,8 +10,12 @@ const marqueeMove =
     {
       [...Array(16)].map((_, _index) => (
         <div class:list={[marqueeMove]}>
-          <strong>{TOP_MARQUEE.DEFAULT_PRIMARY_CONTENT}</strong>
-          <span>{TOP_MARQUEE.DEFAULT_SECONDARY_CONTENT}</span>
+          {TOP_MARQUEE?.DEFAULT_PRIMARY_CONTENT && (
+            <strong>{TOP_MARQUEE.DEFAULT_PRIMARY_CONTENT}</strong>
+          )}
+          {TOP_MARQUEE?.DEFAULT_SECONDARY_CONTENT && (
+            <span>{TOP_MARQUEE.DEFAULT_SECONDARY_CONTENT}</span>
+          )}
         </div>
       ))
     }
