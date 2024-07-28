@@ -1,17 +1,17 @@
 ---
-import { MARQUEE_TOP } from "@/content/header.config";
+import { TOP_MARQUEE } from "@/content/header.config";
 
 const marqueeMove =
-  MARQUEE_TOP.DIRECTION === "left" ? "marquee-move-left" : "marquee-move-right";
+  TOP_MARQUEE.DIRECTION === "left" ? "marquee-move-left" : "marquee-move-right";
 ---
 
-<div class="marquee-top">
-  <div class="marquee-top__wrapper">
+<div class="top-marquee">
+  <div class="top-marquee__wrapper">
     {
       [...Array(16)].map((_, _index) => (
         <div class:list={[marqueeMove]}>
-          <strong>{MARQUEE_TOP.DEFAULT_PRIMARY_CONTENT}</strong>
-          <span>{MARQUEE_TOP.DEFAULT_SECONDARY_CONTENT}</span>
+          <strong>{TOP_MARQUEE.DEFAULT_PRIMARY_CONTENT}</strong>
+          <span>{TOP_MARQUEE.DEFAULT_SECONDARY_CONTENT}</span>
         </div>
       ))
     }
@@ -35,7 +35,7 @@ const marqueeMove =
       transform: translateX(0);
     }
   }
-  .marquee-top {
+  .top-marquee {
     position: relative;
     width: 100%;
     height: 3.125rem;
@@ -44,7 +44,7 @@ const marqueeMove =
     overflow: hidden;
     filter: brightness(95%);
   }
-  .marquee-top__wrapper {
+  .top-marquee__wrapper {
     display: flex;
     align-items: center;
     height: 100%;

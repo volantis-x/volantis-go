@@ -13,7 +13,7 @@ export type Config = {
   USE_SMALLER_FONT: boolean;
 };
 
-export type MarqueeTop = {
+export type TopMarquee = {
   ENABLE: boolean;
   DIRECTION: string;
   DEFAULT_PRIMARY_CONTENT?: string;
