@@ -1,6 +1,4 @@
-// 引入类型声明
-// Introduce type declaration
-import type { I18n } from "@/content/types";
+import type { I18n } from "../../src/types/config";
 
 // 国际化 (i18n) 配置。
 // Internationalization (i18n) configuration.

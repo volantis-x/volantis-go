@@ -1,7 +1,5 @@
-// 引入类型声明
-// Introduce type declaration
-import type { Config, Metadata } from "@/content/types";
-import { validatedTheme } from "./types";
+import type { Config, Metadata } from "../../src/types/config";
+import { validateTheme } from "../../src/helpers/lib/config";
 
 // 在这里设置你的网站地址，请以 "http://" 或者 "https://" 开头
 // Set your website address here, please start with "http://" or "https://"
@@ -75,4 +73,4 @@ export const HOME: Metadata = {
 
 // 输出主题风格，请不要修改此值
 // Exported theme, do not modify this value
-export const THEME: string = validatedTheme();
+export const THEME: string = validateTheme();

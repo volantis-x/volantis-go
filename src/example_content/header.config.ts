@@ -1,6 +1,4 @@
-// 引入类型声明
-// Introduce type declaration
-import type { TopMarquee } from "@/content/types";
+import type { TopMarquee } from "../../src/types/config";
 
 // 顶部滚动条配置。启用后，将在所有页面显示滚动条。
 // Top marquee configuration. When enabled, a scrolling marquee will be displayed on all pages.
