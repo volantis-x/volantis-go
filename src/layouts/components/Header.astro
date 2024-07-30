@@ -1,21 +1,16 @@
 ---
 import { THEME } from "@/content/site.config";
 import { TOP_MARQUEE } from "@/content/header.config";
-import TopMarquee from "@/components/header/TopMarquee.astro";
+import BaseTopMarquee from "@/components/header/base/TopMarquee.astro";
 ---
 
 <header>
   {
     TOP_MARQUEE?.ENABLE && (
       <>
-        {
-          // 根据选择的主题 (THEME) 渲染 TopMarquee， 默认渲染 TopMarquee 组件
-          // Render TopMarquee based on the selected theme (THEME), defaults to TopMarquee
-          {
-            base: <TopMarquee />,
-            // example: <Example />,
-          }[THEME] || <TopMarquee />
-        }
+        {{
+          base: <BaseTopMarquee />,
+        }[THEME] || <BaseTopMarquee />}
       </>
     )
   }
