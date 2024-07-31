@@ -2,19 +2,7 @@
 import { CONFIG } from "@/content/site.config";
 import BaseHead from "@/layouts/BaseHead.astro";
 import Header from "@/layouts/components/Header.astro";
-
-type Props = {
-  title?: string;
-  description?: string;
-  date?: string | Date | undefined;
-  author?: string;
-  categories?: string[];
-  tags?: string[];
-  draft?: boolean;
-  image?: { src: string; alt?: string };
-  cover?: { src: string; alt?: string };
-  pageType?: "website" | "article" | "profile" | "product" | "blog";
-};
+import type { Frontmatter } from "@/types/page";
 
 const {
   title = CONFIG.DEFAULT_TITLE,
@@ -26,7 +14,7 @@ const {
   image,
   cover,
   pageType = "website",
-} = Astro.props;
+}: Frontmatter = Astro.props;
 
 const dir = CONFIG.DIR === "rtl" ? "rtl" : "ltr";
 ---
