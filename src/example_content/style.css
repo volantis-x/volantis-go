@@ -1,8 +1,22 @@
 /*
   自定义 CSS 样式：
     -  请将您的样式代码添加于此。
-    -  即使为空，也请保留此文件。
+    -  您可以定义全局样式、修改已有样式或添加新的样式规则。
   Custom CSS Styles:
     -  Add your styles here.
-    -  Keep this file even if empty.
+    -  You can define global styles, override existing styles, or add new style rules.
+
+  :root 选择器表示文档的根元素，
+  通过设置 :root 中的 CSS 变量，
+  您可以在整个网站范围内使用这些变量。
+
+  The :root selector represents the root element of the document.
+  By setting CSS variables within :root,
+  you can use these variables throughout your entire website.
 */
+
+:root {
+  /* 内容区域最大宽度 (默认值: 1320px). */
+  /* Max width for the content area (defaults to 1320px). */
+  --content-max-width: 1320px;
+}
