@@ -2,7 +2,7 @@
 import { ViewTransitions } from "astro:transitions";
 import { CONFIG, THEME } from "@/content/site.config";
 import type { Frontmatter } from "@/types/page";
-import Meta from "@/layouts/partials/Meta.astro";
+import HeadContent from "@/layouts/partials/HeadContent.astro";
 import BaseStyle from "@/layouts/partials/base/Style.astro";
 import BaseScript from "@/layouts/partials/base/Script.astro";
 
@@ -11,7 +11,7 @@ const { title, description, author, image, cover, pageType }: Frontmatter =
 ---
 
 <head>
-  <Meta
+  <HeadContent
     title={title}
     description={description}
     author={author}
