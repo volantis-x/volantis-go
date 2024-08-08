@@ -21,16 +21,14 @@ const dir = CONFIG.DIR === "rtl" ? "rtl" : "ltr";
 
 <!doctype html>
 <html lang={CONFIG.DEFAULT_LOCALE} dir={dir}>
-  <head>
-    <BaseHead
-      title={title}
-      description={description}
-      author={author}
-      image={image}
-      cover={cover}
-      pageType={pageType}
-    />
-  </head>
+  <BaseHead
+    title={title}
+    description={description}
+    author={author}
+    image={image}
+    cover={cover}
+    pageType={pageType}
+  />
 
   <body>
     <Header />

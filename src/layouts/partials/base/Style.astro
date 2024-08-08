@@ -1,0 +1,22 @@
+---
+import { CONFIG } from "@/content/site.config";
+
+// 初始化重置样式表，确保跨浏览器一致性
+// Initialize normalize CSS for cross-browser consistency
+import "@/styles/normalize.css";
+
+// 加载基础主题的样式
+// Load base theme styles
+import "@/styles/base/base.css";
+import "@/styles/base/variables.css";
+
+// 加载用户自定义样式
+// Load user-defined custom styles
+import "@/content/style.css";
+---
+
+{/*
+  如果用户在网站配置中启用了较小的字体，则应用该字体大小。
+  Apply smaller font size if enabled in site configuration.
+*/}
+{CONFIG?.USE_SMALLER_FONT && <style>html {font-size: 14px;}</style>}

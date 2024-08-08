@@ -1,0 +1,89 @@
+---
+import { CONFIG } from "@/content/site.config";
+import type { Frontmatter } from "@/types/page";
+
+const { description, pageType }: Frontmatter = Astro.props;
+const favicon = CONFIG.FAVICON ? CONFIG.FAVICON : "favicon.ico";
+const author = Astro.props.author || CONFIG.DEFAULT_AUTHOR || "";
+const joinDelimiter = CONFIG.DELIMITER ? ` | ` : ` - `;
+
+// 如果标题过长，就仅使用页面标题，否则，标题会包含站点名称（仅在 custom 里开启添加标题）
+// If the title is too long, just use the page title, otherwise the title will include the site name (Only enable adding title in custom)
+const title = Astro.props.title
+  ? Astro.props.title.length + CONFIG.DEFAULT_TITLE.length + 3 <= 55 && CONFIG.ADD_TITLE
+    ? [Astro.props.title, CONFIG.DEFAULT_TITLE].join(joinDelimiter)
+    : Astro.props.title
+  : CONFIG.DEFAULT_TITLE;
+
+// 如果没有图片则使用网站图标
+// If there is no image, use a favicon
+const cover = Astro.props.cover
+  ? Astro.props.cover
+  : { src: new URL(favicon, Astro.site), alt: "" };
+const image = Astro.props.image
+  ? Astro.props.image
+  : { src: new URL(favicon, Astro.site), alt: "" };
+
+// 图片处理：当有图片时使用提供的图片，否则使用默认图片
+// Image processing: Use the provided image when there is an image, otherwise use the default image
+const resolvedImage = cover?.src
+  ? {
+      src: new URL(cover.src, Astro.site).toString(),
+      alt: cover.alt,
+    }
+  : image?.src
+    ? {
+        src: new URL(image.src, Astro.site).toString(),
+        alt: image.alt,
+      }
+    : undefined;
+
+// 规格化当前页面链接地址
+// Normalize the current page link address (URL)
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+{/* Global Metadata */}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href={favicon} />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{author && <meta name="author" content={author} />}
+
+{/* hreflang */}
+<link rel="alternate" hreflang={CONFIG.DEFAULT_LOCALE} href={canonicalURL} />
+<link rel="alternate" hreflang="x-default" href={canonicalURL} />
+<link rel="canonical" href={canonicalURL} item-prop="url" />
+
+{/* other */}
+<meta name="format-detection" content="telphone=no, email=no" />
+
+{/* Open Graph / Facebook */}
+<meta property="og:type" content={pageType} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+{resolvedImage?.src && <meta property="og:image" content={resolvedImage.src} />}
+{
+  resolvedImage?.alt && (
+    <meta property="og:image:alt" content={resolvedImage.alt} />
+  )
+}
+
+{/* X / Twitter */}
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+{
+  resolvedImage?.src && (
+    <meta property="twitter:image" content={resolvedImage.src} />
+  )
+}
+{
+  resolvedImage?.alt && (
+    <meta name="twitter:image:alt" content={resolvedImage?.alt} />
+  )
+}
