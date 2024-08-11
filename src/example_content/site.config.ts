@@ -1,5 +1,4 @@
 import type { Config, Metadata } from "../../src/types/config";
-import { validateTheme } from "../../src/helpers/lib/config";
 
 // 在这里设置你的网站地址，请以 "http://" 或者 "https://" 开头
 // Set your website address here, please start with "http://" or "https://"
@@ -70,7 +69,3 @@ export const HOME: Metadata = {
   // Short homepage description, used for SEO and social media shares.
   DEFAULT_DESCRIPTION: "Welcome to Volantis GO",
 };
-
-// 输出主题风格，请不要修改此值
-// Exported theme, do not modify this value
-export const THEME: string = validateTheme();
