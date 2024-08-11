@@ -1,16 +1,14 @@
 ---
 import { CONFIG } from "@/content/site.config";
-import BaseHead from "@/layouts/BaseHead.astro";
-import Header from "@/layouts/components/Header.astro";
+import { THEME } from "@THEME";
+import Head from "@/layouts/Head.astro";
 import type { Frontmatter } from "@/types/page";
+import BaseLayout from "@/layouts/partials/base/Layout.astro";
 
 const {
   title = CONFIG.DEFAULT_TITLE,
   description = CONFIG.DEFAULT_DESCRIPTION,
-  date,
   author = CONFIG.DEFAULT_AUTHOR,
-  categories,
-  tags,
   image,
   cover,
   pageType = "website",
@@ -21,7 +19,7 @@ const dir = CONFIG.DIR === "rtl" ? "rtl" : "ltr";
 
 <!doctype html>
 <html lang={CONFIG.DEFAULT_LOCALE} dir={dir}>
-  <BaseHead
+  <Head
     title={title}
     description={description}
     author={author}
@@ -30,10 +28,19 @@ const dir = CONFIG.DIR === "rtl" ? "rtl" : "ltr";
     pageType={pageType}
   />
 
-  <body>
-    <Header />
-    <main>
-      <slot />
-    </main>
-  </body>
+  {
+    // 加载当前主题的布局，默认为 "base" 主题。
+    // Load layout for the current theme, defaulting to "base".
+    {
+      base: (
+        <BaseLayout>
+          <slot />
+        </BaseLayout>
+      ),
+    }[THEME] || (
+      <BaseLayout>
+        <slot />
+      </BaseLayout>
+    )
+  }
 </html>
