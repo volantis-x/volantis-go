@@ -1,5 +1,5 @@
-import { UserTheme } from "../../../src/content/site.config";
-import { SUPPORTED_THEMES, type SupportedTheme } from "../../../src/types/config";
+import { UserTheme } from "@/content/site.config";
+import { SUPPORTED_THEMES, type SupportedTheme } from "@/types/config";
 
 // 验证用户设置的主题是否有效
 // Validate the user-set theme

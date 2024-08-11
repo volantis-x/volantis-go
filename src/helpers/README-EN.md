@@ -6,6 +6,8 @@ This directory contains commonly used utility functions and modules in the proje
 
 ## Directory Structure
 
+* `config`: Contains internal configuration files for the project.
+  * Theme definition file.
 * `utils`: Contains general-purpose utility functions that are not related to business logic.
   * String manipulation functions.
   * Date and time processing functions.

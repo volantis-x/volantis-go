@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@THEME": ["./src/helpers/config/themeDefinitions.ts"],
       "@/components/*": ["./src/layouts/components/*"],
       "@/lib/*": ["./src/helpers/lib/*"],
       "@/utils/*": ["./src/helpers/utils/*"],
