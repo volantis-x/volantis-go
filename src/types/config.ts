@@ -11,13 +11,6 @@ export type Config = {
   USE_SMALLER_FONT: boolean;
 };
 
-export type TopMarquee = {
-  ENABLE: boolean;
-  DIRECTION: string;
-  DEFAULT_PRIMARY_CONTENT?: string;
-  DEFAULT_SECONDARY_CONTENT?: string;
-};
-
 export type Metadata = {
   DEFAULT_TITLE: string;
   DEFAULT_DESCRIPTION: string;
