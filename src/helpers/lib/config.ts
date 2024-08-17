@@ -1,12 +1,24 @@
 import { UserTheme } from "@/content/site.config";
 import { SUPPORTED_THEMES, type SupportedTheme } from "@/types/config";
+import { WARNING } from "@/helpers/config/console";
 
-// 验证用户设置的主题是否有效
-// Validate the user-set theme
+/**
+ * @en Validate the user-set theme and return a valid theme.
+ * @zh 验证用户设置的主题并返回一个有效的主题。
+ *
+ * @returns {SupportedTheme} - @en A valid theme.
+ *                             @zh 一个有效的主题。
+ */
 export const validateTheme = (): SupportedTheme => {
-  // 使用类型断言，将 UserTheme 转换为 SupportedTheme 类型
-  const theme = SUPPORTED_THEMES.includes(UserTheme as SupportedTheme)
-    ? UserTheme
-    : "base";
-  return theme as SupportedTheme;
+  if (!SUPPORTED_THEMES.includes(UserTheme as SupportedTheme)) {
+    console.warn(
+      `${WARNING} site.config.ts 的 UserTheme 配置项无效：${UserTheme}，将使用默认值 base`
+    );
+    console.warn(
+      `${WARNING} Invalid UserTheme configuration value within site.config.ts: ${UserTheme}. Using default value "base"`
+    );
+    return "base";
+  }
+
+  return UserTheme as SupportedTheme;
 };
