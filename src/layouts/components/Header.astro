@@ -2,9 +2,11 @@
 import { THEME } from "@THEME";
 import { TOP_MARQUEE } from "@/content/header.config";
 import BaseTopMarquee from "@/components/header/base/TopMarquee.astro";
+import BaseTopNav from "@/components/header/base/TopNav.astro";
 ---
 
 <header>
+
   {
     TOP_MARQUEE?.ENABLE && (
       <>
@@ -14,4 +16,11 @@ import BaseTopMarquee from "@/components/header/base/TopMarquee.astro";
       </>
     )
   }
+
+  {
+    {
+      base: <BaseTopNav />,
+    }[THEME] || <BaseTopNav />
+  }
+
 </header>

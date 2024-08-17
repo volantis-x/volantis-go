@@ -1,4 +1,4 @@
-import type { TopMarquee } from "../../src/types/header";
+import type { TopMarquee, TopNav } from "../../src/types/header";
 
 // 顶部滚动条配置。启用后，将在所有页面显示滚动条。
 // Top marquee configuration. When enabled, a scrolling marquee will be displayed on all pages.
@@ -18,4 +18,23 @@ export const TOP_MARQUEE: TopMarquee = {
   // 滚动条的次要内容。
   // Secondary content of the marquee.
   DEFAULT_SECONDARY_CONTENT: "A content site built with Astro",
+};
+
+export const TOP_NAV: TopNav = {
+  behavior: "static",
+  containerLayout: "full",
+  contentLayout: "twoColumns",
+  logo: {
+    visible: true,
+    // 仅在 threeColumns 布局下有效
+    alignment: "left",
+  },
+  menu: {
+    visible: true,
+    // 仅在 twoColumns 布局下有效
+    adjacentTo: "logo",
+  },
+  actions: {
+    visible: true,
+  },
 };
