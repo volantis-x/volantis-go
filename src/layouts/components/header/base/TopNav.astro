@@ -1,15 +1,33 @@
 ---
 import { TOP_NAV } from "@/content/header.config";
-import { normalizeContentLayout } from "@/utils/utils";
-import TwoColumnsLayout from "./TopNavTwoColumnsLayout.astro";
-import ThreeColumnsLayout from "./TopNavThreeColumnsLayout.astro";
+import { normalizeBehavior } from "@/lib/header";
+import FixedTopNav from "./topnav/FixedTopNav.astro";
+import StaticTopNav from "./topnav/StaticTopNav.astro";
+import StickyTopNav from "./topnav/StickyTopNav.astro";
 
-const navLayout = normalizeContentLayout(TOP_NAV.contentLayout)
+const behavior = normalizeBehavior(TOP_NAV.behavior);
 ---
 
 {
   {
-    twoColumns: <TwoColumnsLayout />,
-    threeColumns: <ThreeColumnsLayout />,
-  }[navLayout] || <TwoColumnsLayout />
+    static: (
+      <StaticTopNav>
+        <slot />
+      </StaticTopNav>
+    ),
+    fixed: (
+      <FixedTopNav>
+        <slot />
+      </FixedTopNav>
+    ),
+    sticky: (
+      <StickyTopNav>
+        <slot />
+      </StickyTopNav>
+    ),
+  }[behavior] || (
+    <StaticTopNav>
+      <slot />
+    </StaticTopNav>
+  )
 }

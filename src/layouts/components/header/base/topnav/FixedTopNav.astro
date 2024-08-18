@@ -1,0 +1,15 @@
+---
+import { TOP_NAV } from "@/content/header.config";
+import { normalizeContentLayout } from "@/lib/header";
+import TwoColumnsLayout from "./TwoColumnsLayout.astro";
+import ThreeColumnsLayout from "./ThreeColumnsLayout.astro";
+
+const navLayout = normalizeContentLayout(TOP_NAV.contentLayout);
+---
+
+{
+  {
+    twoColumns: <TwoColumnsLayout />,
+    threeColumns: <ThreeColumnsLayout />,
+  }[navLayout] || <TwoColumnsLayout />
+}
