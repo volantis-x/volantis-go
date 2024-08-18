@@ -12,10 +12,8 @@ import { WARNING } from "@/helpers/config/console";
 export const validateTheme = (): SupportedTheme => {
   if (!SUPPORTED_THEMES.includes(UserTheme as SupportedTheme)) {
     console.warn(
-      `${WARNING} site.config.ts 的 UserTheme 配置项无效：${UserTheme}，将使用默认值 base`
-    );
-    console.warn(
-      `${WARNING} Invalid UserTheme configuration value within site.config.ts: ${UserTheme}. Using default value "base"`
+      `${WARNING} "site.config.ts" 的 "UserTheme" 配置项无效："${UserTheme}"，将使用默认值 "base" \r\n` +
+        `${WARNING} Invalid "UserTheme" configuration value within "site.config.ts": "${UserTheme}". Using default value "base"`,
     );
     return "base";
   }
