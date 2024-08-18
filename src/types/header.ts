@@ -6,9 +6,9 @@ export type TopMarquee = {
 };
 
 export type TopNav = {
-  behavior?: "static" | "fixed" | "sticky";
-  containerLayout?: "full" | "centered";
-  contentLayout?:
+  behavior: "static" | "fixed" | "sticky";
+  containerLayout: "full" | "centered";
+  contentLayout:
     | "two"
     | "twoColumns"
     | "twoParts"

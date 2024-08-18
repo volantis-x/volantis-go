@@ -14,7 +14,7 @@ import { validateTheme } from "@/lib/config";
  */
 export function normalizeContentLayout(
   layout: TopNav["contentLayout"],
-): "twoColumns" | "threeColumns" {
+): TopNav["contentLayout"] {
   switch (layout) {
     case "two":
     case "twoParts":
@@ -28,8 +28,8 @@ export function normalizeContentLayout(
       return "threeColumns";
     default:
       console.warn(
-        `${WARNING} "header.config.ts" 中 "TOP_NAV" 的 "contentLayout" 配置项无效："${layout}"，将使用默认值 "twoColumns" \r\n` +
-          `${WARNING} Invalid "contentLayout" configuration value in "TOP_NAV" within "header.config.ts": "${layout}". Using default value "twoColumns"`,
+        `${WARNING} "header.config.ts" >> "TOP_NAV" >> "contentLayout" 配置项无效："${layout}"，将使用默认值 "twoColumns" \r\n` +
+          `${WARNING} "contentLayout" in "TOP_NAV" (header.config.ts) is invalid: "${layout}". Defaulting to "twoColumns".`,
       );
       return "twoColumns";
   }
@@ -48,7 +48,7 @@ export function normalizeContentLayout(
  */
 export function normalizeBehavior(
   behavior: TopNav["behavior"],
-): "static" | "fixed" | "sticky" {
+): TopNav["behavior"] {
   const currentTheme = validateTheme();
 
   return behavior === "sticky" && STICKY_TO_FIXED_THEMES.includes(currentTheme)
@@ -57,7 +57,5 @@ export function normalizeBehavior(
           `${WARNING} The current theme "${currentTheme}" does not support "sticky" behavior. Using "fixed" behavior instead.`,
       ),
       "fixed")
-    : behavior === undefined
-      ? "static"
-      : behavior;
+    : behavior;
 }
