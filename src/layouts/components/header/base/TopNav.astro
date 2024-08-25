@@ -10,24 +10,8 @@ const behavior = normalizeBehavior(TOP_NAV.behavior);
 
 {
   {
-    static: (
-      <StaticTopNav>
-        <slot />
-      </StaticTopNav>
-    ),
-    fixed: (
-      <FixedTopNav>
-        <slot />
-      </FixedTopNav>
-    ),
-    sticky: (
-      <StickyTopNav>
-        <slot />
-      </StickyTopNav>
-    ),
-  }[behavior] || (
-    <StaticTopNav>
-      <slot />
-    </StaticTopNav>
-  )
+    fixed: <FixedTopNav />,
+    static: <StaticTopNav />,
+    sticky: <StickyTopNav />,
+  }[behavior] || <StaticTopNav />
 }

@@ -3,24 +3,31 @@ import { THEME } from "@THEME";
 import { TOP_MARQUEE } from "@/content/header.config";
 import BaseTopMarquee from "@/components/header/base/TopMarquee.astro";
 import BaseTopNav from "@/components/header/base/TopNav.astro";
+import BaseHeaderContent from "@/components/header/base/HeaderContent.astro";
 ---
 
-<header>
+{
+  TOP_MARQUEE?.ENABLE && (
+    <>
+      {{
+        base: <BaseTopMarquee />,
+      }[THEME] || <BaseTopMarquee />}
+    </>
+  )
+}
 
+{
   {
-    TOP_MARQUEE?.ENABLE && (
+    base: (
       <>
-        {{
-          base: <BaseTopMarquee />,
-        }[THEME] || <BaseTopMarquee />}
+        <BaseTopNav />
+        <BaseHeaderContent />
       </>
-    )
-  }
-
-  {
-    {
-      base: <BaseTopNav />,
-    }[THEME] || <BaseTopNav />
-  }
-
-</header>
+    ),
+  }[THEME] || (
+    <>
+      <BaseTopNav />
+      <BaseHeaderContent />
+    </>
+  )
+}

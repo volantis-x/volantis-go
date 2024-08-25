@@ -6,7 +6,7 @@ export type TopMarquee = {
 };
 
 export type TopNav = {
-  behavior: "static" | "fixed" | "sticky";
+  behavior: "fixed" | "static" | "sticky";
   containerLayout: "full" | "centered";
   contentLayout:
     | "two"

@@ -1,6 +1,6 @@
 import type { TopNav } from "@/types/header";
 import { WARNING } from "@/helpers/config/console";
-import { STICKY_TO_FIXED_THEMES } from "@/helpers/config/themeDefinitions";
+import { FIXED_TO_STICKY_THEMES } from "@/helpers/config/themeDefinitions";
 import { validateTheme } from "@/lib/config";
 
 /**
@@ -48,14 +48,14 @@ export function normalizeContentLayout(
  */
 export function normalizeBehavior(
   behavior: TopNav["behavior"],
-): "static" | "fixed" | "sticky" {
+): "fixed" | "static" | "sticky" {
   const currentTheme = validateTheme();
 
-  return behavior === "sticky" && STICKY_TO_FIXED_THEMES.includes(currentTheme)
+  return behavior === "fixed" && FIXED_TO_STICKY_THEMES.includes(currentTheme)
     ? (console.warn(
-        `${WARNING} 当前主题 "${currentTheme}" 不支持 "sticky" 行为，将使用 "fixed" 行为代替。\r\n` +
-          `${WARNING} The current theme "${currentTheme}" does not support "sticky" behavior. Using "fixed" behavior instead.`,
+        `${WARNING} 当前主题 "${currentTheme}" 不支持 "header.config.ts >> TOP_NAV >> behavior >> fixed" 行为，将使用 "sticky" 行为代替。\r\n` +
+          `${WARNING} The current theme "${currentTheme}" does not support "header.config.ts >> TOP_NAV >> behavior >> fixed" behavior. Using "sticky" behavior instead.`,
       ),
-      "fixed")
+      "sticky")
     : behavior;
 }

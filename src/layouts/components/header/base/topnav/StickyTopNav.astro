@@ -1,12 +1,24 @@
 ---
-// base 主题当前不支持 "sticky" 行为，选择此选项将加载 "fixed" 导航样式。
+import { TOP_NAV } from "@/content/header.config";
+import { normalizeContentLayout } from "@/lib/header";
+import TwoColumnsLayout from "./TwoColumnsLayout.astro";
+import ThreeColumnsLayout from "./ThreeColumnsLayout.astro";
 
-// 即使主题本身不支持 "sticky" 行为，也请保留此文件，以便 `normalizeBehavior()` 函数能够正确检测并加载各个主题的导航样式。
-
-// The "base" theme currently does not support "sticky" behavior.
-// Selecting this option will load the "fixed" navigation style instead.
-
-// Even if the theme itself doesn't support "sticky" behavior,
-// please keep this file. This allows the `normalizeBehavior()` function
-// to correctly detect and load navigation styles for different themes.
+const navLayout = normalizeContentLayout(TOP_NAV.contentLayout);
 ---
+
+<nav>
+  {
+    {
+      twoColumns: <TwoColumnsLayout />,
+      threeColumns: <ThreeColumnsLayout />,
+    }[navLayout] || <TwoColumnsLayout />
+  }
+</nav>
+
+<style>
+  nav {
+    position: sticky;
+    top: 0;
+  }
+</style>

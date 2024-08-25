@@ -7,9 +7,11 @@ import ThreeColumnsLayout from "./ThreeColumnsLayout.astro";
 const navLayout = normalizeContentLayout(TOP_NAV.contentLayout);
 ---
 
-{
+<nav>
   {
-    twoColumns: <TwoColumnsLayout />,
-    threeColumns: <ThreeColumnsLayout />,
-  }[navLayout] || <TwoColumnsLayout />
-}
+    {
+      twoColumns: <TwoColumnsLayout />,
+      threeColumns: <ThreeColumnsLayout />,
+    }[navLayout] || <TwoColumnsLayout />
+  }
+</nav>
