@@ -14,7 +14,7 @@ import { validateTheme } from "@/lib/config";
  */
 export function normalizeContentLayout(
   layout: TopNav["contentLayout"],
-): TopNav["contentLayout"] {
+): "twoColumns" | "threeColumns" {
   switch (layout) {
     case "two":
     case "twoParts":
@@ -48,7 +48,7 @@ export function normalizeContentLayout(
  */
 export function normalizeBehavior(
   behavior: TopNav["behavior"],
-): TopNav["behavior"] {
+): "static" | "fixed" | "sticky" {
   const currentTheme = validateTheme();
 
   return behavior === "sticky" && STICKY_TO_FIXED_THEMES.includes(currentTheme)
