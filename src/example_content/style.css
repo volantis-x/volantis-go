@@ -19,4 +19,8 @@
   /* 内容区域最大宽度 (默认值: 1320px). */
   /* Max width for the content area (defaults to 1320px). */
   --content-max-width: 1320px;
+
+  /* 顶部跑马灯动画滚动时间 (默认值: 30s). */
+  /* Top marquee animation scroll duration (defaults to 30s). */
+  --top-marquee-scroll-duration: 30s;
 }
