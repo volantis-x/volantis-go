@@ -1,3 +1,32 @@
 ---
 
 ---
+
+<div class="nav-three-columns">
+  <div class="nav-left">
+  </div>
+
+  <div class="nav-center">
+  </div>
+
+  <div class="nav-right">
+  </div>
+</div>
+
+<style>
+  .nav-three-columns {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+  .nav-left {
+    grid-column: 1;
+  }
+  .nav-center {
+    grid-column: 2;
+  }
+  .nav-right {
+    grid-column: 3;
+    justify-self: end;
+  }
+</style>

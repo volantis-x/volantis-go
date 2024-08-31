@@ -5,9 +5,10 @@ import TwoColumnsLayout from "./TwoColumnsLayout.astro";
 import ThreeColumnsLayout from "./ThreeColumnsLayout.astro";
 
 const navLayout = normalizeContentLayout(TOP_NAV.contentLayout);
+const navClass = TOP_NAV.containerLayout === "centered" ? "nav-centered" : "";
 ---
 
-<nav>
+<nav class:list={[navClass]}>
   {
     {
       twoColumns: <TwoColumnsLayout />,
@@ -20,5 +21,9 @@ const navLayout = normalizeContentLayout(TOP_NAV.contentLayout);
   nav {
     position: sticky;
     top: 0;
+  }
+  .nav-centered {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
   }
 </style>
