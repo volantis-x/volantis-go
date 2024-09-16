@@ -8,7 +8,7 @@ import {
 
 /**
  * @en Normalize user input contentLayout value to "one" "two" "three".
- * @zh 将用户输入的 contentLayout 值标准化为 "oneCo" "two" "three".
+ * @zh 将用户输入的 contentLayout 值标准化为 "one" "two" "three".
  *
  * @param layout - @en User input contentLayout value.
  *                 @zh 用户输入的 contentLayout 值.
