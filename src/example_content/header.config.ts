@@ -38,12 +38,14 @@ export const TOP_NAV: TopNav = {
   // "centered":  Content-width (controlled by the --content-max-width variable in Style.css)
   containerLayout: "full",
   // 头部导航栏的内容组件布局
-  // "twoColumns", "two", "twoParts", "double":  两列布局（这些值效果相同）
-  // "threeColumns", "three", "threeParts", "triple":  三列布局（这些值效果相同）
+  // "one": 单列布局
+  // "two": 两列布局
+  // "three": 三列布局
   // Layout of content components within the header navigation bar
-  // "twoColumns", "two", "twoParts", "double":  Two-column layout (these values are equivalent)
-  // "threeColumns", "three", "threeParts", "triple":  Three-column layout (these values are equivalent)
-  contentLayout: "twoColumns",
+  // "one": One-column layout
+  // "two": Two-column layout
+  // "three": Three-column layout
+  contentLayout: "three",
   logo: {
     visible: true,
     // 仅在 threeColumns 布局下有效

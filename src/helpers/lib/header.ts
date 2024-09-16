@@ -1,11 +1,14 @@
 import type { TopNav } from "@/types/header";
 import { WARNING } from "@/helpers/config/console";
-import { FIXED_TO_STICKY_THEMES } from "@/helpers/config/themeDefinitions";
-import { validateTheme } from "@/lib/config";
+import { validateTheme, validateTopNavLayout } from "@/lib/config";
+import {
+  FIXED_TO_STICKY_THEMES,
+  SINGLE_COLUMN_UNSUPPORTED_THEMES,
+} from "@/helpers/config/themeDefinitions";
 
 /**
- * @en Normalize user input contentLayout value to "twoColumns" or "threeColumns".
- * @zh 将用户输入的 contentLayout 值标准化为 "twoColumns" 或 "threeColumns".
+ * @en Normalize user input contentLayout value to "one" "two" "three".
+ * @zh 将用户输入的 contentLayout 值标准化为 "oneCo" "two" "three".
  *
  * @param layout - @en User input contentLayout value.
  *                 @zh 用户输入的 contentLayout 值.
@@ -14,25 +17,17 @@ import { validateTheme } from "@/lib/config";
  */
 export function normalizeContentLayout(
   layout: TopNav["contentLayout"],
-): "twoColumns" | "threeColumns" {
-  switch (layout) {
-    case "two":
-    case "twoParts":
-    case "twoColumns":
-    case "double":
-      return "twoColumns";
-    case "three":
-    case "threeParts":
-    case "threeColumns":
-    case "triple":
-      return "threeColumns";
-    default:
-      console.warn(
+): "one" | "two" | "three" {
+  const currentTopNav = validateTopNavLayout();
+
+  return layout === "one" &&
+    SINGLE_COLUMN_UNSUPPORTED_THEMES.includes(currentTopNav)
+    ? (console.warn(
         `${WARNING} "header.config.ts" >> "TOP_NAV" >> "contentLayout" 配置项无效："${layout}"，将使用默认值 "twoColumns" \r\n` +
           `${WARNING} "contentLayout" in "TOP_NAV" (header.config.ts) is invalid: "${layout}". Defaulting to "twoColumns".`,
-      );
-      return "twoColumns";
-  }
+      ),
+      "two")
+    : layout;
 }
 
 /**

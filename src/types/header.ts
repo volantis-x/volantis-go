@@ -8,24 +8,20 @@ export type TopMarquee = {
 export type TopNav = {
   behavior: "fixed" | "static" | "sticky";
   containerLayout: "full" | "centered";
-  contentLayout:
-    | "two"
-    | "twoColumns"
-    | "twoParts"
-    | "double"
-    | "three"
-    | "threeColumns"
-    | "threeParts"
-    | "triple";
+  contentLayout: "one" | "two" | "three";
   logo?: {
     visible: boolean;
-    alignment?: "left" | "center" | "right"; // 仅在 threeColumns 布局下有效
+    alignment?: "left" | "center" | "right"; // 仅在 three 布局下有效
   };
   menu?: {
     visible: boolean;
-    adjacentTo?: "logo" | "actions"; // 仅在 twoColumns 布局下有效
+    adjacentTo?: "logo" | "actions"; // 仅在 two 布局下有效
   };
   actions?: {
     visible: boolean;
   };
 };
+
+export const SUPPORTED_CONTENT_LAYOUTS = ["one", "two", "three"] as const;
+export type SupportedContentLayouts =
+  (typeof SUPPORTED_CONTENT_LAYOUTS)[number];
