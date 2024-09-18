@@ -1,6 +1,6 @@
 import { UserTheme } from "@/content/site.config";
 import { SUPPORTED_THEMES, type SupportedTheme } from "@/types/config";
-import { WARNING } from "@/helpers/config/console";
+import { WARNING_PREFIX } from "@/helpers/config/console";
 import { TOP_NAV } from "@/content/header.config";
 import {
   SUPPORTED_CONTENT_LAYOUTS,
@@ -17,8 +17,8 @@ import {
 export const validateTheme = (): SupportedTheme => {
   if (!SUPPORTED_THEMES.includes(UserTheme as SupportedTheme)) {
     console.warn(
-      `${WARNING} "site.config.ts" 的 "UserTheme" 配置项无效："${UserTheme}"，将使用默认值 "base" \r\n` +
-        `${WARNING} Invalid "UserTheme" configuration value within "site.config.ts": "${UserTheme}". Using default value "base"`,
+      `${WARNING_PREFIX} "site.config.ts" 的 "UserTheme" 配置项无效："${UserTheme}"，将使用默认值 "base" \r\n` +
+        `${WARNING_PREFIX} Invalid "UserTheme" configuration value within "site.config.ts": "${UserTheme}". Using default value "base"`,
     );
     return "base";
   }
@@ -40,8 +40,8 @@ export const validateTopNavLayout = (): SupportedContentLayouts => {
     )
   ) {
     console.warn(
-      `${WARNING} "header.config.ts" >> "TOP_NAV" >> "contentLayout" 配置项无效："${TOP_NAV.contentLayout}"，将使用默认值 "two" \r\n` +
-        `${WARNING} Invalid "contentLayout" configuration value within "header.config.ts" >> "TOP_NAV": "${TOP_NAV.contentLayout}". Using default value "two"`,
+      `${WARNING_PREFIX} "header.config.ts" >> "TOP_NAV" >> "contentLayout" 配置项无效："${TOP_NAV.contentLayout}"，将使用默认值 "two" \r\n` +
+        `${WARNING_PREFIX} Invalid "contentLayout" configuration value within "header.config.ts" >> "TOP_NAV": "${TOP_NAV.contentLayout}". Using default value "two"`,
     );
     return "two";
   }

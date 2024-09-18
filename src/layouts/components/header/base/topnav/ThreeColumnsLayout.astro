@@ -1,17 +1,28 @@
 ---
+import { TOP_NAV } from "@/content/header.config";
+import { WARNING } from "@/helpers/config/console";
 
+const topNavVisibilityCheck =
+  TOP_NAV.logo?.visible && TOP_NAV.menu?.visible && TOP_NAV.actions?.visible;
 ---
 
-<div class="nav-three-columns">
-  <div class="nav-left">
-  </div>
+{
+  topNavVisibilityCheck ? (
+    <div class="nav-three-columns">
+      <div class="nav-left">left</div>
 
-  <div class="nav-center">
-  </div>
+      <div class="nav-center">center</div>
 
-  <div class="nav-right">
-  </div>
-</div>
+      <div class="nav-right">right</div>
+    </div>
+  ) : (
+    <>
+      {console.warn(WARNING.TOP_NAV_REQUIRES_THREE_VISIBLE_ELEMENTS)}
+      <span>WARNING-CN: 请查看 console 的警告内容。</span>
+      <span>WARNING-EN: Please check the console for warnings.</span>
+    </>
+  )
+}
 
 <style>
   .nav-three-columns {

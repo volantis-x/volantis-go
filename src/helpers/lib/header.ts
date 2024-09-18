@@ -1,5 +1,5 @@
 import type { TopNav } from "@/types/header";
-import { WARNING } from "@/helpers/config/console";
+import { WARNING_PREFIX } from "@/helpers/config/console";
 import { validateTheme, validateTopNavLayout } from "@/lib/config";
 import {
   FIXED_TO_STICKY_THEMES,
@@ -18,13 +18,13 @@ import {
 export function normalizeContentLayout(
   layout: TopNav["contentLayout"],
 ): "one" | "two" | "three" {
-  const currentTopNav = validateTopNavLayout();
+  const currentTheme = validateTheme();
 
   return layout === "one" &&
-    SINGLE_COLUMN_UNSUPPORTED_THEMES.includes(currentTopNav)
+    SINGLE_COLUMN_UNSUPPORTED_THEMES.includes(currentTheme)
     ? (console.warn(
-        `${WARNING} "header.config.ts" >> "TOP_NAV" >> "contentLayout" 配置项无效："${layout}"，将使用默认值 "twoColumns" \r\n` +
-          `${WARNING} "contentLayout" in "TOP_NAV" (header.config.ts) is invalid: "${layout}". Defaulting to "twoColumns".`,
+        `${WARNING_PREFIX} "header.config.ts" >> "TOP_NAV" >> "contentLayout" 配置项无效："${layout}"，将使用默认值 "twoColumns" \r\n` +
+          `${WARNING_PREFIX} "contentLayout" in "TOP_NAV" (header.config.ts) is invalid: "${layout}". Defaulting to "twoColumns".`,
       ),
       "two")
     : layout;
@@ -48,8 +48,8 @@ export function normalizeBehavior(
 
   return behavior === "fixed" && FIXED_TO_STICKY_THEMES.includes(currentTheme)
     ? (console.warn(
-        `${WARNING} 当前主题 "${currentTheme}" 不支持 "header.config.ts >> TOP_NAV >> behavior >> fixed" 行为，将使用 "sticky" 行为代替。\r\n` +
-          `${WARNING} The current theme "${currentTheme}" does not support "header.config.ts >> TOP_NAV >> behavior >> fixed" behavior. Using "sticky" behavior instead.`,
+        `${WARNING_PREFIX} 当前主题 "${currentTheme}" 不支持 "header.config.ts >> TOP_NAV >> behavior >> fixed" 行为，将使用 "sticky" 行为代替。\r\n` +
+          `${WARNING_PREFIX} The current theme "${currentTheme}" does not support "header.config.ts >> TOP_NAV >> behavior >> fixed" behavior. Using "sticky" behavior instead.`,
       ),
       "sticky")
     : behavior;
