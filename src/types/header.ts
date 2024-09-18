@@ -21,7 +21,3 @@ export type TopNav = {
     visible: boolean;
   };
 };
-
-export const SUPPORTED_CONTENT_LAYOUTS = ["one", "two", "three"] as const;
-export type SupportedContentLayouts =
-  (typeof SUPPORTED_CONTENT_LAYOUTS)[number];

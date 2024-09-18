@@ -1,11 +1,6 @@
 import { UserTheme } from "@/content/site.config";
 import { SUPPORTED_THEMES, type SupportedTheme } from "@/types/config";
 import { WARNING_PREFIX } from "@/helpers/config/console";
-import { TOP_NAV } from "@/content/header.config";
-import {
-  SUPPORTED_CONTENT_LAYOUTS,
-  type SupportedContentLayouts,
-} from "@/types/header";
 
 /**
  * @en Validate the user-set theme and return a valid theme.
