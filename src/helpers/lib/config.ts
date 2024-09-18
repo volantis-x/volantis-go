@@ -25,26 +25,3 @@ export const validateTheme = (): SupportedTheme => {
 
   return UserTheme as SupportedTheme;
 };
-
-/**
- * @en Validates the user-configured `contentLayout` for the top navigation and returns a valid layout.
- * @zh 验证用户配置的顶部导航栏内容布局，并返回有效的布局。
- *
- * @returns {SupportedContentLayouts} - @en A valid top navigation content layout.
- *                                      @zh 一个有效的顶部导航栏内容布局。
- */
-export const validateTopNavLayout = (): SupportedContentLayouts => {
-  if (
-    !SUPPORTED_CONTENT_LAYOUTS.includes(
-      TOP_NAV.contentLayout as SupportedContentLayouts,
-    )
-  ) {
-    console.warn(
-      `${WARNING_PREFIX} "header.config.ts" >> "TOP_NAV" >> "contentLayout" 配置项无效："${TOP_NAV.contentLayout}"，将使用默认值 "two" \r\n` +
-        `${WARNING_PREFIX} Invalid "contentLayout" configuration value within "header.config.ts" >> "TOP_NAV": "${TOP_NAV.contentLayout}". Using default value "two"`,
-    );
-    return "two";
-  }
-
-  return TOP_NAV.contentLayout as SupportedContentLayouts;
-};
