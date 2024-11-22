@@ -3,11 +3,15 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@THEME": ["./src/helpers/config/themeDefinitions.ts"],
-      "@/components/*": ["./src/layouts/components/*"],
-      "@/lib/*": ["./src/helpers/lib/*"],
-      "@/utils/*": ["./src/helpers/utils/*"],
-      "@/types/*": ["./src/types/*"],
+      "@THEME": ["src/heart/helpers/config/themeDefinitions.ts"],
+      "@/components/*": ["src/heart/layouts/components/*"],
+      "@/partials/*": ["src/heart/layouts/partials/*"],
+      "@/lib/*": ["src/heart/helpers/lib/*"],
+      "@/layouts/*": ["src/heart/layouts/*"],
+      "@/utils/*": ["src/heart/helpers/utils/*"],
+      "@/types/*": ["src/heart/types/*"],
+      "@/config/*": ["src/heart/helpers/config/*"],
+      "@/styles/*": ["src/heart/styles/*"],
       "@/*": ["./src/*"]
     },
     "plugins": [

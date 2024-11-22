@@ -1,4 +1,4 @@
-import { validateTheme } from "@/helpers/lib/config";
+import { validateTheme } from "@/lib/config";
 
 // Layouts 布局层调用全局主题
 // 使用方法：import { THEME } from "@THEME";

@@ -1,9 +1,9 @@
 ---
 import { CONFIG } from "@/content/site.config";
-import { THEME } from "@THEME";
+import { THEME } from "@/heart/helpers/config/themeDefinitions";
 import Head from "@/layouts/Head.astro";
 import type { Frontmatter } from "@/types/page";
-import BaseLayout from "@/layouts/partials/base/Layout.astro";
+import BaseLayout from "@/partials/base/Layout.astro";
 
 const {
   title = CONFIG.DEFAULT_TITLE,

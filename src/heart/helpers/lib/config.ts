@@ -1,6 +1,6 @@
 import { UserTheme } from "@/content/site.config";
 import { SUPPORTED_THEMES, type SupportedTheme } from "@/types/config";
-import { WARNING_PREFIX } from "@/helpers/config/console";
+import { WARNING_PREFIX } from "@/config/console";
 
 /**
  * @en Validate the user-set theme and return a valid theme.

@@ -1,10 +1,10 @@
 import type { TopNav } from "@/types/header";
-import { WARNING_PREFIX } from "@/helpers/config/console";
+import { WARNING_PREFIX } from "@/config/console";
 import { validateTheme } from "@/lib/config";
 import {
   FIXED_TO_STICKY_THEMES,
   SINGLE_COLUMN_UNSUPPORTED_THEMES,
-} from "@/helpers/config/themeDefinitions";
+} from "@/heart/helpers/config/themeDefinitions";
 
 /**
  * @en Normalize user input contentLayout value to "one" "two" "three".
