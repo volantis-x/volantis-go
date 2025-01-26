@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import { CONFIG } from "@/content/site.config";
 import { THEME } from "@THEME";
 import type { Frontmatter } from "@/types/page";
@@ -40,6 +40,6 @@ const { title, description, author, image, cover, pageType }: Frontmatter =
   {
     // 是否启用视图过渡动画
     // Use view transitions
-    CONFIG?.VIEW_TRANSITIONS && <ViewTransitions />
+    CONFIG?.VIEW_TRANSITIONS && <ClientRouter />
   }
 </head>
