@@ -1,9 +1,8 @@
 import { defineConfig } from "astro/config";
 import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
-import { SITE } from "./src/content/site.config";
+import { SITE } from "./content/config/site.config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
-
 import markdoc from "@astrojs/markdoc";
 
 // 判断是否有设置网站地址

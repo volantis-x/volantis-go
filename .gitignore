@@ -4,7 +4,7 @@ dist/
 
 # content
 # 内容
-src/content/
+content/
 
 # ignore top-level vscode settings
 /.vscode/settings.json

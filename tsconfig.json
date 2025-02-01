@@ -7,6 +7,7 @@
     "paths": {
       "@THEME": ["./src/helpers/config/themeDefinitions.ts"],
       "@/components/*": ["./src/layouts/components/*"],
+      "@/config/*": ["./content/config/*"],
       "@/lib/*": ["./src/helpers/lib/*"],
       "@/utils/*": ["./src/helpers/utils/*"],
       "@/types/*": ["./src/types/*"],

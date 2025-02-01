@@ -1,4 +1,4 @@
-import { UserTheme } from "@/content/site.config";
+import { UserTheme } from "@/config/site.config";
 import { SUPPORTED_THEMES, type SupportedTheme } from "@/types/config";
 import { WARNING_PREFIX } from "@/helpers/config/console";
 

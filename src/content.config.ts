@@ -1,10 +1,11 @@
-import { defineCollection, z } from "astro:content";
-import { CONFIG } from "../../src/content/site.config";
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { CONFIG } from "@/config/site.config";
 
 const DEFAULT_AUTHOR = CONFIG.DEFAULT_AUTHOR !== undefined && CONFIG.DEFAULT_AUTHOR;
 
-const blogCollection = defineCollection({
-  type: "content",
+const blog = defineCollection({
+  loader: glob({ pattern: '**/*.(md|mdx|mdoc)', base: './content/blog' }),
   schema: z.object({
     title: z
       .string()
@@ -52,6 +53,4 @@ const blogCollection = defineCollection({
   }),
 });
 
-export const collections = {
-  blog: blogCollection,
-};
+export const collections = { blog };
