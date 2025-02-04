@@ -8,13 +8,13 @@ import markdoc from "@astrojs/markdoc";
 // 判断是否有设置网站地址
 // Determine whether a website address has been set
 const CUSTOM_SITE = SITE !== undefined && SITE !== "http://example.com" && SITE;
-const site = CUSTOM_SITE || "http://localhost";
+const siteUrl = CUSTOM_SITE || "http://localhost";
 
 const ASSETS_DIR = BUILD_ASSETS_DIR.startsWith('_') ? BUILD_ASSETS_DIR : `_${BUILD_ASSETS_DIR}`;
 
 // https://astro.build/config
 export default defineConfig({
-  site,
+  site: siteUrl,
   integrations: [mdx(), sitemap(), markdoc()],
   // prefetch 开启链接预加载
   prefetch: true,
