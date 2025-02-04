@@ -1,10 +1,18 @@
 import type { Config, Metadata } from "@/types/config";
 
 // 在这里设置你的网站地址，请以 "http://" 或者 "https://" 开头
-// Set your website address here, please start with "http://" or "https://"
 // 如果暂时不想设置，请保持默认值："http://example.com"
+// Set your website address here, please start with "http://" or "https://"
 // If you do not want to set it yet, please keep the default value: "http://example.com"
 export const SITE: string = "http://example.com";
+
+// 自定义构建资源目录名称，自动在前面增加 "_" 前缀
+// 默认值为 "_astro"，构建后资源路径示例：example.com/_astro/happy.jpg
+// 若修改为 "volantis"，构建后资源路径示例：example.com/_volantis/happy.jpg
+// Custom build assets directory name, automatically adds a "_" prefix in front
+// Default value is "_astro", example of built asset path: example.com/_astro/happy.jpg
+// If changed to "volantis", example of built asset path: example.com/_volantis/happy.jpg
+export const BUILD_ASSETS_DIR: string = "_astro";
 
 // 网站主题风格，默认为 "base"
 // Website theme style, defaults to "base"
