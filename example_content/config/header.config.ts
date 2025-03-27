@@ -7,6 +7,10 @@ export const TOP_MARQUEE: TopMarquee = {
   // Enable/disable the top marquee. Set to false to hide the marquee.
   ENABLE: true,
 
+  // 顶部跑马灯动画滚动时间 (默认值: 60s)
+  // Top marquee animation scroll duration (defaults to 60s).
+  SCROLL_DURATION: "60s",
+
   // 滚动条内容的移动方向。 "left" 为向左滚动，"right" 为向右滚动。
   // Direction of the marquee content movement. "left" for leftward scrolling, "right" for rightward scrolling.
   DIRECTION: "left",

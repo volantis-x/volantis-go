@@ -1,11 +1,15 @@
 ---
 import { TOP_MARQUEE } from "@/config/header.config";
 
+const marqueeStyle = {
+  '--top-marquee-scroll-duration': TOP_MARQUEE.SCROLL_DURATION
+};
+
 const marqueeMove =
   TOP_MARQUEE.DIRECTION === "left" ? "marquee-move-left" : "marquee-move-right";
 ---
 
-<div class="top-marquee">
+<div class="top-marquee" style={marqueeStyle}>
   <div class="top-marquee__wrapper">
     {
       [...Array(16)].map((_, _index) => (
