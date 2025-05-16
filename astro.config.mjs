@@ -4,18 +4,28 @@ import { SITE, BUILD_ASSETS_DIR } from "./content/config/site.config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import markdoc from "@astrojs/markdoc";
+import icon from "astro-icon";
 
 // 判断是否有设置网站地址
 // Determine whether a website address has been set
 const CUSTOM_SITE = SITE !== undefined && SITE !== "http://example.com" && SITE;
 const siteUrl = CUSTOM_SITE || "http://localhost";
 
-const ASSETS_DIR = BUILD_ASSETS_DIR.startsWith('_') ? BUILD_ASSETS_DIR : `_${BUILD_ASSETS_DIR}`;
+const ASSETS_DIR = BUILD_ASSETS_DIR.startsWith("_")
+  ? BUILD_ASSETS_DIR
+  : `_${BUILD_ASSETS_DIR}`;
 
 // https://astro.build/config
 export default defineConfig({
   site: siteUrl,
-  integrations: [mdx(), sitemap(), markdoc()],
+  integrations: [
+    mdx(),
+    sitemap(),
+    markdoc(),
+    icon({
+      iconDir: "content/icons",
+    }),
+  ],
   // prefetch 开启链接预加载
   prefetch: true,
   markdown: {
