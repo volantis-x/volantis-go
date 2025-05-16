@@ -14,6 +14,7 @@ node_modules/
 package-lock.lock
 package-lock.json
 yarn.lock
+pnpm-workspace.yaml
 
 # logs
 npm-debug.log*
