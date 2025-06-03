@@ -23,10 +23,11 @@ TODO: 每个版块组件化。
 
 同时为了更友好归类组件，这里对组件区进行了以下分类:
 
+```txt
 src/components/
 ├── Core/                       // 非常基础和通用的构建块
 │   ├── Button.astro
-│   ├── Button.config.ts
+│   ├── Button.config.ts        // 组件默认配置文件示例
 │   └── Link.astro
 │   └── Link.config.ts
 │
@@ -56,6 +57,7 @@ src/components/
 └── Forms/                      // 表单元素
     ├── Form.astro
     └── FormField.astro         // (可能封装了 Label + Input + Error)
+```
 
 ## ./src/helpers/ 帮手
 
