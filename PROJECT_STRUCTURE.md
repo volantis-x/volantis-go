@@ -7,6 +7,14 @@
 
 说白话：保持所有文章内容、配置内容不变的情况下，仅需要修改主题名，就可以实现网站风格更换。
 
+本项目配置核心概念：
+
+**基础默认 < 主题默认 < 用户配置**
+
+当用户没有进行相关配置时，读取主题的相关配置（如组件样式，内容参数等）。
+
+当主题没有进行相关配置时，读取各组件的默认配置。
+
 ## ./content/ 用户内容区
 
 本项目实行用户内容和项目内容分离，以实现各自的维护工作。
@@ -28,7 +36,7 @@ src/components/
 ├── Core/                       // 非常基础和通用的构建块
 │   ├── Button.astro
 │   ├── Button.config.ts        // 组件默认配置文件示例
-│   └── Link.astro
+│   ├── Link.astro
 │   └── Link.config.ts
 │
 ├── Navigation/                 // 导航相关
@@ -38,7 +46,7 @@ src/components/
 │
 ├── Layout/                     // 布局辅助
 │   ├── Grid.astro
-│   ├── Section.astro
+│   └── Section.astro
 │
 ├── ContentBlocks/              // 用于构建页面主要内容的块级组件
 │   ├── Card.astro              // 通用卡片
