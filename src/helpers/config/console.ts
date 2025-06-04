@@ -1,4 +1,4 @@
-import { getTimeStamp } from "@/utils/utils";
+import { getTimeStamp } from "@utils/utils";
 
 export const WARNING_PREFIX = `\u001b[33m${getTimeStamp()} ⚠ WARNING: \u001b[0m`;
 

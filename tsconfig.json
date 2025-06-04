@@ -6,10 +6,11 @@
     "baseUrl": ".",
     "paths": {
       "@THEME": ["./src/helpers/config/themeDefinitions.ts"],
-      "@/components/*": ["./src/layouts/components/*"],
-      "@/config/*": ["./content/config/*"],
-      "@/lib/*": ["./src/helpers/lib/*"],
-      "@/utils/*": ["./src/helpers/utils/*"],
+      "@components/*": ["./src/components/*"],
+      "@layoutComps/*": ["./src/layouts/components/*"],
+      "@userConfig/*": ["./content/config/*"],
+      "@lib/*": ["./src/helpers/lib/*"],
+      "@utils/*": ["./src/helpers/utils/*"],
       "@/types/*": ["./src/types/*"],
       "@/*": ["./src/*"]
     },

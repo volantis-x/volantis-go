@@ -1,6 +1,7 @@
 ---
-import { TOP_NAV } from "@/config/header.config";
+import { TOP_NAV } from "@userConfig/header.config";
 import { WARNING } from "@/helpers/config/console";
+// import { Icon } from 'astro-icon/components';
 
 const topNavVisibilityCheck =
   TOP_NAV.logo?.visible && TOP_NAV.menu?.visible && TOP_NAV.actions?.visible;
@@ -9,7 +10,9 @@ const topNavVisibilityCheck =
 {
   topNavVisibilityCheck ? (
     <div class="nav-three-columns">
-      <div class="nav-left">left</div>
+      <div class="nav-left">left
+        {/* <Icon name="test" /> */}
+      </div>
 
       <div class="nav-center">center</div>
 

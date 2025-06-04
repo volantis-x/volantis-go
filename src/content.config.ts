@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { CONFIG } from "@/config/site.config";
+import { CONFIG } from "@userConfig/site.config";
 
 const DEFAULT_AUTHOR = CONFIG.DEFAULT_AUTHOR !== undefined && CONFIG.DEFAULT_AUTHOR;
 

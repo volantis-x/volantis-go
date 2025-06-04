@@ -1,6 +1,6 @@
 import type { TopNav } from "@/types/header";
 import { WARNING_PREFIX } from "@/helpers/config/console";
-import { validateTheme } from "@/lib/config";
+import { validateTheme } from "@lib/config";
 import {
   FIXED_TO_STICKY_THEMES,
   SINGLE_COLUMN_UNSUPPORTED_THEMES,
