@@ -1,6 +1,6 @@
 import { getTimeStamp } from "@utils/utils";
 
-export const WARNING_PREFIX = `\u001b[33m${getTimeStamp()} ⚠ WARNING: \u001b[0m`;
+export const WARNING_PREFIX = `\u001b[33m${getTimeStamp()} [ User Config Warning ]: \u001b[0m`;
 
 export const WARNING = {
   TOP_NAV_REQUIRES_TWO_VISIBLE_ELEMENTS:
