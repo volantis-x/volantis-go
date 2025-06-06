@@ -1,6 +1,6 @@
 import type { TopNav } from "@/types/header";
-import { WARNING_PREFIX } from "@/helpers/config/console";
-import { validateTheme } from "@lib/config";
+import { WARNING_PREFIX } from "@helpersConfig/console";
+import { getValidatedThemeName } from "@lib/config";
 import {
   FIXED_TO_STICKY_THEMES,
   SINGLE_COLUMN_UNSUPPORTED_THEMES,
@@ -18,7 +18,7 @@ import {
 export function normalizeContentLayout(
   layout: TopNav["contentLayout"],
 ): "one" | "two" | "three" {
-  const currentTheme = validateTheme();
+  const currentTheme = getValidatedThemeName();
 
   return layout === "one" &&
     SINGLE_COLUMN_UNSUPPORTED_THEMES.includes(currentTheme)
@@ -44,7 +44,7 @@ export function normalizeContentLayout(
 export function normalizeBehavior(
   behavior: TopNav["behavior"],
 ): "fixed" | "static" | "sticky" {
-  const currentTheme = validateTheme();
+  const currentTheme = getValidatedThemeName();
 
   return behavior === "fixed" && FIXED_TO_STICKY_THEMES.includes(currentTheme)
     ? (console.warn(
