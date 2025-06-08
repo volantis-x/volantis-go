@@ -14,7 +14,7 @@
       "@helpers/*": ["./src/helpers/*"],
       "@lib/*": ["./src/helpers/lib/*"],
       "@utils/*": ["./src/helpers/utils/*"],
-      "@helpersConfig/*": ["./src/helpers/config/*"],
+      "@appConfig/*": ["./src/config/*"],
       "@types/*": ["./src/types/*"]
     },
     "plugins": [

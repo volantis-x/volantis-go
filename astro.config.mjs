@@ -1,11 +1,42 @@
 import { defineConfig } from "astro/config";
-import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
-import {
-  UserTheme as rawUserTheme,
-  SITE,
-  BUILD_ASSETS_DIR,
-} from "./content/config/site.config.ts";
+import fs from "node:fs";
+import path from "node:path";
+import { t } from "./src/config/astro.config.messages.mjs";
+import { createJiti } from "jiti";
+const jiti = createJiti(import.meta.url);
 
+// --- 检查 ./content 目录是否存在 ---
+const contentDir = path.resolve(process.cwd(), "content");
+const exampleContentDir = path.resolve(process.cwd(), "example_content");
+const siteConfigPath = path.resolve(contentDir, "config", "site.config.ts");
+const relativeSiteConfigPath = path.relative(process.cwd(), siteConfigPath); // 用于更友好的 console 提示
+
+if (!fs.existsSync(contentDir)) {
+  console.error(t("error_content_dir_not_found"));
+  console.info(t("info_content_dir_separation"));
+  if (fs.existsSync(exampleContentDir)) {
+    console.info(t("info_example_content_exists"));
+    console.info(t("info_example_content_usage"));
+  }
+  console.log(`\n`);
+  process.exit(1);
+} else if (!fs.existsSync(siteConfigPath)) {
+  console.error(t("error_site_config_not_found", relativeSiteConfigPath));
+  console.info(t("info_ensure_site_config_exists"));
+  if (
+    fs.existsSync(path.resolve(exampleContentDir, "config", "site.config.ts"))
+  ) {
+    console.info(t("info_example_site_config_exists"));
+    console.info(t("info_copy_example_site_config"));
+  } else {
+    console.info(t("info_example_site_config_not_found"));
+  }
+  console.log(`\n`);
+  process.exit(1);
+}
+// --- 检查结束 ---
+
+import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import markdoc from "@astrojs/markdoc";
@@ -15,70 +46,94 @@ import icon from "astro-icon";
 // -- Array of all supported theme names. Keep this in sync with SUPPORTED_THEMES in src/types/config.ts --
 const ASTRO_CONFIG_SUPPORTED_THEMES = ["base", "custom"];
 
-// -- 验证主题名的逻辑 --
-// -- Logic for validating the theme name --
-function getValidatedThemeNameInAstroConfig() {
-  const themeToValidate =
-    typeof rawUserTheme === "string" ? rawUserTheme : "base";
-
-  if (!ASTRO_CONFIG_SUPPORTED_THEMES.includes(themeToValidate)) {
-    console.warn(
-      `\u001b[33m [ USER CONFIG WARNING ]: \u001b[0m UserTheme ("${themeToValidate}") in "content/config/site.config.ts" is invalid or not in ASTRO_CONFIG_SUPPORTED_THEMES. Using default theme "base".`,
-    );
-    // 确保 "base" 存在于 ASTRO_CONFIG_SUPPORTED_THEMES 中，或者直接返回 "base"
-    return ASTRO_CONFIG_SUPPORTED_THEMES.includes("base")
-      ? "base"
-      : ASTRO_CONFIG_SUPPORTED_THEMES[0] || "base";
+// 将 defineConfig 的调用放到一个异步函数中
+async function generateAstroConfig() {
+  // --- 使用 jiti 来加载 .ts 文件 ---
+  let userSiteConfigModule;
+  try {
+    userSiteConfigModule = await jiti.import(siteConfigPath);
+  } catch (e) {
+    console.error(t("error_jiti_load_failed_title", relativeSiteConfigPath));
+    console.error(t("error_jiti_load_failed_ensure_file"));
+    console.error(t("error_jiti_load_failed_original_error", e.message));
+    process.exit(1);
   }
-  return themeToValidate;
-}
 
-const ACTIVE_THEME_NAME_FOR_VITE = getValidatedThemeNameInAstroConfig();
+  const {
+    UserTheme: rawUserTheme,
+    SITE,
+    BUILD_ASSETS_DIR,
+  } = userSiteConfigModule;
+  // ------------------------------------
 
-// 判断是否有设置网站地址
-// Determine whether a website address has been set
-const CUSTOM_SITE = SITE !== undefined && SITE !== "http://example.com" && SITE;
-const siteUrl = CUSTOM_SITE || "http://localhost";
+  function getValidatedThemeNameInAstroConfig() {
+    const themeToValidate =
+      typeof rawUserTheme === "string" ? rawUserTheme : "base";
+    if (!ASTRO_CONFIG_SUPPORTED_THEMES.includes(themeToValidate)) {
+      console.warn(
+        t(
+          "warn_invalid_theme",
+          themeToValidate,
+          ASTRO_CONFIG_SUPPORTED_THEMES.join(", "),
+          "base",
+        ),
+      );
+      return ASTRO_CONFIG_SUPPORTED_THEMES.includes("base")
+        ? "base"
+        : ASTRO_CONFIG_SUPPORTED_THEMES[0] || "base";
+    }
+    return themeToValidate;
+  }
+  const ACTIVE_THEME_NAME_FOR_VITE = getValidatedThemeNameInAstroConfig();
 
-const ASSETS_DIR = BUILD_ASSETS_DIR.startsWith("_")
-  ? BUILD_ASSETS_DIR
-  : `_${BUILD_ASSETS_DIR}`;
+  const CUSTOM_SITE =
+    SITE !== undefined && SITE !== "http://example.com" && SITE;
+  const siteUrl = CUSTOM_SITE || "http://localhost";
 
-// https://astro.build/config
-export default defineConfig({
-  site: siteUrl,
-  integrations: [
-    mdx(),
-    sitemap(),
-    markdoc(),
-    icon({
-      iconDir: "content/icons",
-    }),
-  ],
-  vite: {
-    resolve: {
-      alias: {
-        "@": "/src",
-        "@THEME": `/src/themes/${ACTIVE_THEME_NAME_FOR_VITE}`,
-        "@userConfig": "/content/config",
-        "@components": "/src/components",
-        "@layouts": "/src/layouts",
-        "@layoutComps": "/src/layouts/components",
-        "@helpers": "/src/helpers",
-        "@lib": "/src/helpers/lib",
-        "@utils": "/src/helpers/utils",
-        "@helpersConfig": "/src/helpers/config",
-        "@types": "/src/types",
+  const ASSETS_DIR = BUILD_ASSETS_DIR.startsWith("_")
+    ? BUILD_ASSETS_DIR
+    : `_${BUILD_ASSETS_DIR}`;
+
+  console.log(t("debug_active_theme_for_vite", ACTIVE_THEME_NAME_FOR_VITE));
+  console.log(
+    t("debug_theme_resolve_path", `/src/themes/${ACTIVE_THEME_NAME_FOR_VITE}`),
+  );
+
+  return defineConfig({
+    site: siteUrl,
+    integrations: [
+      mdx(),
+      sitemap(),
+      markdoc(),
+      icon({
+        iconDir: "content/icons",
+      }),
+    ],
+    vite: {
+      resolve: {
+        alias: {
+          "@": "/src",
+          "@THEME": `/src/themes/${ACTIVE_THEME_NAME_FOR_VITE}`,
+          "@userConfig": "/content/config",
+          "@components": "/src/components",
+          "@layouts": "/src/layouts",
+          "@layoutComps": "/src/layouts/components",
+          "@helpers": "/src/helpers",
+          "@lib": "/src/helpers/lib",
+          "@utils": "/src/helpers/utils",
+          "@appConfig": "/src/config",
+          "@types": "/src/types",
+        },
       },
     },
-  },
-  // prefetch 开启链接预加载
-  prefetch: true,
-  markdown: {
-    // 在 md 和 mdx 文件中语义化 emoji 图标
-    rehypePlugins: [rehypeAccessibleEmojis],
-  },
-  build: {
-    assets: ASSETS_DIR,
-  },
-});
+    prefetch: true,
+    markdown: {
+      rehypePlugins: [rehypeAccessibleEmojis],
+    },
+    build: {
+      assets: ASSETS_DIR,
+    },
+  });
+}
+
+export default generateAstroConfig();

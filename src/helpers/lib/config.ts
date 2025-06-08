@@ -1,6 +1,6 @@
 import { UserTheme as rawUserTheme } from '@userConfig/site.config';
 import { SUPPORTED_THEMES, type SupportedTheme } from '@/types/config';
-import { WARNING_PREFIX } from "@helpersConfig/console";
+import { WARNING_PREFIX } from "@helpers/config/console";
 
 export function getValidatedThemeName(): SupportedTheme {
   // 确保 rawUserTheme 是 string 类型，如果不是，给予默认值或进一步处理

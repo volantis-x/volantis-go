@@ -1,5 +1,5 @@
 import type { TopNav } from "@/types/header";
-import { WARNING_PREFIX } from "@helpersConfig/console";
+import { WARNING_PREFIX } from "@helpers/config/console";
 import { getValidatedThemeName } from "@lib/config";
 import {
   FIXED_TO_STICKY_THEMES,
