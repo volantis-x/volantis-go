@@ -1,7 +1,12 @@
 import { defineConfig } from "astro/config";
 import fs from "node:fs";
 import path from "node:path";
-import { t } from "./src/config/astro.config.messages.mjs";
+import {
+  logError,
+  logInfo,
+  logWarning,
+  logDebug,
+} from "./src/config/astro.config.messages.mjs";
 import { createJiti } from "jiti";
 const jiti = createJiti(import.meta.url);
 
@@ -12,26 +17,24 @@ const siteConfigPath = path.resolve(contentDir, "config", "site.config.ts");
 const relativeSiteConfigPath = path.relative(process.cwd(), siteConfigPath); // 用于更友好的 console 提示
 
 if (!fs.existsSync(contentDir)) {
-  console.error(t("error_content_dir_not_found"));
-  console.info(t("info_content_dir_separation"));
+  logError("error_content_dir_not_found");
+  logInfo("info_content_dir_separation");
   if (fs.existsSync(exampleContentDir)) {
-    console.info(t("info_example_content_exists"));
-    console.info(t("info_example_content_usage"));
+    logInfo("info_example_content_exists");
+    logInfo("info_example_content_usage");
   }
-  console.log(`\n`);
   process.exit(1);
 } else if (!fs.existsSync(siteConfigPath)) {
-  console.error(t("error_site_config_not_found", relativeSiteConfigPath));
-  console.info(t("info_ensure_site_config_exists"));
+  logError("error_site_config_not_found", relativeSiteConfigPath);
+  logInfo("info_ensure_site_config_exists");
   if (
     fs.existsSync(path.resolve(exampleContentDir, "config", "site.config.ts"))
   ) {
-    console.info(t("info_example_site_config_exists"));
-    console.info(t("info_copy_example_site_config"));
+    logInfo("info_example_site_config_exists");
+    logInfo("info_copy_example_site_config");
   } else {
-    console.info(t("info_example_site_config_not_found"));
+    logInfo("info_example_site_config_not_found");
   }
-  console.log(`\n`);
   process.exit(1);
 }
 // --- 检查结束 ---
@@ -53,9 +56,9 @@ async function generateAstroConfig() {
   try {
     userSiteConfigModule = await jiti.import(siteConfigPath);
   } catch (e) {
-    console.error(t("error_jiti_load_failed_title", relativeSiteConfigPath));
-    console.error(t("error_jiti_load_failed_ensure_file"));
-    console.error(t("error_jiti_load_failed_original_error", e.message));
+    logError("error_jiti_load_failed_title", relativeSiteConfigPath);
+    logError("error_jiti_load_failed_ensure_file");
+    logError("error_jiti_load_failed_original_error", e.message);
     process.exit(1);
   }
 
@@ -70,13 +73,11 @@ async function generateAstroConfig() {
     const themeToValidate =
       typeof rawUserTheme === "string" ? rawUserTheme : "base";
     if (!ASTRO_CONFIG_SUPPORTED_THEMES.includes(themeToValidate)) {
-      console.warn(
-        t(
-          "warn_invalid_theme",
-          themeToValidate,
-          ASTRO_CONFIG_SUPPORTED_THEMES.join(", "),
-          "base",
-        ),
+      logWarning(
+        "warn_invalid_theme",
+        themeToValidate,
+        ASTRO_CONFIG_SUPPORTED_THEMES.join(", "),
+        "base",
       );
       return ASTRO_CONFIG_SUPPORTED_THEMES.includes("base")
         ? "base"
@@ -94,9 +95,10 @@ async function generateAstroConfig() {
     ? BUILD_ASSETS_DIR
     : `_${BUILD_ASSETS_DIR}`;
 
-  console.log(t("debug_active_theme_for_vite", ACTIVE_THEME_NAME_FOR_VITE));
-  console.log(
-    t("debug_theme_resolve_path", `/src/themes/${ACTIVE_THEME_NAME_FOR_VITE}`),
+  logDebug("debug_active_theme_for_vite", ACTIVE_THEME_NAME_FOR_VITE);
+  logDebug(
+    "debug_theme_resolve_path",
+    `/src/themes/${ACTIVE_THEME_NAME_FOR_VITE}`,
   );
 
   return defineConfig({
