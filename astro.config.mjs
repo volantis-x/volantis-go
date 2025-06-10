@@ -123,7 +123,7 @@ async function generateAstroConfig() {
           "@helpers": "/src/helpers",
           "@lib": "/src/helpers/lib",
           "@utils": "/src/helpers/utils",
-          "@appConfig": "/src/config",
+          "@config": "/src/config",
           "@types": "/src/types",
         },
       },
