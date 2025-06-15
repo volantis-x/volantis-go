@@ -1,4 +1,4 @@
-import { ACTIVE_THEME_NAME } from '@/config/app';
+import { ACTIVE_THEME_NAME } from '@lib/theme';
 
 export const messages = {
   en: {
