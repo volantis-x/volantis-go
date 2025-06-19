@@ -1,6 +1,6 @@
 ---
 import { TOP_NAV } from "@userConfig/header.config";
-import { WARNING } from "@/helpers/config/console";
+import { Logger } from "@lib/logger";
 
 const topNavVisibilityCheck =
   [
@@ -19,7 +19,7 @@ const topNavVisibilityCheck =
     </div>
   ) : (
     <>
-      {console.warn(WARNING.TOP_NAV_REQUIRES_TWO_VISIBLE_ELEMENTS)}
+      {Logger.warn("COMPONENT", "warn_topnav_visibility_insufficient_for_two_columns")}
       <span>WARNING-CN: 请查看 console 的警告内容。</span>
       <span>WARNING-EN: Please check the console for warnings.</span>
     </>

@@ -1,6 +1,6 @@
 ---
 import { TOP_NAV } from "@userConfig/header.config";
-import { WARNING } from "@/helpers/config/console";
+import { Logger } from "@lib/logger";
 // import { Icon } from 'astro-icon/components';
 
 const topNavVisibilityCheck =
@@ -20,7 +20,7 @@ const topNavVisibilityCheck =
     </div>
   ) : (
     <>
-      {console.warn(WARNING.TOP_NAV_REQUIRES_THREE_VISIBLE_ELEMENTS)}
+      {Logger.warn("COMPONENT", "warn_topnav_visibility_insufficient_for_three_columns")}
       <span>WARNING-CN: 请查看 console 的警告内容。</span>
       <span>WARNING-EN: Please check the console for warnings.</span>
     </>

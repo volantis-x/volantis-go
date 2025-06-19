@@ -1,8 +1,8 @@
 export const messages = {
   en: {
     // --- TopNav Component Warnings ---
-    warn_topnav_requires_two_elements: `Component 'TopNav': The current theme requires at least two visible elements (logo, menu, or actions). Please check your settings.`,
-    warn_topnav_requires_three_elements: `Component 'TopNav': This layout requires all three elements (logo, menu, actions) to be visible.`,
+    warn_topnav_visibility_insufficient_for_two_columns: `Component 'TopNav': This layout requires at least two visible elements (logo, menu, or actions). Please review the 'visible' settings in your "header.config.ts" under "TOP_NAV" to ensure at least two are true.`,
+    warn_topnav_visibility_insufficient_for_three_columns: `Component 'TopNav': This layout is configured for three columns and requires all 'logo', 'menu', and 'actions' to be visible. Please set their 'visible' properties to true in "header.config.ts" under "TOP_NAV".`,
 
     // --- TopNav 布局和行为警告 ---
     warn_topnav_single_column_unsupported: (themeNameFromArg: string) =>
@@ -15,8 +15,8 @@ export const messages = {
   },
   cn: {
     // --- TopNav Component Warnings ---
-    warn_topnav_requires_two_elements: `组件 'TopNav': 当前主题要求至少有两个可见元素 (logo, menu, actions)。请检查您的配置。`,
-    warn_topnav_requires_three_elements: `组件 'TopNav': 此布局要求所有三个元素 (logo, menu, actions) 都可见。`,
+    warn_topnav_visibility_insufficient_for_two_columns: `组件 'TopNav': 当前布局至少需要两个可见元素 (logo, menu, 或 actions)。请检查您在 "header.config.ts" 文件 "TOP_NAV" 配置项下的 'visible' 设置，确保至少有两个为 'true'。`,
+    warn_topnav_visibility_insufficient_for_three_columns: `组件 'TopNav': 当前布局配置为三列样式，需要 'logo'、'menu' 和 'actions' 全部可见。请在 "header.config.ts" 文件 "TOP_NAV" 配置项下将它们的 'visible' 属性都设置为 'true'。`,
 
     // --- TopNav 布局和行为警告 ---
     warn_topnav_single_column_unsupported: (themeNameFromArg: string) =>
