@@ -22,5 +22,5 @@ export type I18n = {
 
 // 请同步 astro.conifg.mjs 里的 ASTRO_CONFIG_SUPPORTED_THEMES 值
 // Keep this in sync with the ASTRO_CONFIG_SUPPORTED_THEMES value in astro.config.mjs
-export const SUPPORTED_THEMES = ["base", "custom"] as const;
+export const SUPPORTED_THEMES = ["base"] as const;
 export type SupportedTheme = (typeof SUPPORTED_THEMES)[number];

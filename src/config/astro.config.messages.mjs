@@ -56,7 +56,7 @@ const messages = {
 
     // --- Astro Config Debug Info ---
     debug_active_theme_for_vite: (themeName) =>
-      `用于 Vite 的激活主题名: ${themeName}`,
+      `用于 Vite 激活的主题名: ${themeName}`,
     debug_theme_resolve_path: (path) => `@THEME 将解析到: ${path}`,
   },
 };

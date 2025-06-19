@@ -1,6 +1,6 @@
 ---
 import { CONFIG } from "@userConfig/site.config";
-import { THEME } from "@helpers/config/themeDefinitions";
+import { ACTIVE_THEME_NAME } from "@lib/theme";
 import Head from "@/layouts/Head.astro";
 import type { Frontmatter } from "@/types/page";
 import BaseLayout from "@/layouts/partials/base/Layout.astro";
@@ -37,7 +37,7 @@ const dir = CONFIG.DIR === "rtl" ? "rtl" : "ltr";
           <slot />
         </BaseLayout>
       ),
-    }[THEME] || (
+    }[ACTIVE_THEME_NAME] || (
       <BaseLayout>
         <slot />
       </BaseLayout>

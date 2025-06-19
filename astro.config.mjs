@@ -47,7 +47,7 @@ import icon from "astro-icon";
 
 // -- 声明所有的主题名称数组，请同步 src/type/config.ts 里的 SUPPORTED_THEMES 值 --
 // -- Array of all supported theme names. Keep this in sync with SUPPORTED_THEMES in src/types/config.ts --
-const ASTRO_CONFIG_SUPPORTED_THEMES = ["base", "custom"];
+const ASTRO_CONFIG_SUPPORTED_THEMES = ["base"];
 
 // 将 defineConfig 的调用放到一个异步函数中
 async function generateAstroConfig() {

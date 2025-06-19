@@ -1,7 +1,7 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import { CONFIG } from "@userConfig/site.config";
-import { THEME } from "@helpers/config/themeDefinitions";
+import { ACTIVE_THEME_NAME } from "@lib/theme";
 import type { Frontmatter } from "@/types/page";
 import HeadContent from "@/layouts/partials/HeadContent.astro";
 import BaseStyle from "@/layouts/partials/base/Style.astro";
@@ -26,7 +26,7 @@ const { title, description, author, image, cover, pageType }: Frontmatter =
     // Load stylesheets for the current theme, defaulting to the "base" theme.
     {
       base: <BaseStyle />,
-    }[THEME] || <BaseStyle />
+    }[ACTIVE_THEME_NAME] || <BaseStyle />
   }
 
   {
@@ -34,7 +34,7 @@ const { title, description, author, image, cover, pageType }: Frontmatter =
     // Load scripts for the current theme, defaulting to the "base" theme.
     {
       base: <BaseScript />,
-    }[THEME] || <BaseScript />
+    }[ACTIVE_THEME_NAME] || <BaseScript />
   }
 
   {

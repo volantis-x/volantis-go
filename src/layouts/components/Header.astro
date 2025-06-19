@@ -1,5 +1,5 @@
 ---
-import { THEME } from "@helpers/config/themeDefinitions";
+import { ACTIVE_THEME_NAME } from "@lib/theme";
 import { TOP_MARQUEE } from "@userConfig/header.config";
 import BaseTopMarquee from "@layoutComps/header/base/TopMarquee.astro";
 import BaseTopNav from "@layoutComps/header/base/TopNav.astro";
@@ -11,7 +11,7 @@ import BaseHeaderContent from "@layoutComps/header/base/HeaderContent.astro";
     <>
       {{
         base: <BaseTopMarquee />,
-      }[THEME] || <BaseTopMarquee />}
+      }[ACTIVE_THEME_NAME] || <BaseTopMarquee />}
     </>
   )
 }
@@ -24,7 +24,7 @@ import BaseHeaderContent from "@layoutComps/header/base/HeaderContent.astro";
         <BaseHeaderContent />
       </>
     ),
-  }[THEME] || (
+  }[ACTIVE_THEME_NAME] || (
     <>
       <BaseTopNav />
       <BaseHeaderContent />

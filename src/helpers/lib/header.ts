@@ -1,10 +1,11 @@
 import type { TopNav } from "@/types/header";
-import { WARNING_PREFIX } from "@helpers/config/console";
-import { getValidatedThemeName } from "@lib/config";
+// import { WARNING_PREFIX } from "@helpers/config/console";
+import { ACTIVE_THEME_NAME } from "@lib/theme";
 import {
   FIXED_TO_STICKY_THEMES,
   SINGLE_COLUMN_UNSUPPORTED_THEMES,
-} from "@/helpers/config/themeDefinitions";
+} from "@/config/themes.config";
+import { Logger } from "@/helpers/lib/logger";
 
 /**
  * @en Normalize user input contentLayout value to "one" "two" "three".
@@ -18,15 +19,11 @@ import {
 export function normalizeContentLayout(
   layout: TopNav["contentLayout"],
 ): "one" | "two" | "three" {
-  const currentTheme = getValidatedThemeName();
+  const currentTheme = ACTIVE_THEME_NAME;
 
   return layout === "one" &&
     SINGLE_COLUMN_UNSUPPORTED_THEMES.includes(currentTheme)
-    ? (console.warn(
-        `${WARNING_PREFIX} "header.config.ts" >> "TOP_NAV" >> "contentLayout" 配置项无效："${layout}"，将使用默认值 "twoColumns" \r\n` +
-          `${WARNING_PREFIX} "contentLayout" in "TOP_NAV" (header.config.ts) is invalid: "${layout}". Defaulting to "twoColumns".`,
-      ),
-      "two")
+    ? (Logger.warn("COMPONENT", "warn_topnav_single_column_unsupported"), "two")
     : layout;
 }
 
@@ -44,13 +41,10 @@ export function normalizeContentLayout(
 export function normalizeBehavior(
   behavior: TopNav["behavior"],
 ): "fixed" | "static" | "sticky" {
-  const currentTheme = getValidatedThemeName();
+  const currentTheme = ACTIVE_THEME_NAME;
 
   return behavior === "fixed" && FIXED_TO_STICKY_THEMES.includes(currentTheme)
-    ? (console.warn(
-        `${WARNING_PREFIX} 当前主题 "${currentTheme}" 不支持 "header.config.ts >> TOP_NAV >> behavior >> fixed" 行为，将使用 "sticky" 行为代替。\r\n` +
-          `${WARNING_PREFIX} The current theme "${currentTheme}" does not support "header.config.ts >> TOP_NAV >> behavior >> fixed" behavior. Using "sticky" behavior instead.`,
-      ),
+    ? (Logger.warn("COMPONENT", "warn_topnav_fixed_behavior_unsupported"),
       "sticky")
     : behavior;
 }
