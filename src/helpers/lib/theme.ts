@@ -5,24 +5,39 @@ import { Logger } from "@/helpers/lib/logger";
 let validatedThemeName: SupportedTheme | null = null;
 let validationWarningHasBeenShown = false;
 
+/**
+ * @zh 验证用户主题并返回一个有效的、经过缓存的主题名称。只在首次调用时执行验证和警告。
+ * @en Validates the user theme and returns a valid, cached theme name. Validation and warning only occur on the first call.
+ * @returns {SupportedTheme}
+ */
 function getValidatedThemeName(): SupportedTheme {
-  if (validatedThemeName !== null) return validatedThemeName;
-  const themeToValidate =
-    typeof rawUserTheme === "string" ? rawUserTheme : "base";
-  if (!SUPPORTED_THEMES.includes(themeToValidate as any)) {
+  if (validatedThemeName !== null) {
+    return validatedThemeName;
+  }
+
+  const defaultTheme: SupportedTheme = "base";
+
+  const userConfiguredTheme =
+    typeof rawUserTheme === "string" && rawUserTheme.trim() !== ""
+      ? rawUserTheme.trim()
+      : defaultTheme;
+
+  if (!(SUPPORTED_THEMES as readonly string[]).includes(userConfiguredTheme)) {
     if (!validationWarningHasBeenShown) {
       Logger.warn(
         "CONFIG",
         "warn_invalid_user_theme",
-        themeToValidate,
+        userConfiguredTheme,
         SUPPORTED_THEMES.join(", "),
+        defaultTheme,
       );
       validationWarningHasBeenShown = true;
     }
-    validatedThemeName = "base";
+    validatedThemeName = defaultTheme;
     return validatedThemeName;
   }
-  validatedThemeName = themeToValidate as SupportedTheme;
+
+  validatedThemeName = userConfiguredTheme as SupportedTheme;
   return validatedThemeName;
 }
 
