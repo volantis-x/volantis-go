@@ -19,6 +19,7 @@
     "@astrojs/ts-plugin": "^1.10.4",
     "astro": "^5.9.3",
     "astro-icon": "^1.1.5",
+    "comment-parser": "^1.4.1",
     "rehype-accessible-emojis": "^0.3.2"
   },
   "devDependencies": {
