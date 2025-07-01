@@ -7,6 +7,7 @@ import {
   logWarning,
   logDebug,
 } from "./src/config/astro.config.messages.mjs";
+// import remarkCustomBlocks from "./src/helpers/lib/remark-custom-blocks.mjs";
 import { createJiti } from "jiti";
 const jiti = createJiti(import.meta.url);
 
@@ -93,7 +94,7 @@ async function generateAstroConfig() {
 
   const ASSETS_DIR = BUILD_ASSETS_DIR.startsWith("_")
     ? BUILD_ASSETS_DIR
-    : `_${BUILD_ASSETS_DIR}`;
+    : `_${BUILD_ASSETS_DIR || "assets"}`; // 确保 BUILD_ASSETS_DIR 存在
 
   logDebug("debug_active_theme_for_vite", ACTIVE_THEME_NAME_FOR_VITE);
   logDebug(
@@ -104,7 +105,11 @@ async function generateAstroConfig() {
   return defineConfig({
     site: siteUrl,
     integrations: [
-      mdx(),
+      mdx({
+        components: {
+          // Marquee: "./src/components/contentblocks/marquee/Marquee.astro",
+        },
+      }),
       sitemap(),
       markdoc(),
       icon({
@@ -130,6 +135,7 @@ async function generateAstroConfig() {
     },
     prefetch: true,
     markdown: {
+      // remarkPlugins: [remarkCustomBlocks],
       rehypePlugins: [rehypeAccessibleEmojis],
     },
     build: {
