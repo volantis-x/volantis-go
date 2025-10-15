@@ -28,7 +28,7 @@ function parseProps(propsString) {
 }
 
 export default function remarkCustomBlocks() {
-  return (tree, file) => {
+  return (tree, _file) => {
     // 我们将遍历所有 'text' 节点来查找我们的标记
     // 这是一种方法，另一种是使用 micromark 扩展来定义新的语法
     // 为了简单起见，我们先用 text 节点查找和替换
