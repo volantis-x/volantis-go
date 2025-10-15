@@ -8,6 +8,7 @@ import {
   logDebug,
 } from "./src/config/astro.config.messages.mjs";
 // import remarkCustomBlocks from "./src/helpers/lib/remark-custom-blocks.mjs";
+
 import { createJiti } from "jiti";
 const jiti = createJiti(import.meta.url);
 
@@ -40,6 +41,7 @@ if (!fs.existsSync(contentDir)) {
 }
 // --- 检查结束 ---
 
+import configInitializer from "./src/core/bootstrap/integration"; // 引入配置初始化
 import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
@@ -68,7 +70,7 @@ async function generateAstroConfig() {
     SITE,
     BUILD_ASSETS_DIR,
   } = userSiteConfigModule;
-  // ------------------------------------
+  // --- 完成 jiti 来加载 .ts 文件 ---
 
   function getValidatedThemeNameInAstroConfig() {
     const themeToValidate =
@@ -105,6 +107,9 @@ async function generateAstroConfig() {
   return defineConfig({
     site: siteUrl,
     integrations: [
+      // --- 将我们的自定义集成放在最前面！---
+      // 这样可以确保在其他集成（如 mdx, sitemap）运行之前，我们的配置已经初始化完毕。
+      configInitializer(),
       mdx({
         components: {
           // Marquee: "./src/components/contentblocks/marquee/Marquee.astro",
