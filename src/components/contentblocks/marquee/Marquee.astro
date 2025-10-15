@@ -1,0 +1,60 @@
+---
+// src/components/ContentBlocks/Marquee/Marquee.astro
+// import { ACTIVE_THEME_NAME } from "@/helpers/lib/theme";
+// getProcessedConfig 获取的是 "全局组件类型默认配置"
+// getNamedInstanceConfig 是一个新的函数，从存储中获取特定ID的实例配置
+import {
+  getProcessedConfig,
+  getNamedInstanceConfig,
+} from "@/core/processedConfigs";
+import type { MarqueeProps } from "./marquee.props";
+import { defaultMarqueeProps } from "./marquee.props"; // 基础组件代码里的默认
+import MarqueeRenderer from "./MarqueeRenderer.astro";
+// ... (主题特定实现加载逻辑，如果需要) ...
+
+export interface Props extends Partial<MarqueeProps> {
+  /**
+   * (可选) 如果你想加载一个在用户配置中预定义的命名实例。
+   */
+  instanceId?: string;
+}
+
+const { instanceId, ...instancePropsFromCaller } = Astro.props;
+
+// 1. 获取全局组件类型默认配置 (已经过 用户全局 > 主题全局 > 组件代码默认 处理)
+const globalDefaultConfig =
+  getProcessedConfig("marquee") || defaultMarqueeProps; // 回退到代码默认
+
+// 2. 获取命名实例配置 (如果 instanceId 提供了)
+let namedInstanceBaseConfig: Partial<MarqueeProps> = {};
+if (instanceId) {
+  const fetchedInstanceConfig = getNamedInstanceConfig("marquee", instanceId); // 新函数
+  if (fetchedInstanceConfig) {
+    namedInstanceBaseConfig = fetchedInstanceConfig;
+    // Logger.info('COMPONENT', 'info_marquee_using_named_instance', instanceId);
+  } else {
+    // Logger.warn('COMPONENT', 'warn_marquee_named_instance_not_found', instanceId);
+  }
+} else {
+  // 如果没有 instanceId，可以尝试加载一个名为 "default" 的命名实例
+  const defaultInstanceConf = getNamedInstanceConfig("marquee", "default");
+  if (defaultInstanceConf) {
+    namedInstanceBaseConfig = defaultInstanceConf;
+  }
+}
+
+// 3. 合并配置的顺序：
+//    a. 全局组件类型默认配置 (作为基础)
+//    b. 命名实例配置 (覆盖 a)
+//    c. 调用时直接传入的 props (覆盖 a 和 b)
+const finalProps: MarqueeProps = {
+  ...globalDefaultConfig, // 基础
+  ...namedInstanceBaseConfig, // 命名实例覆盖
+  ...instancePropsFromCaller, // 调用时 props 最高优先级
+};
+
+const ComponentToRender = /* ... 选择渲染器 ... */ MarqueeRenderer;
+const shouldRender = finalProps.enable;
+---
+
+{shouldRender && <ComponentToRender {...finalProps} />}
