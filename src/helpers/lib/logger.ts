@@ -1,7 +1,7 @@
 import { LOG_LEVELS, LOG_DOMAINS, RESET_COLOR } from "./logger.meta";
-import { messages as appMessages } from "@config/messages/app.messages";
-import { messages as componentMessages } from "@config/messages/component.messages";
-import { messages as configMessages } from "@config/messages/config.messages";
+import { messages as appMessages } from "../../config/messages/app.messages";
+import { messages as componentMessages } from "../../config/messages/component.messages";
+import { messages as configMessages } from "../../config/messages/config.messages";
 
 // --- 语言检测 ---
 // 显式定义我们支持的语言代码，并确保 'en' 在其中
