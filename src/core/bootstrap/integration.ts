@@ -16,14 +16,14 @@ export default function createConfigInitializerIntegration(): AstroIntegration {
       }) => {
         const integrationLogger = logger.fork(INTEGRATION_NAME);
 
-        integrationLogger.info("---->> Running initializers... <<----");
+        integrationLogger.info("\u001b[36m---->> Running initializers... <<----");
 
         try {
           await runInitializers();
-          integrationLogger.info("---->> Initializers successfully! <<----");
+          integrationLogger.info("\u001b[32m---->> Initializers successfully! <<----");
         } catch (error: unknown) {
           // 明确 error 是 unknown 类型
-          integrationLogger.error("---->> Initializers failed! <<----");
+          integrationLogger.error("\u001b[31m---->> Initializers failed! <<----");
 
           if (error instanceof Error) {
             // 如果 error 是一个 Error 对象实例，我们可以安全地访问 .stack 和 .message
