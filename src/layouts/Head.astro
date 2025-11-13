@@ -1,11 +1,10 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import { CONFIG } from "@userConfig/site.config";
-import { ACTIVE_THEME_NAME } from "@lib/theme";
 import type { Frontmatter } from "@/types/page";
 import HeadContent from "@/layouts/partials/HeadContent.astro";
-import BaseStyle from "@/layouts/partials/base/Style.astro";
-import BaseScript from "@/layouts/partials/base/Script.astro";
+import Style from "@THEME/Style.astro";
+import HeadScript from "@THEME/HeadScript.astro";
 
 const { title, description, author, image, cover, pageType }: Frontmatter =
   Astro.props;
@@ -21,21 +20,8 @@ const { title, description, author, image, cover, pageType }: Frontmatter =
     pageType={pageType}
   />
 
-  {
-    // 加载当前主题的样式表，默认使用 base 主题。
-    // Load stylesheets for the current theme, defaulting to the "base" theme.
-    {
-      base: <BaseStyle />,
-    }[ACTIVE_THEME_NAME] || <BaseStyle />
-  }
-
-  {
-    // 加载当前主题的脚本，默认使用 base 主题。
-    // Load scripts for the current theme, defaulting to the "base" theme.
-    {
-      base: <BaseScript />,
-    }[ACTIVE_THEME_NAME] || <BaseScript />
-  }
+  <Style />
+  <HeadScript />
 
   {
     // 是否启用视图过渡动画
