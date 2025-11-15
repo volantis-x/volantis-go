@@ -20,12 +20,12 @@ const { title, description, author, image, cover, pageType }: Frontmatter =
     pageType={pageType}
   />
 
-  <Style />
-  <HeadScript />
-
   {
     // 是否启用视图过渡动画
     // Use view transitions
     CONFIG?.VIEW_TRANSITIONS && <ClientRouter />
   }
+
+  <Style />
+  <HeadScript />
 </head>
