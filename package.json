@@ -17,14 +17,14 @@
     "@astrojs/mdx": "^4.3.10",
     "@astrojs/sitemap": "^3.6.0",
     "@astrojs/ts-plugin": "^1.10.5",
-    "astro": "^5.15.4",
+    "astro": "^5.15.7",
     "astro-icon": "^1.1.5",
     "comment-parser": "^1.4.1",
     "rehype-accessible-emojis": "^0.3.2",
     "sharp": "^0.34.5"
   },
   "devDependencies": {
-    "@typescript-eslint/parser": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.4",
     "eslint": "^9.39.1",
     "eslint-plugin-astro": "^1.5.0",
     "jiti": "^2.6.1"
