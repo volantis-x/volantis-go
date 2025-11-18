@@ -1,7 +1,10 @@
 import zh_CN from "./zh_CN";
 import en_US from "./en_US";
 
-export const cliMessages: Record<string, Record<string, string | ((arg?: any) => string)>> = {
+export const cliMessages: Record<
+  string,
+  Record<string, string | ((arg?: any) => string)>
+> = {
   zh_CN,
   en_US,
 };
@@ -12,7 +15,9 @@ const LOG_LEVELS = {
   INFO: { icon: "ℹ️ ", color: "\u001b[34m" }, // Blue
   SUCCESS: { icon: "✅", color: "\u001b[32m" }, // Green
   DEBUG: { icon: "⚙️", color: "\u001b[36m" }, // Cyan
-  VOLANTIS: { icon: "🚀", color: '\u001b[35m' },
+  VOLANTIS: { icon: "🚀", color: "\u001b[35m" },
+  SAY: { icon: "📣", color: "\u001b[0m" },
+  LOG: { icon: "📋", color: "\u001b[0m" },
 } as const;
 
 // 颜色重置代码
@@ -28,11 +33,14 @@ const RESET_COLOR = "\u001b[0m";
 //   BUILD: { icon: "🏗️", label: "Build" },
 // } as const;
 
-function detectCliLanguage(supported: string[], fallback: string = "en_US"): string {
+function detectCliLanguage(
+  supported: string[],
+  fallback: string = "en_US"
+): string {
   const envLang = process.env.LANG;
   if (!envLang) return fallback;
 
-  const langCodePart = envLang.split('.')[0];
+  const langCodePart = envLang.split(".")[0];
   const parts = langCodePart.split(/[-_]/);
 
   let langKey = "";
@@ -42,9 +50,7 @@ function detectCliLanguage(supported: string[], fallback: string = "en_US"): str
     langKey = langCodePart.toLowerCase();
   }
 
-  // 优先精确匹配
   if (supported.includes(langKey)) return langKey;
-  // 支持只有语言代码的情况（如 fr）
   if (supported.includes(parts[0].toLowerCase())) return parts[0].toLowerCase();
 
   return fallback;
@@ -65,23 +71,25 @@ function createLogger() {
   function format(level: keyof typeof LOG_LEVELS, msg?: string): string {
     const meta = LOG_LEVELS[level];
 
-    const capitalizedLevel = level.charAt(0).toUpperCase() + level.slice(1).toLowerCase();
+    const capitalizedLevel =
+      level.charAt(0).toUpperCase() + level.slice(1).toLowerCase();
     const totalPadding = 10 - capitalizedLevel.length;
     const leftPadding = Math.floor(totalPadding / 2);
 
     const paddedLevel = capitalizedLevel
-    .padStart(capitalizedLevel.length + leftPadding, ' ')
-    .padEnd(10, ' ');
+      .padStart(capitalizedLevel.length + leftPadding, " ")
+      .padEnd(10, " ");
 
     const formattedLevel = `[${paddedLevel}]`;
 
     // return `${meta.icon}  ${meta.color}${msg}${RESET_COLOR}`;
-    return `${meta.icon} ${meta.color}${formattedLevel} ${msg || ''}${RESET_COLOR}`;
+    return `${meta.icon} ${meta.color}${formattedLevel} ${
+      msg || ""
+    }${RESET_COLOR}`;
   }
 
-  // 主函数调用
   const logger = function (...args: any[]) {
-    console.log(format("VOLANTIS",...args));
+    console.log(format("VOLANTIS", ...args));
   } as any;
 
   logger.info = (key: string, arg?: any) => {
@@ -101,11 +109,11 @@ function createLogger() {
       console.log(format("DEBUG", translate(key, arg)));
     }
   };
-  logger.say = (key: string, arg?: any) => {
-    console.log(translate(key, arg));
+  logger.say = (...args: any[]) => {
+    console.log(format("SAY", ...args));
   };
   logger.log = (...args: any[]) => {
-    console.log(format("VOLANTIS",...args));
+    console.log(format("LOG", ...args));
   };
 
   return logger;
