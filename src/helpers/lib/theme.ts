@@ -1,6 +1,6 @@
-import { UserTheme as rawUserTheme } from "@userConfig/site.config";
-import { SUPPORTED_THEMES, type SupportedTheme } from "@/types/config";
-import { Logger } from "@/helpers/lib/logger";
+import { UserTheme as rawUserTheme } from "../../../content/config/site.config";
+import { SUPPORTED_THEMES, type SupportedTheme } from "../../types/config";
+import { Logger } from "../../helpers/lib/logger";
 
 let validatedThemeName: SupportedTheme | null = null;
 let validationWarningHasBeenShown = false;
