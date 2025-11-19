@@ -6,33 +6,34 @@ import fs from "node:fs";
 import path from "node:path";
 import icon from "astro-icon";
 import configInitializer from "./src/core/bootstrap/integration";
-import { logError, logInfo } from "./src/config/astro.config.messages.mjs";
 import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
+import { Logger } from "./src/core/logger";
 // import remarkCustomBlocks from "./src/helpers/lib/remark-custom-blocks.mjs";
 
 const contentDir = path.resolve(process.cwd(), "content");
 const exampleContentDir = path.resolve(process.cwd(), "example_content");
 const siteConfigPath = path.resolve(contentDir, "config", "site.config.ts");
-const relativeSiteConfigPath = path.relative(process.cwd(), siteConfigPath);
+// const relativeSiteConfigPath = path.relative(process.cwd(), siteConfigPath);
+const relativeSiteConfigPath = "./content/config/site.config.ts";
 
 if (!fs.existsSync(contentDir)) {
-  logError("error_content_dir_not_found");
-  logInfo("info_content_dir_separation");
+  Logger.error("Astro_Config_content_dir_not_found_error");
+  Logger.info("Astro_Config_content_dir_separation");
   if (fs.existsSync(exampleContentDir)) {
-    logInfo("info_example_content_exists");
-    logInfo("info_example_content_usage");
+    Logger.info("Astro_Config_example_content_exists");
+    Logger.info("Astro_Config_example_content_usage");
   }
   process.exit(1);
 } else if (!fs.existsSync(siteConfigPath)) {
-  logError("error_site_config_not_found", relativeSiteConfigPath);
-  logInfo("info_ensure_site_config_exists");
+  Logger.error("Astro_Config_site_config_not_found_error", relativeSiteConfigPath);
+  Logger.info("Astro_Config_ensure_site_config_exists");
   if (
     fs.existsSync(path.resolve(exampleContentDir, "config", "site.config.ts"))
   ) {
-    logInfo("info_example_site_config_exists");
-    logInfo("info_copy_example_site_config");
+    Logger.info("Astro_Config_example_site_config_exists");
+    Logger.info("Astro_Config_copy_example_site_config");
   } else {
-    logInfo("info_example_site_config_not_found");
+    Logger.info("Astro_Config_example_site_config_not_found");
   }
   process.exit(1);
 }
@@ -47,16 +48,13 @@ async function generateAstroConfig() {
     );
     themeModule = await import(/* @vite-ignore */ "./src/helpers/lib/theme");
   } catch (e: any) {
-    logError("error_jiti_load_failed_title", relativeSiteConfigPath);
-    logError("error_jiti_load_failed_ensure_file");
-    logError("error_jiti_load_failed_original_error", e.message);
+    Logger.error("Astro_Config_load_failed_title_error", relativeSiteConfigPath);
+    Logger.error("Astro_Config_load_failed_ensure_file_error");
+    Logger.error("Astro_Config_load_failed_original_error", e.message);
     process.exit(1);
   }
 
-  const {
-    SITE,
-    BUILD_ASSETS_DIR,
-  } = userSiteConfigModule;
+  const { SITE, BUILD_ASSETS_DIR } = userSiteConfigModule;
 
   const { ACTIVE_THEME_NAME } = themeModule;
 
