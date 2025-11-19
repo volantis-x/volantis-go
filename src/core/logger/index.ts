@@ -17,21 +17,10 @@ const LOG_LEVELS = {
   DEBUG: { icon: "⚙️", color: "\u001b[36m" }, // Cyan
   VOLANTIS: { icon: "🚀", color: "\u001b[35m" },
   SAY: { icon: "📣", color: "\u001b[0m" },
-  LOG: { icon: "📋", color: "\u001b[0m" },
 } as const;
 
 // 颜色重置代码
 const RESET_COLOR = "\u001b[0m";
-
-// 日志领域的元数据
-// const LOG_DOMAINS = {
-//   APP: { icon: "🚀", label: "App" },
-//   THEME: { icon: "🎨", label: "Theme" },
-//   CONFIG: { icon: "🔧", label: "Config" },
-//   COMPONENT: { icon: "📦", label: "Component" },
-//   API: { icon: "📡", label: "API" },
-//   BUILD: { icon: "🏗️", label: "Build" },
-// } as const;
 
 function detectCliLanguage(
   supported: string[],
@@ -82,7 +71,6 @@ function createLogger() {
 
     const formattedLevel = `[${paddedLevel}]`;
 
-    // return `${meta.icon}  ${meta.color}${msg}${RESET_COLOR}`;
     return `${meta.icon} ${meta.color}${formattedLevel} ${
       msg || ""
     }${RESET_COLOR}`;
@@ -113,7 +101,7 @@ function createLogger() {
     console.log(format("SAY", ...args));
   };
   logger.log = (...args: any[]) => {
-    console.log(format("LOG", ...args));
+    console.log(...args);
   };
 
   return logger;
