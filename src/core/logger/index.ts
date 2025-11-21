@@ -11,7 +11,7 @@ export const cliMessages: Record<
 
 const LOG_LEVELS = {
   ERROR: { icon: "💥", color: "\u001b[31m" }, // Red
-  WARNING: { icon: "⚠️", color: "\u001b[33m" }, // Yellow
+  WARNING: { icon: "⚠️ ", color: "\u001b[33m" }, // Yellow
   INFO: { icon: "ℹ️ ", color: "\u001b[34m" }, // Blue
   SUCCESS: { icon: "✅", color: "\u001b[32m" }, // Green
   DEBUG: { icon: "⚙️", color: "\u001b[36m" }, // Cyan

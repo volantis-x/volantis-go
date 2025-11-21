@@ -15,6 +15,17 @@ export const cliMessages: Record<string, string | ((key: any) => string)> = {
     `Failed to dynamically import "${filePath}" with TypeScript.`,
   Astro_Config_load_failed_ensure_file_error: `   ⤷ Please ensure the file exists and is valid TypeScript/JavaScript.`,
   Astro_Config_load_failed_original_error: (e) => `   ⤷ Original error: ${e}`,
+
+  // --- Bootstrap initializer ---
+  Bootstrap_initializer_running: `Running initializers...`,
+  Bootstrap_initializer_successfully: `Initializers successfully!`,
+  Bootstrap_initializer_error: `Initializers failed!!!`,
+  Bootstrap_initializer_config_not_found: (userPath) =>
+    `Config [${userPath}] not found, using defaults.`,
+  Bootstrap_initializer_missing_config_keys: (t) =>
+    `Configuring undefined properties will use default values: ${t}`,
+  Bootstrap_initializer_missing_component_config_keys: (t) =>
+    `Component undefined properties will use default values: ${t}`,
 };
 
 export default cliMessages;

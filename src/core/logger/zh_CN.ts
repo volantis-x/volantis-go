@@ -15,6 +15,17 @@ export const cliMessages: Record<string, string | ((key: any) => string)> = {
     `TypeScript 动态导入 "${filePath}" 失败。`,
   Astro_Config_load_failed_ensure_file_error: `   ⤷ 请确保文件存在且是有效的 TypeScript/JavaScript。`,
   Astro_Config_load_failed_original_error: (e) => `   ⤷ 原始错误: ${e}`,
+
+  // --- Bootstrap initializer ---
+  Bootstrap_initializer_running: `启动项目初始化...`,
+  Bootstrap_initializer_successfully: `项目初始化完成！`,
+  Bootstrap_initializer_error: `项目初始化失败！！！`,
+  Bootstrap_initializer_config_not_found: (userPath) =>
+    `用户配置文件：${userPath} 加载出错，激活默认配置.`,
+  Bootstrap_initializer_missing_config_keys: (t) =>
+    `配置未定义的属性将使用默认值: ${t}`,
+  Bootstrap_initializer_missing_component_config_keys: (t) =>
+    `组件未定义的属性将使用默认值: ${t}`,
 };
 
 export default cliMessages;
