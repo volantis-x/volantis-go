@@ -107,4 +107,31 @@ function createLogger() {
   return logger;
 }
 
+/**
+ * Volantis GO Logger for consistent and internationalized console output.
+ *
+ * @example
+ * // ====== Direct output content ======
+ * // ====== 直接输出内容 ======
+ * // Logger 默认调用，会有 Volantis 前缀输出
+ * // Logger.log 输出则是最原始的 console.log
+ * // Logger.say 会有 say 前缀输出
+ * Logger("ABC...");     => 🚀 [ Volantis ]: ABC...
+ * Logger.log("ABC..."); => ABC...
+ * Logger.say("ABC..."); => 📣 [   Say    ]: ABC...
+ *
+ * // ====== Multilingual support is required; multilingual matching options are needed. ======
+ * // ====== 有多语言，需要多语言匹配项 ======
+ * Logger.info("Bootstrap_initializer_running") =>
+ * en_US: ℹ️ [   Info   ] Running initializers...
+ * zh_CN: ℹ️ [   Info   ] 启动项目初始化...
+ *
+ * // 同理，其他调用同 info 一样，以下是英文示例：
+ * Logger.warn("Bootstrap_initializer_running")         => ⚠️ [ Warning ] Running initializers...
+ * Logger.error("Bootstrap_initializer_error",err)      => 💥 [  Error  ] Initializers failed!!!(err)
+ * Logger.success("Bootstrap_initializer_successfully") => ✅ [ Success ] Initializers successfully!
+ * Logger.debug("Bootstrap_initializer_running")        => ⚙️ [  Debug  ] Running initializers...
+ *
+ * @param {string} message - For default call: The message string to log (will be INFO level).
+ */
 export const Logger = createLogger();
