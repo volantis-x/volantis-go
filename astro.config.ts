@@ -10,6 +10,8 @@ import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
 import { Logger } from "./src/core/logger";
 // import remarkCustomBlocks from "./src/helpers/lib/remark-custom-blocks.mjs";
 
+import * as SiteDefaults from "./src/core/defaults/site.default";
+
 const contentDir = path.resolve(process.cwd(), "content");
 const exampleContentDir = path.resolve(process.cwd(), "example_content");
 const siteConfigPath = path.resolve(contentDir, "config", "site.config.ts");
@@ -39,8 +41,8 @@ if (!fs.existsSync(contentDir)) {
 }
 
 async function generateAstroConfig() {
-  let userSiteConfigModule;
-  let themeModule;
+  let userSiteConfigModule: any = {};
+  let themeModule: any = {};
   try {
     // TypeScript 动态导入
     userSiteConfigModule = await import(
@@ -54,7 +56,8 @@ async function generateAstroConfig() {
     process.exit(1);
   }
 
-  const { SITE, BUILD_ASSETS_DIR } = userSiteConfigModule;
+  const SITE = userSiteConfigModule.SITE ?? SiteDefaults.SITE;
+  const BUILD_ASSETS_DIR = userSiteConfigModule.BUILD_ASSETS_DIR ?? SiteDefaults.BUILD_ASSETS_DIR;
 
   const { ACTIVE_THEME_NAME } = themeModule;
 
