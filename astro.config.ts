@@ -177,7 +177,7 @@ async function generateAstroConfig() {
       resolve: {
         alias: {
           "@": "/src",
-          "@THEME": `/src/themes/${ACTIVE_THEME_NAME}`,
+          "@THEME": `/src/core/themes/${ACTIVE_THEME_NAME}`,
           "@userConfig": "/content/config",
           "@components": "/src/components",
           "@layouts": "/src/layouts",
