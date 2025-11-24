@@ -83,7 +83,8 @@ function ensureProjectStructure() {
 async function loadUserConfig(): Promise<any> {
   try {
     // 使用 @vite-ignore 忽略动态导入警告
-    return await import(/* @vite-ignore */ PATHS.relativeUserConfig);
+    // fix: Windows OS 不能使用变量传入，此处只能字符传入
+    return await import(/* @vite-ignore */ "./content/config/site.config.ts");
   } catch (e: any) {
     Logger.error(
       "Astro_Config_load_failed_title_error",

@@ -1,4 +1,4 @@
-import type { Config, Metadata } from "@/core/types/config";
+import type { Config, Metadata } from "../../src/core/types/config";
 
 // 在这里设置你的网站地址，请以 "http://" 或者 "https://" 开头
 // 如果暂时不想设置，请保持默认值："http://example.com"

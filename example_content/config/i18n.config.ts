@@ -1,4 +1,4 @@
-import type { I18n } from "@/core/types/config";
+import type { I18n } from "../../src/core/types/config";
 
 // 国际化 (i18n) 配置。
 // Internationalization (i18n) configuration.
