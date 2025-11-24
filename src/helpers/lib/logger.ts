@@ -1,7 +1,7 @@
 import { LOG_LEVELS, LOG_DOMAINS, RESET_COLOR } from "./logger.meta";
 import { messages as appMessages } from "../../config/messages/app.messages";
 import { messages as componentMessages } from "../../config/messages/component.messages";
-import { messages as configMessages } from "../../config/messages/config.messages";
+// import { messages as configMessages } from "../../config/messages/config.messages";
 
 // --- 语言检测 ---
 // 显式定义我们支持的语言代码，并确保 'en' 在其中
@@ -43,7 +43,7 @@ interface MessageSourceSchema {
 const allMessages = {
   APP: appMessages as MessageSourceSchema,
   COMPONENT: componentMessages as MessageSourceSchema,
-  CONFIG: configMessages as MessageSourceSchema,
+  // CONFIG: configMessages as MessageSourceSchema,
   // API: apiMessages as MessageSourceSchema,
 } as const;
 
@@ -52,13 +52,13 @@ type LogDomain = keyof typeof allMessages;
 // 为每个领域的消息键创建联合类型
 type AppMessageKey = keyof typeof appMessages.en; // 或者 typeof appMessages[keyof typeof appMessages]
 type ComponentMessageKey = keyof typeof componentMessages.en;
-type ConfigMessageKey = keyof typeof configMessages.en;
+// type ConfigMessageKey = keyof typeof configMessages.en;
 
 // 创建一个映射类型，将 LogDomain 映射到其对应的 MessageKey 类型
 type DomainMessageKeys = {
   APP: AppMessageKey;
   COMPONENT: ComponentMessageKey;
-  CONFIG: ConfigMessageKey;
+  // CONFIG: ConfigMessageKey;
 };
 
 // --- 内部翻译函数 _t，现在返回一个包含消息和实际使用语言的对象 ---

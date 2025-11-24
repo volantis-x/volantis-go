@@ -1,4 +1,8 @@
 export const cliMessages: Record<string, string | ((key: any) => string)> = {
+  // --- Active Theme Name ---
+  Active_Theme_invalid_user_them: (t) =>
+    `Volantis will use the [ base ] theme because a theme name that does not exist has been configured: ${t}`,
+
   // --- Astro Config Errors/Infos ---
   Astro_Config_content_dir_not_found_error: `The './content' directory was not found in the project root.`,
   Astro_Config_content_dir_separation: `   ⤷ We keep user content separate from project source for easier maintenance.`,

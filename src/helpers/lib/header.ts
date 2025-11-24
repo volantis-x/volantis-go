@@ -1,6 +1,4 @@
 import type { TopNav } from "@/types/header";
-// import { WARNING_PREFIX } from "@helpers/config/console";
-import { ACTIVE_THEME_NAME } from "@lib/theme";
 import {
   FIXED_TO_STICKY_THEMES,
   SINGLE_COLUMN_UNSUPPORTED_THEMES,
@@ -19,7 +17,7 @@ import { Logger } from "@/helpers/lib/logger";
 export function normalizeContentLayout(
   layout: TopNav["contentLayout"],
 ): "one" | "two" | "three" {
-  const currentTheme = ACTIVE_THEME_NAME;
+  const currentTheme = __VOLANTIS_THEME__;
 
   return layout === "one" &&
     SINGLE_COLUMN_UNSUPPORTED_THEMES.includes(currentTheme)
@@ -41,7 +39,7 @@ export function normalizeContentLayout(
 export function normalizeBehavior(
   behavior: TopNav["behavior"],
 ): "fixed" | "static" | "sticky" {
-  const currentTheme = ACTIVE_THEME_NAME;
+  const currentTheme = __VOLANTIS_THEME__;
 
   return behavior === "fixed" && FIXED_TO_STICKY_THEMES.includes(currentTheme)
     ? (Logger.warn("COMPONENT", "warn_topnav_fixed_behavior_unsupported"),

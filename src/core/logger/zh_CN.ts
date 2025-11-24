@@ -1,4 +1,8 @@
 export const cliMessages: Record<string, string | ((key: any) => string)> = {
+  // --- Active Theme Name ---
+  Active_Theme_invalid_user_them: (t) =>
+    `Volantis 将使用 [ base ] 主题, 因为配置了不存在的主题名: ${t}`,
+
   // --- Astro Config Errors/Infos ---
   Astro_Config_content_dir_not_found_error: `项目根目录没有 './content' 文件夹目录。`,
   Astro_Config_content_dir_separation: `   ⤷ 我们实行用户内容和项目内容分离，以方便各自的维护工作。`,
