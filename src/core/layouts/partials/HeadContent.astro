@@ -1,6 +1,6 @@
 ---
 import { CONFIG } from "@userConfig/site.config";
-import type { Frontmatter } from "@/core/types/page";
+import type { Frontmatter } from "../../../core/types/page";
 
 const { description, pageType }: Frontmatter = Astro.props;
 const favicon = CONFIG.FAVICON ? CONFIG.FAVICON : "favicon.ico";
