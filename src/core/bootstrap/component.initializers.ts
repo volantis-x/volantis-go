@@ -1,4 +1,4 @@
-import { defaultMarqueeProps } from "../../components/contentblocks/marquee/marquee.props";
+import { defaultMarqueeProps } from "../components/contentblocks/marquee/marquee.props";
 
 export interface ComponentRegistryItem {
   /** 组件唯一键名 */
