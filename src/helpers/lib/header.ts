@@ -1,4 +1,4 @@
-import type { TopNav } from "@/types/header";
+import type { TopNav } from "@/core/types/header";
 import {
   FIXED_TO_STICKY_THEMES,
   SINGLE_COLUMN_UNSUPPORTED_THEMES,

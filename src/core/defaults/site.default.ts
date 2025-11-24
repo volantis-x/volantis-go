@@ -1,7 +1,7 @@
 // 这里放的是 “绝对保底” 的默认值
 // 当用户把 content/config/site.config.ts 删了，或者里面写错了，就用这里的默认值
 
-import type { Config, Metadata } from "@/types/config";
+import type { Config, Metadata } from "@/core/types/config";
 
 export const SITE: string = "http://example.com";
 export const BUILD_ASSETS_DIR: string = "_astro";

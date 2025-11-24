@@ -1,4 +1,4 @@
-import type { SupportedTheme } from '@/types/config';
+import type { SupportedTheme } from '@/core/types/config';
 
 // 请同步 astro.conifg.mjs 里的 ASTRO_CONFIG_SUPPORTED_THEMES 值
 // Keep this in sync with the ASTRO_CONFIG_SUPPORTED_THEMES value in astro.config.mjs

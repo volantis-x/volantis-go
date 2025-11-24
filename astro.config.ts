@@ -13,7 +13,7 @@ import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
 // Project Internals
 import configInitializer from "./src/core/bootstrap/integration";
 import { Logger } from "./src/core/logger";
-import { SUPPORTED_THEMES, type SupportedTheme } from "./src/types/config";
+import { SUPPORTED_THEMES, type SupportedTheme } from "./src/core/types/config";
 import * as SiteDefaults from "./src/core/defaults/site.default";
 
 // ============================================================================
@@ -186,7 +186,7 @@ async function generateAstroConfig() {
           "@lib": "/src/helpers/lib",
           "@utils": "/src/helpers/utils",
           "@config": "/src/config",
-          "@types": "/src/types",
+          "@types": "/src/core/types",
         },
       },
     },

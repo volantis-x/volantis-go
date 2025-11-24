@@ -1,4 +1,4 @@
-import type { TopMarquee, TopNav } from "@/types/header";
+import type { TopMarquee, TopNav } from "@/core/types/header";
 
 // 顶部滚动条配置。启用后，将在所有页面显示滚动条。
 // Top marquee configuration. When enabled, a scrolling marquee will be displayed on all pages.
