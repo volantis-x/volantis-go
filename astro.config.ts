@@ -8,7 +8,7 @@ import sitemap from "@astrojs/sitemap";
 import markdoc from "@astrojs/markdoc";
 import icon from "astro-icon";
 import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
-// import remarkCustomBlocks from "./src/helpers/lib/remark-custom-blocks.mjs";
+// import remarkCustomBlocks from "./src/core/helpers/remark-custom-blocks.mjs";
 
 // Project Internals
 import configInitializer from "./src/core/bootstrap/integration";
