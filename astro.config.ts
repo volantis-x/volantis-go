@@ -13,7 +13,7 @@ import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
 // Project Internals
 import configInitializer from "./src/core/bootstrap/integration";
 import { Logger } from "./src/core/logger";
-import { SUPPORTED_THEMES, type SupportedTheme } from "./src/core/types/config";
+import { SUPPORTED_THEMES, type ThemeKey } from "./src/core/types/themes.ts";
 import * as SiteDefaults from "./src/core/defaults/site.default";
 
 // ============================================================================
@@ -99,8 +99,8 @@ async function loadUserConfig(): Promise<any> {
 /**
  * 验证并解析主题名称。如果不合法，回退到默认主题并发出警告。
  */
-function resolveThemeName(inputTheme: unknown): SupportedTheme {
-  const defaultTheme: SupportedTheme = "base";
+function resolveThemeName(inputTheme: unknown): ThemeKey {
+  const defaultTheme: ThemeKey = "base";
 
   // 简单的字符串清理
   const themeName =
@@ -110,7 +110,7 @@ function resolveThemeName(inputTheme: unknown): SupportedTheme {
 
   // 检查是否在支持列表中
   if ((SUPPORTED_THEMES as readonly string[]).includes(themeName)) {
-    return themeName as SupportedTheme;
+    return themeName as ThemeKey;
   }
 
   // 验证失败：打印警告并回退
