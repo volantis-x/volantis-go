@@ -1,36 +1,49 @@
 import type { AstroIntegration } from "astro";
-import { runInitializers } from "./initializer";
+import { Logger } from "../logger";
 
 export default function createConfigInitializerIntegration(): AstroIntegration {
   return {
-    name: "Volantis GO",
+    name: "Volantis-GO",
     hooks: {
-      // 'astro:config:setup' 钩子在配置解析后、服务器启动或构建开始前运行
-      // 或者 'astro:build:start' 在构建开始时
-      "astro:config:setup": async ({
-        logger, // Astro 提供了自己的、带颜色的日志工具
-        // command, // 'dev', 'build', 'preview'
-        // isRestart, // 是否是因文件变更而重启
-        // updateConfig // 如果需要动态修改 Astro 配置
-      }) => {
-        try {
-          await runInitializers();
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            logger.error(error.stack || error.message);
-          } else {
-            logger.error(`---->> An unknown error occurred: ${String(error)}`);
-          }
+      "astro:config:setup": ({ updateConfig }) => {
+        // 注入一个自定义 Vite 插件
+        updateConfig({
+          vite: {
+            plugins: [
+              {
+                name: "volantis-config-loader",
+                // 这个钩子在 Vite 开发服务器启动时调用
+                configureServer(server) {
+                  Logger.info("Bootstrap_initializer_running");
+                  try {
+                    // 主动加载 reloader.ts
+                    // 这会触发里面的 import.meta.glob 和所有的 console.log 逻辑
+                    server.ssrLoadModule("/src/core/bootstrap/reloader.ts");
+                    // Logger.success("Bootstrap_initializer_successfully");
+                  } catch (e) {
+                    Logger.error("Bootstrap_initializer_error", e);
+                    console.error(e);
+                  }
 
-          // 在构建时，重新抛出错误以中断构建
-          if (
-            process.env.NODE_ENV === "production" ||
-            process.env.ASTRO_COMMAND === "build"
-          ) {
-            // 重新抛出原始错误，而不是只抛出消息，这样可以保留完整的堆栈信息
-            throw error;
-          }
-        }
+                  // 监听服务器启动完成的事件
+                  // server.httpServer?.once("listening", async () => {
+                  // });
+                },
+                // 处理热更新 (HMR)
+                handleHotUpdate({ file, server }) {
+                  // 如果修改的是 content/config 下的文件
+                  if (
+                    file.includes("/content/config/") ||
+                    file.includes("/content/components/")
+                  ) {
+                    // 重新加载配置模块
+                    server.ssrLoadModule("/src/core/bootstrap/reloader.ts");
+                  }
+                },
+              },
+            ],
+          },
+        });
       },
     },
   };

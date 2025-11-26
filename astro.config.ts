@@ -156,7 +156,7 @@ async function generateAstroConfig() {
 
     // 集成插件配置
     integrations: [
-      configInitializer(), // 你的初始化核心
+      configInitializer(),
       mdx({
         // remarkPlugins: [remarkCustomBlocks],
         rehypePlugins: [rehypeAccessibleEmojis],

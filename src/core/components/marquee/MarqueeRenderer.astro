@@ -1,0 +1,238 @@
+---
+import type { MarqueeProps } from "./marquee.props";
+
+const props = Astro.props as MarqueeProps;
+const {
+  enable,
+  direction,
+  scrollDuration,
+  primaryContent,
+  secondaryContent,
+  separator,
+  button,
+  background,
+  customClass,
+  ariaLabel,
+  pauseOnHover,
+} = props;
+
+// 1. 判断是否需要滚动逻辑
+const isScrolling = direction === "left" || direction === "right";
+
+// 2. 处理背景样式
+let finalBackground = background;
+if (background) {
+  const trimmed = background.trim();
+  // 简单的启发式检查：如果是文件路径或http开头，且不包含 gradient/rgb 等关键词，包裹 url()
+  // 当然，用户也可以直接传 "url(...)"
+  const looksLikeUrl =
+    !trimmed.includes("gradient") &&
+    !trimmed.includes("rgb") &&
+    !trimmed.startsWith("#") &&
+    (trimmed.startsWith("/") || trimmed.startsWith("http"));
+
+  if (looksLikeUrl) {
+    finalBackground = `url(${trimmed}) center / cover no-repeat`;
+  }
+}
+
+// 3. 构建 CSS 变量
+const cssVars: Record<string, any> = {
+  "--marquee-duration": scrollDuration,
+  "--marquee-bg": finalBackground,
+};
+
+const hasContent = primaryContent || secondaryContent || button;
+// 生成一个唯一的 ID，以便 JS 精确控制同一个页面上的多个 Marquee
+const uniqueId = `marquee-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+{
+  enable && hasContent && (
+    <div
+      id={uniqueId}
+      class:list={["marquee-container", customClass]}
+      style={cssVars}
+      role="region"
+      aria-label={ariaLabel}
+      data-direction={direction}
+      data-pause={pauseOnHover}
+    >
+      {/*
+        内容容器
+        JS 将会克隆里面的 .marquee-content-group 以填满屏幕
+      */}
+      <div class="marquee-track">
+        <div class="marquee-content-group">
+          {primaryContent && (
+            <span class="marquee-item primary" set:html={primaryContent} />
+          )}
+          {primaryContent && secondaryContent && separator && (
+            <span class="marquee-separator">{separator}</span>
+          )}
+          {secondaryContent && (
+            <span class="marquee-item secondary" set:html={secondaryContent} />
+          )}
+          {button && (
+            <a
+              href={button.url}
+              target={button.target || "_self"}
+              class="marquee-btn"
+            >
+              {button.text}
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+{/* raw script */}
+{/*
+isScrolling && (
+  <script is:inline define:vars={{ uniqueId }}>
+    (function () {
+      const container = document.getElementById(uniqueId);
+      if (!container) return;
+      const track = container.querySelector(".marquee-track");
+      const originalGroup = container.querySelector(".marquee-content-group");
+
+      const initMarquee = () => {
+        // 1. 清理旧克隆
+        const items = track.querySelectorAll(".marquee-content-group");
+        for (let i = 1; i < items.length; i++) {
+          items[i].remove();
+        }
+
+        const containerWidth = container.offsetWidth;
+        const contentWidth = originalGroup.offsetWidth;
+        if (contentWidth === 0) return;
+
+        // 2. 设置 CSS 变量：每次循环移动的距离 = 单份内容的宽度
+        track.style.setProperty('--single-width', `-${contentWidth}px`);
+
+        // 3. 计算需要的副本数 (铺满屏幕 + 1份缓冲)
+        const requiredCopies = Math.ceil(containerWidth / contentWidth) + 1;
+        const finalCount = Math.max(requiredCopies, 2);
+
+        for (let i = 0; i < finalCount - 1; i++) {
+          const clone = originalGroup.cloneNode(true);
+          clone.setAttribute("aria-hidden", "true");
+          track.appendChild(clone);
+        }
+
+        // 4. 启动动画
+        track.classList.add("animate");
+      };
+
+      if (document.readyState === "complete") {
+        initMarquee();
+      } else {
+        window.addEventListener("load", initMarquee);
+      }
+
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        track.classList.remove("animate");
+        resizeTimer = setTimeout(initMarquee, 200);
+      });
+    })();
+  </script>
+)
+*/}
+
+{/* min script */}
+{isScrolling && (<script is:inline define:vars={{uniqueId}}>(function(){const c=document.getElementById(uniqueId);if(!c)return;const t=c.querySelector(".marquee-track");const o=c.querySelector(".marquee-content-group");const f=()=>{const a=t.querySelectorAll(".marquee-content-group");for(let i=1;i<a.length;i++){a[i].remove()}const d=c.offsetWidth;const b=o.offsetWidth;if(b===0)return;t.style.setProperty('--single-width',`-${b}px`);const r=Math.ceil(d/b)+1;const q=Math.max(r,2);for(let i=0;i<q-1;i++){const x=o.cloneNode(true);x.setAttribute("aria-hidden","true");t.appendChild(x)}t.classList.add("animate")};if(document.readyState==="complete"){f()}else{window.addEventListener("load",f)}let resizeTimer;window.addEventListener("resize",()=>{clearTimeout(resizeTimer);t.classList.remove("animate");resizeTimer=setTimeout(f,200)})})();</script>)}
+
+<style>
+  .marquee-container {
+    position: relative;
+    width: 100%;
+    min-height: 3rem;
+    overflow: hidden;
+    background: var(--marquee-bg);
+    display: flex;
+    align-items: center;
+  }
+
+  .marquee-track {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    /* 默认不移动，JS 加载完后添加 .animate 类才开始动 */
+    will-change: transform;
+  }
+
+  .marquee-content-group {
+    display: flex;
+    align-items: center;
+    padding: 0 1rem; /* 间距 */
+    flex-shrink: 0;
+  }
+
+  .marquee-item {
+    display: inline-block;
+  }
+  .marquee-item.primary {
+    font-weight: 700;
+  }
+  .marquee-separator {
+    margin: 0 0.5rem;
+    opacity: 0.6;
+  }
+  .marquee-btn {
+    margin-left: 1rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.9em;
+    transition: background 0.3s;
+  }
+  .marquee-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  /* --- 动画逻辑 --- */
+
+  /* 只有当 JS 添加了 .animate 类时才运行动画 */
+  .marquee-track.animate {
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: var(--marquee-duration, 60s);
+  }
+
+  /* 根据 data-direction 属性决定动画方向 */
+  [data-direction="left"] .marquee-track.animate {
+    animation-name: scrollLeft;
+  }
+  [data-direction="right"] .marquee-track.animate {
+    animation-name: scrollRight;
+  }
+
+  /* 悬停暂停 */
+  [data-pause="true"]:hover .marquee-track.animate {
+    animation-play-state: paused;
+  }
+
+  @keyframes scrollLeft {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(var(--single-width, -50%));
+    }
+  }
+  @keyframes scrollRight {
+    0% {
+      transform: translateX(var(--single-width, -50%));
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+</style>

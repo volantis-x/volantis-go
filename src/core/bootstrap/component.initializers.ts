@@ -1,21 +1,20 @@
-import { defaultMarqueeProps } from "../components/contentblocks/marquee/marquee.props";
+// 引入组件的默认配置（包含值和类型）
+import { defaultMarqueeProps } from "../components/marquee/marquee.props";
+// import { defaultHeroProps } from ...
 
-export interface ComponentRegistryItem {
-  /** 组件唯一键名 */
-  key: string;
-  /** 组件代码里的硬编码默认值 */
-  defaultProps: any;
-  /** 用户配置文件的路径 (单个文件包含基础配置和实例) */
-  userPath: string;
-}
-
-export const COMPONENT_REGISTRY: ComponentRegistryItem[] = [
-  {
-    key: "marquee",
-    defaultProps: defaultMarqueeProps,
-    // 不要用 @userConfig，直接写相对于项目根目录的路径
-    // 也不要写 ../../../，直接从 content 开始，后续会自动处理路径
-    userPath: "content/components/contentblocks/marquee/marquee.config.ts",
+/**
+ * 组件注册表
+ * 使用 "as const" 锁定类型，这样 TS 就能自动推断出 "marquee" 这个 key
+ * 以及 defaultMarqueeProps 里的具体类型。
+ */
+export const COMPONENTS = {
+  marquee: {
+    defaults: defaultMarqueeProps,
+    userPath: "content/components/Marquee.config.ts",
   },
-  // 其他组件...
-];
+  // 未来新增组件只需在这里加一行：
+  // hero: { defaults: defaultHeroProps, userPath: "..." }
+} as const;
+
+// 这是一个类型辅助，后面 store.ts 会用到
+export type ComponentRegistry = typeof COMPONENTS;
