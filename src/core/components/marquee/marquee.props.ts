@@ -93,13 +93,14 @@ const DEFAULT_COMPLEX_GRADIENT = `
 
 export const defaultMarqueeProps: Omit<
   Required<MarqueeProps>,
-  "button" | "visibility" | "backgroundImage" | "backgroundImageStyle"
+  "button" | "visibility"
+  //  | "backgroundImage" | "backgroundImageStyle"
 > & {
   button?: MarqueeProps["button"];
   visibility?: MarqueeProps["visibility"];
   // 兼容旧属性，虽然我们不再推荐使用，但为了防止报错，给它们 undefined
-  backgroundImage?: string;
-  backgroundImageStyle?: any;
+  // backgroundImage?: string;
+  // backgroundImageStyle?: any;
 } = {
   enable: true,
   direction: "left",
@@ -115,6 +116,6 @@ export const defaultMarqueeProps: Omit<
   // 显式设置为 undefined
   button: undefined,
   visibility: undefined,
-  backgroundImage: undefined,
-  backgroundImageStyle: undefined,
+  // backgroundImage: undefined,
+  // backgroundImageStyle: undefined,
 };
