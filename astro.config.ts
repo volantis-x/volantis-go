@@ -180,7 +180,7 @@ async function generateAstroConfig() {
           "@": "/src",
           "@THEME": `/src/core/themes/${ACTIVE_THEME_NAME}`,
           "@userConfig": "/content/config",
-          "@components": "/src/components",
+          "@components": "/src/core/components",
           "@layoutComps": "/src/core/layouts/components",
           "@helpers": "/src/helpers",
           "@lib": "/src/helpers/lib",
