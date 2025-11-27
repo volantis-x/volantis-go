@@ -163,6 +163,7 @@ isScrolling && (
     white-space: nowrap;
     /* 默认不移动，JS 加载完后添加 .animate 类才开始动 */
     will-change: transform;
+    width: 100%;
   }
 
   .marquee-content-group {
@@ -212,6 +213,18 @@ isScrolling && (
   }
   [data-direction="right"] .marquee-track.animate {
     animation-name: scrollRight;
+  }
+  [data-direction="none"] {
+    justify-content: center; /* 容器水平居中 */
+  }
+  [data-direction="none"] .marquee-track {
+    justify-content: center; /* 轨道内容居中 */
+    white-space: normal;     /* 允许换行 (防止手机端内容过长被截断) */
+    text-align: center;      /* 文字居中 */
+  }
+  [data-direction="none"] .marquee-content-group {
+    justify-content: center;
+    flex-wrap: wrap;         /* 允许内容项换行 */
   }
 
   /* 悬停暂停 */
