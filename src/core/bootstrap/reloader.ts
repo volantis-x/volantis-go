@@ -7,6 +7,10 @@ const USER_CONFIGS = import.meta.glob(
   ["/content/config/**/*.ts", "/content/components/**/*.ts"],
   { eager: true },
 );
+// 获取当前是否允许 verbose 日志
+function isVerbose() {
+  return globalThis.__VOLANTIS_RELOADER_VERBOSE__ === true;
+}
 
 // --- 辅助工具：判断纯对象 ---
 function isPlainObject(item: any): boolean {
@@ -85,15 +89,17 @@ for (const [key, config] of Object.entries(GLOBALS)) {
 
   if (!userModule) {
     // --- 缺失文件警告 ---
-    Logger.warn("Bootstrap_initializer_config_not_found", userPath);
+    if (isVerbose()) {
+      Logger.warn("Bootstrap_initializer_config_not_found", userPath);
+    }
     // console.warn(`[Volantis] Config not found: ${userPath}, using defaults.`);
     globalStore[key] = defaults;
   } else {
     // --- 逻辑恢复：缺失属性检查 ---
     const missingFields = findMissingKeys(defaults, userModule);
-    if (missingFields.length > 0) {
+    if (missingFields.length > 0 && isVerbose()) {
       const missingStr = missingFields.join(", ");
-      const logMessage = `"${userPath} -> [ ${missingStr} ]"`;
+      const logMessage = `" ${userPath} -> [ ${missingStr} ] "`;
 
       Logger.warn("Bootstrap_initializer_missing_config_keys", logMessage);
       // console.warn(`[Volantis] Missing keys in global config: ${logMessage}`);
@@ -124,7 +130,7 @@ for (const [key, config] of Object.entries(COMPONENTS)) {
     if (missingFields.length > 0) {
       // 这里的判断标准看你需求，如果觉得组件部分配置很正常，可以注释掉
       // 或者只在开发模式下显示
-      if (import.meta.env.DEV) {
+      if (import.meta.env.DEV && isVerbose()) {
         const missingStr = missingFields.join(", ");
         const logMessage = `" ${userPath} -> [ ${missingStr} ] "`;
 
