@@ -16,7 +16,7 @@ const LOG_LEVELS = {
   SUCCESS: { icon: "✅", color: "\u001b[32m" }, // Green
   DEBUG: { icon: "⚙️", color: "\u001b[36m" }, // Cyan
   VOLANTIS: { icon: "🚀", color: "\u001b[35m" },
-  SAY: { icon: "📣", color: "\u001b[0m" },
+  SAY: { icon: "💬", color: "\u001b[0m" },
 } as const;
 
 // 颜色重置代码
@@ -24,7 +24,7 @@ const RESET_COLOR = "\u001b[0m";
 
 function detectCliLanguage(
   supported: string[],
-  fallback: string = "en_US"
+  fallback: string = "en_US",
 ): string {
   const envLang = process.env.LANG;
   if (!envLang) return fallback;
@@ -98,7 +98,7 @@ function createLogger() {
     }
   };
   logger.say = (...args: any[]) => {
-    console.log(format("SAY", ...args));
+    console.log(format("SAY", ""),...args);
   };
   logger.log = (...args: any[]) => {
     console.log(...args);
