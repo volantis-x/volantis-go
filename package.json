@@ -1,6 +1,6 @@
 {
   "name": "volantis-go",
-  "version": "1.0.0",
+  "version": "1.0.20251215",
   "description": "",
   "scripts": {
     "dev": "astro dev",
@@ -12,20 +12,20 @@
   "author": "Teams: Volantis X",
   "license": "MIT",
   "dependencies": {
-    "@astrojs/check": "^0.9.5",
+    "@astrojs/check": "^0.9.6",
     "@astrojs/markdoc": "^0.12.11",
-    "@astrojs/mdx": "^4.3.11",
+    "@astrojs/mdx": "^4.3.13",
     "@astrojs/sitemap": "^3.6.0",
-    "@astrojs/ts-plugin": "^1.10.5",
-    "astro": "^5.15.9",
+    "@astrojs/ts-plugin": "^1.10.6",
+    "astro": "^5.16.5",
     "astro-icon": "^1.1.5",
     "comment-parser": "^1.4.1",
     "rehype-accessible-emojis": "^0.3.2",
     "sharp": "^0.34.5"
   },
   "devDependencies": {
-    "@typescript-eslint/parser": "^8.47.0",
-    "eslint": "^9.39.1",
+    "@typescript-eslint/parser": "^8.49.0",
+    "eslint": "^9.39.2",
     "eslint-plugin-astro": "^1.5.0"
   }
 }
