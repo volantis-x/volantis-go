@@ -1,67 +1,54 @@
-import {
-  LOADED_GLOBALS,
-  LOADED_COMPONENTS,
-  LOADED_INSTANCES,
-} from "./reloader";
+// src/core/bootstrap/store.ts
+import { LOADED_LOCALES, LOADED_GLOBALS } from "./reloader";
 
-// 1. 引入注册表的类型 (不需要引入具体的值，只要类型)
-import type { ComponentRegistry } from "./component.initializers";
-import type { GlobalRegistry } from "./config.initializers";
-
-// ============================================================
-// 2. 自动生成类型映射 (Auto Type Inference)
-//    这里利用 TS 的条件类型，自动从 defaults 中提取类型
-// ============================================================
-
-// 自动推断组件类型：提取 COMPONENTS[Key]['defaults'] 的类型
-type AutoComponentMap = {
-  [K in keyof ComponentRegistry]: ComponentRegistry[K]["defaults"];
-};
-
-// 自动推断全局配置类型
-type AutoGlobalMap = {
-  [K in keyof GlobalRegistry]: GlobalRegistry[K]["defaults"];
-};
-
-// ============================================================
-// 3. Getter 函数
-// ============================================================
-
-/**
- * 获取全站配置
- * 泛型 K 会自动提示 "site" | "i18n"
- * 返回值自动推断为 SiteDefaults 的类型
- */
-export function getGlobalConfig<K extends keyof AutoGlobalMap>(
-  key: K,
-): Readonly<AutoGlobalMap[K]> | undefined {
-  return LOADED_GLOBALS[key] as Readonly<AutoGlobalMap[K]>;
+// 自动推断全局配置
+export function getGlobalConfig<K extends keyof typeof LOADED_GLOBALS>(key: K) {
+  return LOADED_GLOBALS[key];
 }
 
 /**
- * 获取组件配置
- * 泛型 K 会自动提示 "marquee"
- * 返回值自动推断为 MarqueeProps
+ * 核心：获取组件配置 (包含逻辑和内容)
+ *
+ * @param componentName 组件名 (e.g. "marquee")
+ * @param lang 当前语言
+ * @param instanceId (可选) 实例ID
  */
-export function getProcessedConfig<K extends keyof AutoComponentMap>(
-  key: K,
-): Readonly<AutoComponentMap[K]> | undefined {
-  return LOADED_COMPONENTS[key] as Readonly<AutoComponentMap[K]>;
-}
+export function getComponentConfig<T = any>(
+  componentName: string,
+  lang: string,
+  instanceId?: string,
+): T {
+  // 1. 获取语言包 (如果找不到该语言，回退到系统默认语言 en-US 或 site.config 定义的默认语言)
+  // 这里简化为回退到 en-US
+  let localeData = LOADED_LOCALES[lang];
 
-/**
- * 获取组件实例
- */
-export function getNamedInstanceConfig<K extends keyof AutoComponentMap>(
-  componentKey: K,
-  instanceId: string,
-): Readonly<AutoComponentMap[K]> | undefined {
-  const instances = LOADED_INSTANCES[componentKey];
-  if (
-    instances &&
-    Object.prototype.hasOwnProperty.call(instances, instanceId)
-  ) {
-    return instances[instanceId] as Readonly<AutoComponentMap[K]>;
+  if (!localeData) {
+    // 回退机制：如果找不到当前语言，强制回退到 'en-US' (这是系统保底语言)
+    localeData = LOADED_LOCALES["en-US"];
   }
-  return undefined;
+
+  if (
+    !localeData ||
+    !localeData.components ||
+    !localeData.components[componentName]
+  ) {
+    // 极端情况：系统保底文件都丢了
+    return {} as T;
+  }
+
+  const compData = localeData.components[componentName];
+
+  // 2. 获取基础配置 (default)
+  const baseConfig = compData.default || {};
+
+  // 3. 如果有 instanceId，合并实例配置
+  if (instanceId && compData[instanceId]) {
+    // 实例配置覆盖基础配置
+    // e.g. homeTop { direction: 'right' } 覆盖 default { direction: 'left' }
+    // 同时继承 default 的 { scrollDuration: '60s' }
+    return { ...baseConfig, ...compData[instanceId] };
+    // 注意：如果需要深合并，这里要用 deepMerge。但在运行时做深合并有性能损耗，浅合并通常够用。
+  }
+
+  return baseConfig as T;
 }

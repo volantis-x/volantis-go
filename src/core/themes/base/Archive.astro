@@ -1,0 +1,39 @@
+---
+// src/themes/base/Archive.astro
+import { getLocalizedPath } from "@/core/i18n";
+
+const { page, lang, collection } = Astro.props;
+const posts = page.data;
+---
+
+<header class="archive-header">
+  <h1>{collection.toUpperCase()}</h1>
+</header>
+
+<main class="post-list">
+  {
+    posts.length === 0 ? (
+      <p>No posts found.</p>
+    ) : (
+      posts.map((post: any) => (
+        <article>
+          <h2>
+            {/* 这里的 URL 生成非常关键：需要拼接 collection 名 */}
+            <a href={getLocalizedPath(`${collection}/${post.cleanSlug}`, lang)}>
+              {post.data.title}
+            </a>
+          </h2>
+          <div class="meta">
+            <time>{new Date(post.data.date).toLocaleDateString(lang)}</time>
+          </div>
+        </article>
+      ))
+    )
+  }
+</main>
+
+<!-- 分页导航 -->
+<nav class="pagination">
+  {page.url.prev && <a href={page.url.prev}>Previous</a>}
+  {page.url.next && <a href={page.url.next}>Next</a>}
+</nav>

@@ -1,12 +1,23 @@
-import { COMPONENTS } from "./component.initializers";
-import { GLOBALS } from "./config.initializers";
+import { GLOBAL_CONFIG_REGISTRY } from "./config.initializers";
 import { Logger } from "../logger";
 
-// 1. 使用 Vite 的 import.meta.glob 动态抓取所有配置
-const USER_CONFIGS = import.meta.glob(
-  ["/content/config/**/*.ts", "/content/components/**/*.ts"],
+// =======================================================
+// 1. 扫描文件 (去掉了 components config 的扫描)
+// =======================================================
+const RAW_FILES = import.meta.glob(
+  [
+    "/content/config/*.ts", // site.config.ts
+    "/content/config/locales/**/*.ts", // 用户配置 (zh-CN/components/marquee.ts)
+    "/src/core/defaults/locales/**/*.ts", // 系统保底 (en-US/components/marquee.ts)
+  ],
   { eager: true },
 );
+
+function getUserModule(path: string) {
+  const key = path.startsWith("/") ? path : "/" + path;
+  return RAW_FILES[key] || null;
+}
+
 // 获取当前是否允许 verbose 日志
 function isVerbose() {
   return globalThis.__VOLANTIS_RELOADER_VERBOSE__ === true;
@@ -39,135 +50,168 @@ function deepMerge(target: any, source: any): any {
   return output;
 }
 
-// --- 新增：缺失键检查函数 ---
-function findMissingKeys(
-  target: any,
-  source: any,
-  prefix: string = "",
-): string[] {
-  const missing: string[] = [];
-  for (const key in target) {
-    if (Object.prototype.hasOwnProperty.call(target, key)) {
-      const targetValue = target[key];
-      const sourceValue = source[key];
-      const currentPath = prefix ? `${prefix}.${key}` : key;
+// --- 缺失键检查函数 ---
+// function findMissingKeys(
+//   target: any,
+//   source: any,
+//   prefix: string = "",
+// ): string[] {
+//   const missing: string[] = [];
+//   for (const key in target) {
+//     if (Object.prototype.hasOwnProperty.call(target, key)) {
+//       const targetValue = target[key];
+//       const sourceValue = source[key];
+//       const currentPath = prefix ? `${prefix}.${key}` : key;
 
-      // 允许 null 或 false，但不能是 undefined
-      if (sourceValue === undefined) {
-        missing.push(currentPath);
-        continue;
-      }
+//       // 允许 null 或 false，但不能是 undefined
+//       if (sourceValue === undefined) {
+//         missing.push(currentPath);
+//         continue;
+//       }
 
-      if (isPlainObject(targetValue) && isPlainObject(sourceValue)) {
-        const nestedMissing = findMissingKeys(
-          targetValue,
-          sourceValue,
-          currentPath,
-        );
-        missing.push(...nestedMissing);
-      }
-    }
-  }
-  return missing;
-}
-
-// --- 辅助工具：获取模块 ---
-function getUserModule(path: string) {
-  const key1 = path.startsWith("/") ? path : "/" + path;
-  const key2 = path.startsWith("/") ? path.slice(1) : path;
-  return USER_CONFIGS[key1] || USER_CONFIGS[key2] || null;
-}
+//       if (isPlainObject(targetValue) && isPlainObject(sourceValue)) {
+//         const nestedMissing = findMissingKeys(
+//           targetValue,
+//           sourceValue,
+//           currentPath,
+//         );
+//         missing.push(...nestedMissing);
+//       }
+//     }
+//   }
+//   return missing;
+// }
 
 // =======================================================
-// 2. 处理全局配置 (Global Configs)
+// 2. 处理全站逻辑 (Global Logic - site.config.ts)
 // =======================================================
 const globalStore: Record<string, any> = {};
 
-for (const [key, config] of Object.entries(GLOBALS)) {
+for (const [key, config] of Object.entries(GLOBAL_CONFIG_REGISTRY)) {
   const { defaults, userPath } = config;
   const userModule: any = getUserModule(userPath);
 
-  if (!userModule) {
-    // --- 缺失文件警告 ---
-    if (isVerbose()) {
-      Logger.warn("Bootstrap_initializer_config_not_found", userPath);
-    }
-    // console.warn(`[Volantis] Config not found: ${userPath}, using defaults.`);
-    globalStore[key] = defaults;
-  } else {
-    // --- 逻辑恢复：缺失属性检查 ---
-    const missingFields = findMissingKeys(defaults, userModule);
-    if (missingFields.length > 0 && isVerbose()) {
-      const missingStr = missingFields.join(", ");
-      const logMessage = `" ${userPath} -> [ ${missingStr} ] "`;
+  // --- 缺失文件警告 ---
+  if (isVerbose()) {
+    Logger.warn("Bootstrap_initializer_config_not_found", userPath);
 
-      Logger.warn("Bootstrap_initializer_missing_config_keys", logMessage);
-      // console.warn(`[Volantis] Missing keys in global config: ${logMessage}`);
-    }
+    // // --- 缺失属性检查 ---
+    // const missingFields = findMissingKeys(defaults, userModule);
+    // if (missingFields.length > 0) {
+    //   const missingStr = missingFields.join(", ");
+    //   const logMessage = `" ${userPath} -> [ ${missingStr} ] "`;
 
-    globalStore[key] = deepMerge(defaults, userModule);
+    //   Logger.warn("Bootstrap_initializer_missing_config_keys", logMessage);
+    // }
   }
+
+  // 这里只处理 site.config.ts 里的逻辑 (ENABLE_I18N, UserTheme)
+  // 不处理 Title/Desc，因为它们在 locales 里
+  globalStore[key] = deepMerge(defaults, userModule || {});
+
+  // TODO: 后续增加 UserTheme 变更时提示重新执行 run dev 提示
 }
 
 // =======================================================
-// 3. 处理组件配置 (Component Configs)
+// 3. 处理 Locales (内容 + 组件逻辑)
 // =======================================================
-const componentStore: Record<string, any> = {};
-const instanceStore: Record<string, any> = {};
+const rawLocaleStore: Record<string, any> = {};
 
-for (const [key, config] of Object.entries(COMPONENTS)) {
-  const { defaults, userPath } = config;
+// 3.1 路径解析器
+function parseLocalePath(path: string) {
+  // 匹配 "/locales/" 后面的部分
+  // 捕获组 1: 语言代码 (如 zh-CN)
+  // 捕获组 2: 剩余路径 (如 components/marquee.ts)
+  const match = path.match(/\/locales\/([^\/]+)\/(.+)\.ts$/);
 
-  const userModule: any = getUserModule(userPath);
-  let userBaseConfig = {};
+  if (!match) return null;
 
-  if (userModule) {
-    userBaseConfig = userModule.default || userModule.config || {};
+  const lang = match[1];
+  const relativePath = match[2];
+  const namespaces = relativePath.split("/");
 
-    // --- 逻辑恢复：组件属性缺失检查 (Optional) ---
-    // 组件通常是部分覆盖，所以用 Info 或 Debug 级别，或者只检查必要的
-    const missingFields = findMissingKeys(defaults, userBaseConfig);
-    if (missingFields.length > 0) {
-      // 这里的判断标准看你需求，如果觉得组件部分配置很正常，可以注释掉
-      // 或者只在开发模式下显示
-      if (import.meta.env.DEV && isVerbose()) {
-        const missingStr = missingFields.join(", ");
-        const logMessage = `" ${userPath} -> [ ${missingStr} ] "`;
+  return { lang, namespaces };
+}
 
-        Logger.info(
-          "Bootstrap_initializer_missing_component_config_keys",
-          logMessage,
-        );
-        // console.info(`[Volantis] Component partial override: ${userPath} -> Using defaults for: [${missingStr}]`);
-      }
-    }
-  } else {
-    // 如果组件配置文件完全不存在，这通常是正常的，但也可能你想提示
-    // console.debug(`[Volantis] No user config for component: ${key}`);
-  }
+// 3.2 挂载函数
+function mountLocaleContent(lang: string, namespaces: string[], content: any) {
+  if (!rawLocaleStore[lang]) rawLocaleStore[lang] = {};
 
-  // 合并基础配置
-  const finalConfig = deepMerge(defaults, userBaseConfig);
-  componentStore[key] = finalConfig;
-
-  // 处理命名实例
-  if (userModule) {
-    const rawInstances = userModule.instances || userModule[`${key}Instances`];
-    if (rawInstances) {
-      const processed: Record<string, any> = {};
-      for (const id in rawInstances) {
-        processed[id] = deepMerge(finalConfig, rawInstances[id]);
-      }
-      instanceStore[key] = processed;
+  let current = rawLocaleStore[lang];
+  for (let i = 0; i < namespaces.length; i++) {
+    const key = namespaces[i];
+    if (i === namespaces.length - 1) {
+      current[key] = deepMerge(current[key] || {}, content);
+    } else {
+      if (!current[key]) current[key] = {};
+      current = current[key];
     }
   }
 }
 
+// 3.3 扫描执行
+Object.keys(RAW_FILES).forEach((path) => {
+  if (!path.includes("/locales/")) return;
+
+  const info = parseLocalePath(path);
+  if (info) {
+    const module: any = RAW_FILES[path];
+
+    // DEBUG
+    // if (
+    //   import.meta.env.DEV &&
+    //   path.includes("zh-CN") &&
+    //   path.includes("marquee")
+    // ) {
+    //   Logger.say(`[Reloader] Found System Default: ${path}`);
+    // }
+
+    mountLocaleContent(info.lang, info.namespaces, module.default || {});
+  }
+});
+
+// =======================================================
+// 4. 执行继承合并 (Inheritance)
+// =======================================================
+const finalLocaleStore: Record<string, any> = {};
+const SYSTEM_BASE_LANG = "en-US";
+
+// A. 获取基准数据
+const baseData = rawLocaleStore[SYSTEM_BASE_LANG] || {};
+
+// B. 遍历所有收集到的语言
+Object.keys(rawLocaleStore).forEach((lang) => {
+  if (lang === SYSTEM_BASE_LANG) {
+    finalLocaleStore[lang] = baseData;
+  } else {
+    // 这里的合并确保拥有 en-US 的结构 + zh-CN 的覆盖
+    finalLocaleStore[lang] = deepMerge(baseData, rawLocaleStore[lang]);
+  }
+});
+
+// C. 确保默认语言存在
+if (!finalLocaleStore[SYSTEM_BASE_LANG]) {
+  finalLocaleStore[SYSTEM_BASE_LANG] = baseData;
+}
+
+// === 调试输出 ===
 // if (import.meta.env.DEV) {
-//   // 这里的日志会在每次 HMR 时出现，了解刷新
-//   // console.log(`[Volantis] Configuration reloaded via HMR.`);
+//   Logger.say("---------------- RELOADER DEBUG ----------------");
+//   Logger.say("Available Locales:", Object.keys(finalLocaleStore));
+//   // 检查 zh-CN 下有没有 marquee
+//   if (finalLocaleStore["zh-CN"]?.components?.marquee) {
+//     Logger.say(
+//       "zh-CN Marquee Primary:",
+//       finalLocaleStore["zh-CN"].components.marquee.default.primaryContent,
+//     );
+//   } else {
+//     Logger.say("zh-CN Marquee NOT FOUND in final store");
+//   }
+//   Logger.say("------------------------------------------------");
 // }
 
+// =======================================================
+// 5. 导出
+// =======================================================
 export const LOADED_GLOBALS = globalStore;
-export const LOADED_COMPONENTS = componentStore;
-export const LOADED_INSTANCES = instanceStore;
+export const LOADED_LOCALES = finalLocaleStore;

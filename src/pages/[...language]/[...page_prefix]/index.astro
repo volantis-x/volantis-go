@@ -1,0 +1,110 @@
+---
+import Layout from "@/core/layouts/Layout.astro";
+import ThemeHome from "@THEME/Home.astro";
+import { getAllCollectionsInLang } from "@/core/i18n/content";
+import {
+  getSupportedLocales,
+  getDefaultLocale,
+  getLocalizedPath,
+  __t,
+} from "@/core/i18n";
+import type { LocaleConfig } from "@/core/types/i18n";
+
+type CollectionMap = Record<string, any[]>;
+
+export async function getStaticPaths() {
+  const PAGE_SIZES: Record<string, number> = {
+    blog: 5,
+    note: 5,
+    vlog: 4,
+    default: 10,
+  };
+
+  const locales = getSupportedLocales();
+  const defaultLoc = getDefaultLocale();
+
+  const allDataCache: Record<string, CollectionMap> = {};
+
+  function sliceCollections(collections: CollectionMap, pageNum: number) {
+    const result: CollectionMap = {};
+    for (const [name, items] of Object.entries(collections)) {
+      const size = PAGE_SIZES[name] || PAGE_SIZES.default;
+      const start = (pageNum - 1) * size;
+      const end = start + size;
+      result[name] = items.slice(start, end);
+    }
+    return result;
+  }
+
+  for (const loc of locales) {
+    // 这里的 getAllCollectionsInLang 内部已经有了 try-catch
+    // 所以即使 docs 文件夹为空，这里也只会返回空数组，不会崩
+    allDataCache[loc.code] = await getAllCollectionsInLang(loc.code);
+  }
+
+  return locales.flatMap((loc: LocaleConfig) => {
+    const collections = allDataCache[loc.code];
+    let maxPages = 1;
+
+    for (const [colName, items] of Object.entries(collections)) {
+      if (items && items.length > 0) {
+        const size = PAGE_SIZES[colName] || PAGE_SIZES.default;
+        const pages = Math.ceil(items.length / size);
+        if (pages > maxPages) maxPages = pages;
+      }
+    }
+
+    return Array.from({ length: maxPages }).map((_, i) => {
+      const pageNum = i + 1;
+      const pagePrefix = pageNum === 1 ? undefined : `page/${pageNum}`;
+
+      return {
+        params: {
+          language: loc.code === defaultLoc.code ? undefined : loc.path,
+          page_prefix: pagePrefix,
+        },
+        props: {
+          currentLang: loc.code,
+          currentPage: pageNum,
+          totalPages: maxPages,
+          slicedData: sliceCollections(collections, pageNum),
+        },
+      };
+    });
+  });
+}
+
+// =========================================================
+// 页面渲染逻辑
+// =========================================================
+const { currentLang, currentPage, totalPages, slicedData } = Astro.props;
+
+const prevLink =
+  currentPage > 1
+    ? getLocalizedPath(
+        currentPage === 2 ? "" : `page/${currentPage - 1}`,
+        currentLang
+      )
+    : null;
+
+const nextLink =
+  currentPage < totalPages
+    ? getLocalizedPath(`page/${currentPage + 1}`, currentLang)
+    : null;
+---
+
+<Layout
+  title={__t("ui.title", currentLang)}
+  description={__t("ui.description", currentLang)}
+>
+  <ThemeHome
+    data={slicedData}
+    lang={currentLang}
+    pagination={{
+      current: currentPage,
+      total: totalPages,
+      prev: prevLink,
+      next: nextLink,
+    }}
+  />
+</Layout>

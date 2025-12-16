@@ -1,0 +1,58 @@
+---
+// src/pages/[...language]/[collection]/[...slug].astro
+
+import Layout from "@/core/layouts/Layout.astro";
+import { getI18nCollection } from "@/core/i18n/content";
+import { getSupportedLocales, getDefaultLocale } from "@/core/i18n";
+import { SUPPORTED_COLLECTIONS } from "@/core/types/collections";
+// import type { LocaleConfig } from "@/core/types/i18n";
+
+// 引入主题的文章详情组件
+import ThemePost from "@THEME/Post.astro";
+
+export async function getStaticPaths() {
+  const locales = getSupportedLocales();
+  const defaultLoc = getDefaultLocale();
+
+  const paths = [];
+
+  // 1. 遍历所有支持的集合类型 (blog, note, news...)
+  for (const collectionName of SUPPORTED_COLLECTIONS) {
+    // 获取该集合下经过清洗的所有文章
+    // (getI18nCollection 内部已经处理了文件夹是否存在、为空的情况，安全)
+    const allItems = await getI18nCollection(collectionName);
+
+    // 2. 遍历所有语言
+    for (const loc of locales) {
+      // 过滤出当前语言的文章
+      const itemsInLang = allItems.filter((p) => p.lang === loc.code);
+
+      for (const item of itemsInLang) {
+        paths.push({
+          params: {
+            // 语言前缀: /zh-cn/ 或 undefined
+            language: loc.code === defaultLoc.code ? undefined : loc.path,
+            // 集合名: blog, news... (这就是动态的关键)
+            collection: collectionName,
+            // 文章路径: post-1
+            slug: item.cleanSlug,
+          },
+          props: {
+            post: item,
+            currentLang: loc.code,
+            collectionName: collectionName,
+          },
+        });
+      }
+    }
+  }
+
+  return paths;
+}
+
+const { post, currentLang, collectionName } = Astro.props;
+---
+
+<Layout title={post.data.title} description={post.data.description}>
+  <ThemePost post={post} lang={currentLang} collection={collectionName} />
+</Layout>

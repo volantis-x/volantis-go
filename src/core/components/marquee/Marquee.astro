@@ -1,103 +1,36 @@
 ---
-import {
-  getProcessedConfig,
-  getNamedInstanceConfig,
-} from "@/core/bootstrap/store";
+import { getComponentConfig } from "@/core/bootstrap/store";
+import { getCurrentLang } from "@/core/i18n";
 import type { MarqueeProps } from "./marquee.props";
-import { defaultMarqueeProps } from "./marquee.props";
 import MarqueeRenderer from "./MarqueeRenderer.astro";
 
-export interface Props extends Partial<MarqueeProps> {
-  instanceId?: string;
-  /**
-   * 强制渲染开关 (最高优先级)
-   */
-  forceRender?: boolean;
-}
-
+// Props 定义保持不变 (作为类型参考和覆盖来源)
 const { instanceId, forceRender, ...propsFromCaller } = Astro.props;
 
-// 1. 获取配置
-const globalConfig = getProcessedConfig("marquee") || defaultMarqueeProps;
+// 1. 确定语言
+const currentLang = getCurrentLang(Astro.url);
 
-// 2. 获取实例
-let instanceConfig: Partial<MarqueeProps> = {};
-if (instanceId) {
-  const found = getNamedInstanceConfig("marquee", instanceId);
-  if (found) instanceConfig = found;
-}
+// 2. 从 Store 获取完整配置 (包含 逻辑参数 和 文本内容)
+// 这已经合并了：System Default -> User Locale Default -> User Locale Instance
+const storeConfig = getComponentConfig<MarqueeProps>(
+  "marquee",
+  currentLang,
+  instanceId
+);
 
-// 3. 合并 Props
+// 3. 最终合并 (Props 传参优先级最高)
 const finalProps: MarqueeProps = {
-  ...globalConfig,
-  ...instanceConfig,
+  ...storeConfig,
   ...propsFromCaller,
 };
 
-// ============================================================
-// 4. 智能路由判断逻辑
-// ============================================================
-const currentPath = Astro.url.pathname;
+// 4. 渲染检查
+// 如果 storeConfig 为空且没传 props，说明用户既没配置也没默认值，finalProps 可能不完整
+// 依靠 MarqueeRenderer 的默认值兜底，或者在这里 check enable
+const shouldRender = finalProps.enable !== false; // 默认为 true
 
-function checkVisibility(): boolean {
-  // A. 总开关 (优先级 1)
-  if (finalProps.enable === false) return false;
-
-  // B. 强制渲染 (优先级 0 - 最高)
-  if (forceRender === true) return true;
-
-  const v = finalProps.visibility;
-
-  // C. 如果没有定义 visibility 规则，默认全站显示
-  if (!v) return true;
-
-  // ----------------------------------------------------------
-  // D. 规则匹配 (Strict Mode)
-  // ----------------------------------------------------------
-
-  // 1. 标准化路径 (处理尾部斜杠)
-  // 例如 "/blog/" -> "/blog", "/blog/post-1" -> "/blog/post-1"
-  // 根路径 "/" 保持 "/"
-  let normalizedPath = currentPath;
-  if (normalizedPath.length > 1 && normalizedPath.endsWith("/")) {
-    normalizedPath = normalizedPath.slice(0, -1);
-  }
-
-  const isHomePage = normalizedPath === "/" || normalizedPath === "";
-
-  // 2. 黑名单检查 (Excludes)
-  if (v.excludes && Array.isArray(v.excludes) && v.excludes.length > 0) {
-    const isExcluded = v.excludes.some((pattern) =>
-      new RegExp(pattern).test(normalizedPath)
-    );
-    if (isExcluded) return false;
-  }
-
-  // 3. 首页检查
-  if (isHomePage) {
-    // 默认为 true，除非显式设为 false
-    return v.showOnHomePage !== false;
-  }
-
-  // 4. 白名单检查 (Includes) - 针对非首页
-  if (v.includes && Array.isArray(v.includes) && v.includes.length > 0) {
-    const isIncluded = v.includes.some((pattern) =>
-      new RegExp(pattern).test(normalizedPath)
-    );
-    // 如果在白名单里，显示
-    if (isIncluded) return true;
-  }
-
-  // E. 默认兜底 (Strict Mode Key)
-  // 只要定义了 visibility 对象，且当前页不是首页，也没中白名单，
-  // 那么就应该隐藏！
-  return false;
-}
-
-const shouldRender = checkVisibility();
-
-// 看控制台输出
-// console.log(`[Marquee Debug] Path: ${currentPath}, Render: ${shouldRender}, Visibility:`, finalProps.visibility);
+// DEBUG
+// console.log('[Marquee Debug] Config:', JSON.stringify(storeConfig, null, 2));
 ---
 
 {shouldRender && <MarqueeRenderer {...finalProps} />}

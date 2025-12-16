@@ -10,11 +10,7 @@
       "@userConfig/*": ["./content/config/*"],
       "@components/*": ["./src/core/components/*"],
       "@layoutComps/*": ["./src/core/layouts/components/*"],
-      "@helpers/*": ["./src/helpers/*"],
-      "@lib/*": ["./src/helpers/lib/*"],
-      "@utils/*": ["./src/helpers/utils/*"],
-      "@NormalizeCSS*": ["./src/core/themes/normalize.css"],
-      "@config/*": ["./src/config/*"]
+      "@NormalizeCSS*": ["./src/core/themes/normalize.css"]
     },
     "plugins": [
       {

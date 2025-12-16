@@ -1,31 +1,207 @@
 ---
+// =========================================================
+// 1. Imports & Config
+// =========================================================
 import { ClientRouter } from "astro:transitions";
-import { CONFIG } from "@userConfig/site.config";
-import type { Frontmatter } from "../../core/types/page";
-import HeadContent from "../layouts/partials/HeadContent.astro";
+import { getGlobalConfig } from "@/core/bootstrap/store";
+import {
+  getCurrentLang,
+  getLocalizedPath,
+  getSupportedLocales,
+  __t,
+} from "@/core/i18n";
+
+// Components
 import Style from "@THEME/Style.astro";
 import HeadScript from "@THEME/HeadScript.astro";
 
-const { title, description, author, image, cover, pageType }: Frontmatter =
-  Astro.props;
+// Configs
+const siteConfig = getGlobalConfig("site")!.CONFIG;
+const i18n = getGlobalConfig("i18n")!.I18N;
+
+// =========================================================
+// 2. Data Preparation (Props & Defaults)
+// =========================================================
+const {
+  pageType = "website",
+  lang,
+  cleanPath = "",
+  // 解构出特定页面的描述，如果没传则为 undefined
+  description: pageDescription,
+  author: pageAuthor,
+  title: pageTitle,
+  cover: pageCover,
+  image: pageImage,
+} = Astro.props;
+
+const currentLang = lang || getCurrentLang(Astro.url);
+const siteName = __t("ui.title", currentLang); // 站点名称
+const siteDescription = __t("ui.description", currentLang); // 站点通用描述
+
+// 优先使用页面特定描述，没有则回退到站点描述
+const description = pageDescription || siteDescription;
+const author =
+  pageAuthor || __t("ui.author", currentLang) || siteConfig.DEFAULT_AUTHOR;
+const favicon = siteConfig.FAVICON || "favicon.ico";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// =========================================================
+// 3. Title Logic (Smart Generation)
+// =========================================================
+let title = pageTitle || siteName;
+const joinDelimiter = siteConfig.DELIMITER ? ` | ` : ` - `;
+
+// 路径标准化对比 (移除末尾斜杠)
+const normalizePath = (p: string) => p.replace(/\/$/, "") || "/";
+const homePath = getLocalizedPath("/", currentLang);
+const isHome = normalizePath(Astro.url.pathname) === normalizePath(homePath);
+
+// 拼接逻辑: (非首页) && (标题不同) && (长度允许) => 追加站点名
+if (
+  siteConfig.ADD_TITLE &&
+  !isHome &&
+  title !== siteName &&
+  title.length + siteName.length + 3 <= 55
+) {
+  title = `${title}${joinDelimiter}${siteName}`;
+}
+
+// =========================================================
+// 4. Image Logic (Cover > Image > Default)
+// =========================================================
+// 优先 cover，其次 image，最后 undefined (不显示 og:image 或使用 favicon)
+const targetImage = pageCover || pageImage;
+
+let resolvedImage = undefined;
+if (targetImage?.src) {
+  resolvedImage = {
+    src: new URL(targetImage.src, Astro.site).toString(),
+    alt: targetImage.alt || title,
+  };
+} else {
+  // 可选：如果没有文章封面，是否使用网站默认 OG 图？
+  // 如果需要，可以在这里设置默认图
+  // resolvedImage = { src: new URL("default-og.png", Astro.site).toString(), alt: siteName };
+}
+
+// =========================================================
+// 5. SEO & Hreflang Logic
+// =========================================================
+const alternates: { href: string; hreflang: string }[] = [];
+const locales = getSupportedLocales();
+
+// 检查当前站点是否支持 en-US
+// (注意：这里严格检查 code 是否为 en-US，或者你可以放宽检查 startsWith('en'))
+const hasEnglish = locales.some((loc) => loc.code === "en-US");
+
+if (locales.length > 1) {
+  locales.forEach((loc) => {
+    const href = new URL(getLocalizedPath(cleanPath, loc.code), Astro.site);
+    alternates.push({
+      href: href.toString(),
+      hreflang: loc.code,
+    });
+  });
+}
+
+// --- 计算 x-default 的目标语言 ---
+let xDefaultLang = i18n.DEFAULT_LOCALE; // 默认回退到站点默认语言
+
+if (i18n.FALLBACK_TO_EN && hasEnglish) {
+  // 如果开启了英文回退，且站点确实有英文版
+  xDefaultLang = "en-US";
+}
+
+const xDefaultHref = new URL(
+  getLocalizedPath(cleanPath, xDefaultLang),
+  Astro.site
+);
+
+// OG Locale 格式通常是下划线 (如 zh_CN)，而 URL 是中划线 (zh-CN)
+// 虽然现在的规范也兼容中划线，但为了最大兼容性，可以替换一下
+const ogLocale = currentLang.replace("-", "_");
+
+// =========================================================
+// Generator Logic (高效构建)
+// =========================================================
+// 1. 构建信息数组
+// 使用条件判断：如果配置为 true，则推入字符串，否则推入 null/false
+const generatorParts = [
+  siteConfig.SHOW_VOLANTIS_VERSION
+    ? `Volantis GO v${__VOLANTIS_VERSION__}`
+    : null,
+  siteConfig.SHOW_ASTRO_GENERATOR ? Astro.generator : null,
+];
+
+// 2. 清洗并合并
+// filter(Boolean) 会自动移除 null, undefined, false
+// join(" | ") 会自动在剩余元素中间加上分隔符
+const generatorContent = generatorParts.filter(Boolean).join(" | ");
 ---
 
 <head>
-  <HeadContent
-    title={title}
-    description={description}
-    author={author}
-    image={image}
-    cover={cover}
-    pageType={pageType}
-  />
+  {/* --- 1. Basic Metadata --- */}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  {/* Generator Meta Tag */}
+  {/* 只有当 generatorContent 不为空字符串时才渲染 */}
+  {generatorContent && <meta name="generator" content={generatorContent} />}
+
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  {author && <meta name="author" content={author} />}
+  <meta name="format-detection" content="telephone=no, email=no" />
+
+  {/* --- 2. Icons & Verification --- */}
+  <link rel="icon" href={favicon} />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+
+  {/* --- 3. Canonical & Hreflang --- */}
+  <link rel="canonical" href={canonicalURL} />
   {
-    // 是否启用视图过渡动画
-    // Use view transitions
-    CONFIG?.VIEW_TRANSITIONS && <ClientRouter />
+    i18n.ENABLE && (
+      <>
+        {alternates.map((link) => (
+          <link rel="alternate" href={link.href} hreflang={link.hreflang} />
+        ))}
+        <link rel="alternate" href={xDefaultHref} hreflang="x-default" />
+      </>
+    )
   }
 
+  {/* --- 4. Open Graph (Facebook/LinkedIn) --- */}
+  <meta property="og:site_name" content={siteName} />
+  <meta property="og:type" content={pageType} />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:locale" content={ogLocale} />
+  {
+    resolvedImage && (
+      <>
+        <meta property="og:image" content={resolvedImage.src} />
+        <meta property="og:image:alt" content={resolvedImage.alt} />
+      </>
+    )
+  }
+
+  {/* --- 5. Twitter Card --- */}
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content={canonicalURL} />
+  <meta property="twitter:title" content={title} />
+  <meta property="twitter:description" content={description} />
+  {
+    resolvedImage && (
+      <>
+        <meta property="twitter:image" content={resolvedImage.src} />
+        <meta name="twitter:image:alt" content={resolvedImage.alt} />
+      </>
+    )
+  }
+
+  {/* --- 6. Scripts & Styles --- */}
+  {siteConfig?.VIEW_TRANSITIONS && <ClientRouter />}
   <Style />
   <HeadScript />
 </head>

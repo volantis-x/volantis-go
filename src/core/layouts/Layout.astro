@@ -1,23 +1,27 @@
 ---
-import { CONFIG } from "@userConfig/site.config";
+// import { getGlobalConfig } from "@/core/bootstrap/store";
 import Head from "../layouts/Head.astro";
-import type { Frontmatter } from "../../core/types/page";
-import BaseLayout from "../layouts/partials/base/Layout.astro";
+// import type { Frontmatter } from "@/core/types/page";
+import { getLanguageDirection, getCurrentLang, __t } from "@/core/i18n";
+
+const currentLang = Astro.props.lang || getCurrentLang(Astro.url);
+// const i18nConfig = getGlobalConfig("i18n")!.I18N;
 
 const {
-  title = CONFIG.DEFAULT_TITLE,
-  description = CONFIG.DEFAULT_DESCRIPTION,
-  author = CONFIG.DEFAULT_AUTHOR,
+  title = __t("ui.title", currentLang),
+  description = __t("ui.description", currentLang),
+  author = __t("ui.author", currentLang),
   image,
   cover,
   pageType = "website",
-}: Frontmatter = Astro.props;
+  cleanPath = "", // 默认为空 (首页)
+} = Astro.props;
 
-const dir = CONFIG.DIR === "rtl" ? "rtl" : "ltr";
+const textDirection = getLanguageDirection(currentLang);
 ---
 
 <!doctype html>
-<html lang={CONFIG.DEFAULT_LOCALE} dir={dir}>
+<html lang={currentLang} dir={textDirection}>
   <Head
     title={title}
     description={description}
@@ -25,21 +29,8 @@ const dir = CONFIG.DIR === "rtl" ? "rtl" : "ltr";
     image={image}
     cover={cover}
     pageType={pageType}
+    cleanPath={cleanPath}
   />
 
-  {
-    // 加载当前主题的布局，默认为 "base" 主题。
-    // Load layout for the current theme, defaulting to "base".
-    {
-      base: (
-        <BaseLayout>
-          <slot />
-        </BaseLayout>
-      ),
-    }[__VOLANTIS_THEME__] || (
-      <BaseLayout>
-        <slot />
-      </BaseLayout>
-    )
-  }
+  <slot />
 </html>

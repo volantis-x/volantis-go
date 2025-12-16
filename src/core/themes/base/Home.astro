@@ -1,0 +1,57 @@
+---
+import Marquee from "@/core/components/marquee/Marquee.astro";
+import { __t } from "@/core/i18n";
+
+interface Props {
+  data: Record<string, any[]>;
+  lang: string;
+  pagination: any;
+}
+
+const { data, lang, pagination } = Astro.props;
+
+const visibleSections = Object.entries(data).filter(([_key, items]) => {
+  return Array.isArray(items) && items.length > 0;
+});
+---
+
+<Marquee instanceId="homeTop" />
+
+<main>
+  {
+    visibleSections.map(([name, items]) => (
+      <section class={`section-${name}`}>
+        <h2>{name}</h2>
+        <div class="post-list">
+          {items.map((post: any) => (
+            <article>
+              <h3>
+                <a href={post.permalink}>{post.data.title}</a>
+              </h3>
+              {post.data.description && <p>{post.data.description}</p>}
+            </article>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  {
+    pagination.total > 1 && (
+      <nav
+        class="pagination"
+        style="margin-top: 2rem; display: flex; gap: 1rem;"
+      >
+        {pagination.prev && (
+          <a href={pagination.prev}>← {__t("ui.paginationPrev", lang)}</a>
+        )}
+        <span>
+          Page {pagination.current} / {pagination.total}
+        </span>
+        {pagination.next && (
+          <a href={pagination.next}>{__t("ui.paginationNext", lang)} →</a>
+        )}
+      </nav>
+    )
+  }
+</main>

@@ -1,0 +1,70 @@
+---
+// src/pages/[...language]/[collection]/[...page].astro
+
+import Layout from "@/core/layouts/Layout.astro";
+import { getI18nCollection } from "@/core/i18n/content";
+import { getSupportedLocales, getDefaultLocale, __t } from "@/core/i18n";
+import { SUPPORTED_COLLECTIONS } from "@/core/types/collections";
+// import type { LocaleConfig } from "@/core/types/i18n";
+
+// 引入主题的列表组件 (Archive)
+import ThemeArchive from "@THEME/Archive.astro";
+
+// const PAGE_SIZE = 10;
+
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+  const locales = getSupportedLocales();
+  const defaultLoc = getDefaultLocale();
+
+  // 这里的 flatMap 会返回所有可能的路径组合
+  const paths = [];
+
+  // 1. 遍历所有集合
+  for (const collectionName of SUPPORTED_COLLECTIONS) {
+    const allItems = await getI18nCollection(collectionName);
+
+    // 2. 遍历所有语言
+    for (const loc of locales) {
+      const itemsInLang = allItems.filter((p) => p.lang === loc.code);
+
+      // 排序
+      itemsInLang.sort((a, b) => {
+        const timeA = a.data.date?.valueOf() ?? 0;
+        const timeB = b.data.date?.valueOf() ?? 0;
+        return timeB - timeA;
+      });
+
+      // 3. 生成分页数据
+      // paginate 会自动生成 params.page (第一页为 undefined, 之后为 'page/2')
+      const paginatedPaths = paginate(itemsInLang, {
+        pageSize: 10,
+        params: {
+          language: loc.code === defaultLoc.code ? undefined : loc.path,
+          collection: collectionName, // 动态注入集合名
+        },
+        props: {
+          currentLang: loc.code,
+          collectionName: collectionName,
+        },
+      });
+
+      paths.push(...paginatedPaths);
+    }
+  }
+
+  return paths;
+}
+
+const { page, currentLang, collectionName } = Astro.props;
+
+// 动态生成标题：比如 "Blog - Page 1" 或 "News - Page 1"
+// 建议在 i18n/ui.ts 里加一个集合名称的翻译，如 ui.collections.blog
+const collectionTitle =
+  __t(`ui.collections.${collectionName}`, currentLang) ||
+  collectionName.toUpperCase();
+const pageTitle = `${collectionTitle} - ${__t("ui.page", currentLang)} ${page.currentPage}`;
+---
+
+<Layout title={pageTitle}>
+  <ThemeArchive page={page} lang={currentLang} collection={collectionName} />
+</Layout>

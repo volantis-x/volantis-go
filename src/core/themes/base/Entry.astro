@@ -1,0 +1,24 @@
+<!-- ---
+// src/themes/base/Entry.astro
+import BlogLayout from "../../layouts/partials/base/Layout.astro";
+// import DocsLayout from "./layouts/DocsLayout.astro";
+// import DefaultLayout from "./layouts/DefaultLayout.astro";
+
+const { post, lang, collection } = Astro.props;
+
+// 根据集合类型选择不同的布局
+let ComponentToRender;
+
+switch (collection) {
+  case "blog":
+    ComponentToRender = BlogLayout;
+    break;
+  // case "docs":
+  //   ComponentToRender = DocsLayout;
+  //   break;
+  default:
+    ComponentToRender = BlogLayout;
+}
+---
+
+<ComponentToRender post={post} lang={lang} /> -->

@@ -98,7 +98,7 @@ function createLogger() {
     }
   };
   logger.say = (...args: any[]) => {
-    console.log(format("SAY", ""),...args);
+    console.log(format("SAY", ""), ...args);
   };
   logger.log = (...args: any[]) => {
     console.log(...args);
