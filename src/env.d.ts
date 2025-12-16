@@ -8,4 +8,7 @@ declare global {
 
   // 声明 Vite 注入的全局常量
   const __VOLANTIS_THEME__: ThemeKey;
+
+  // 版本号
+  const __VOLANTIS_VERSION__: string;
 }

@@ -14,7 +14,7 @@ import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
 import configInitializer from "./src/core/bootstrap/integration";
 import { Logger } from "./src/core/logger";
 import { SUPPORTED_THEMES, type ThemeKey } from "./src/core/types/themes.ts";
-import * as SiteDefaults from "./src/core/defaults/site.default";
+import * as SiteDefaults from "./src/core/defaults/site.default.ts";
 
 // ============================================================================
 // 1. Constants & Paths
@@ -28,10 +28,12 @@ const PATHS = {
     process.cwd(),
     "content",
     "config",
-    "site.config.ts",
+    "site.config.ts"
   ),
   relativeUserConfig: "./content/config/site.config.ts",
 };
+const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf-8"));
+const APP_VERSION = packageJson.version;
 
 // ============================================================================
 // 2. Helper Functions
@@ -58,14 +60,14 @@ function ensureProjectStructure() {
   if (!fs.existsSync(PATHS.userConfig)) {
     Logger.error(
       "Astro_Config_site_config_not_found_error",
-      PATHS.relativeUserConfig,
+      PATHS.relativeUserConfig
     );
     Logger.info("Astro_Config_ensure_site_config_exists");
 
     const exampleConfigPath = path.resolve(
       PATHS.example,
       "config",
-      "site.config.ts",
+      "site.config.ts"
     );
     if (fs.existsSync(exampleConfigPath)) {
       Logger.info("Astro_Config_example_site_config_exists");
@@ -88,7 +90,7 @@ async function loadUserConfig(): Promise<any> {
   } catch (e: any) {
     Logger.error(
       "Astro_Config_load_failed_title_error",
-      PATHS.relativeUserConfig,
+      PATHS.relativeUserConfig
     );
     Logger.error("Astro_Config_load_failed_ensure_file_error");
     Logger.error("Astro_Config_load_failed_original_error", e.message);
@@ -116,7 +118,7 @@ function resolveThemeName(inputTheme: unknown): ThemeKey {
   // 验证失败：打印警告并回退
   Logger.warn(
     "Active_Theme_invalid_user_them",
-    `"${PATHS.relativeUserConfig} -> [UserTheme]"`,
+    `"${PATHS.relativeUserConfig} -> [UserTheme]"`
   );
 
   return defaultTheme;
@@ -174,6 +176,9 @@ async function generateAstroConfig() {
         // 我们定义一个特殊的全局变量名，通常以下划线开头和结尾
         // 必须用 JSON.stringify 包裹，否则 Vite 会把 'base' 当作变量名而不是字符串
         __VOLANTIS_THEME__: JSON.stringify(ACTIVE_THEME_NAME),
+
+        // 项目版本号
+        __VOLANTIS_VERSION__: JSON.stringify(APP_VERSION),
       },
       resolve: {
         alias: {
@@ -182,11 +187,7 @@ async function generateAstroConfig() {
           "@userConfig": "/content/config",
           "@components": "/src/core/components",
           "@layoutComps": "/src/core/layouts/components",
-          "@helpers": "/src/helpers",
-          "@lib": "/src/helpers/lib",
-          "@utils": "/src/helpers/utils",
           "@NormalizeCSS": "/src/core/themes/normalize.css",
-          "@config": "/src/config",
         },
       },
     },
