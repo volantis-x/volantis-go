@@ -1,5 +1,6 @@
 ---
-import { CONFIG } from "@userConfig/site.config";
+import { getGlobalConfig } from "@/core/bootstrap/store";
+const siteConfig = getGlobalConfig("site")!.CONFIG
 
 // 初始化重置样式表，确保跨浏览器一致性
 // Initialize normalize CSS for cross-browser consistency
@@ -7,16 +8,18 @@ import "../normalize.css";
 
 // 加载基础主题的样式
 // Load base theme styles
-import "@THEME/themeStyle.css";
-import "@THEME/variables.css";
+import "./themeStyle.css";
+import "./variables.css";
 
 // 加载用户自定义样式
 // Load user-defined custom styles
-import "@userConfig/style.css";
+// 使用 import.meta.glob 替代直接 import, 以增加安全性
+// - eager: true 表示立即导入 (产生 CSS 注入的副作用)
+import.meta.glob("/content/config/style.css", { eager: true });
 ---
 
 {/*
   如果用户在网站配置中启用了较小的字体，则应用该字体大小。
   Apply smaller font size if enabled in site configuration.
 */}
-{CONFIG?.USE_SMALLER_FONT && <style>html {font-size: 14px;}</style>}
+{siteConfig?.USE_SMALLER_FONT && <style>html {font-size: 14px;}</style>}

@@ -11,9 +11,13 @@ import {
   __t,
 } from "@/core/i18n";
 
-// Components
-import Style from "@THEME/Style.astro";
-import HeadScript from "@THEME/HeadScript.astro";
+// Dynamic Theme Components Loading
+const styleModules = import.meta.glob('@THEME/Style.astro', { eager: true });
+const scriptModules = import.meta.glob('@THEME/HeadScript.astro', { eager: true });
+const styleModule = Object.values(styleModules)[0] as any;
+const scriptModule = Object.values(scriptModules)[0] as any;
+const ThemeStyle = styleModule?.default;
+const ThemeHeadScript = scriptModule?.default;
 
 // Configs
 const siteConfig = getGlobalConfig("site")!.CONFIG;
@@ -208,7 +212,7 @@ const generatorContent = generatorParts.filter(Boolean).join(" | ");
   }
 
   {/* --- 6. Scripts & Styles --- */}
+  {ThemeStyle && <ThemeStyle />}
+  {ThemeHeadScript && <ThemeHeadScript />}
   {siteConfig?.VIEW_TRANSITIONS && <ClientRouter />}
-  <Style />
-  <HeadScript />
 </head>
