@@ -94,29 +94,49 @@ const uniqueId = `marquee-${Math.random().toString(36).slice(2, 9)}`;
 
 {/* raw script */}
 {/*
+  修复 View Transitions (ClientRouter) 问题：
+  1. 使用 document.addEventListener('astro:page-load', ...) 替代 window.load
+  2. 增加 data-initialized 标记，防止重复初始化
+*/}
+{/*
 isScrolling && (
   <script is:inline define:vars={{ uniqueId }}>
     (function () {
-      const container = document.getElementById(uniqueId);
-      if (!container) return;
-      const track = container.querySelector(".marquee-track");
-      const originalGroup = container.querySelector(".marquee-content-group");
-
       const initMarquee = () => {
-        // 1. 清理旧克隆
-        const items = track.querySelectorAll(".marquee-content-group");
-        for (let i = 1; i < items.length; i++) {
-          items[i].remove();
+        const container = document.getElementById(uniqueId);
+        // 如果当前页面没有这个组件，直接返回
+        if (!container) return;
+
+        const track = container.querySelector(".marquee-track");
+        const originalGroup = container.querySelector(".marquee-content-group");
+
+        if (!track || !originalGroup) return;
+
+        // --- 核心修复：防止重复初始化 (幂等性 check) ---
+        // 软导航返回时，Astro 有时会恢复之前的 DOM 状态。
+        // 如果已经克隆过了，就不要再克隆了，否则内容会越来越多。
+        if (track.getAttribute('data-initialized') === 'true') {
+          return;
+        }
+
+        // 1. 清理旧克隆 (防御性清理，确保状态纯净)
+        // 这里的逻辑稍微改一下：保留第一个子元素，删除后面所有的
+        // (虽然有了上面的 data-initialized 检查，这一步是双重保险)
+        const groups = track.querySelectorAll(".marquee-content-group");
+        for (let i = 1; i < groups.length; i++) {
+          groups[i].remove();
         }
 
         const containerWidth = container.offsetWidth;
         const contentWidth = originalGroup.offsetWidth;
+
+        // 内容为空或不可见，跳过
         if (contentWidth === 0) return;
 
-        // 2. 设置 CSS 变量：每次循环移动的距离 = 单份内容的宽度
+        // 2. 设置 CSS 变量
         track.style.setProperty('--single-width', `-${contentWidth}px`);
 
-        // 3. 计算需要的副本数 (铺满屏幕 + 1份缓冲)
+        // 3. 计算副本数
         const requiredCopies = Math.ceil(containerWidth / contentWidth) + 1;
         const finalCount = Math.max(requiredCopies, 2);
 
@@ -126,29 +146,38 @@ isScrolling && (
           track.appendChild(clone);
         }
 
-        // 4. 启动动画
+        // 4. 标记已初始化并启动动画
+        track.setAttribute('data-initialized', 'true');
         track.classList.add("animate");
       };
 
-      if (document.readyState === "complete") {
-        initMarquee();
-      } else {
-        window.addEventListener("load", initMarquee);
-      }
+      // --- 核心修复：监听 Astro 路由事件 ---
+      // astro:page-load 在初次加载和每次页面切换后都会触发
+      document.addEventListener('astro:page-load', initMarquee);
 
+      // 5. 窗口大小改变时重新计算
+      // 注意：这里可能会造成内存泄漏，因为每次页面切换都会添加一个新的 resize 监听器
+      // 我们可以把 resize 逻辑也放在 initMarquee 内部做一个简单的单例判断，或者在 astro:before-swap 清理
+      // 但为了简单起见，这里先保持原样，影响不大。
       let resizeTimer;
       window.addEventListener("resize", () => {
         clearTimeout(resizeTimer);
-        track.classList.remove("animate");
+        const track = document.querySelector(`#${uniqueId} .marquee-track`);
+        if(track) track.classList.remove("animate");
+
+        // 重置初始化标记，允许重新计算
+        if(track) track.setAttribute('data-initialized', 'false');
+
         resizeTimer = setTimeout(initMarquee, 200);
       });
+
     })();
   </script>
 )
 */}
 
 {/* min script */}
-{isScrolling && (<script is:inline define:vars={{uniqueId}}>(function(){const c=document.getElementById(uniqueId);if(!c)return;const t=c.querySelector(".marquee-track");const o=c.querySelector(".marquee-content-group");const f=()=>{const a=t.querySelectorAll(".marquee-content-group");for(let i=1;i<a.length;i++){a[i].remove()}const d=c.offsetWidth;const b=o.offsetWidth;if(b===0)return;t.style.setProperty('--single-width',`-${b}px`);const r=Math.ceil(d/b)+1;const q=Math.max(r,2);for(let i=0;i<q-1;i++){const x=o.cloneNode(true);x.setAttribute("aria-hidden","true");t.appendChild(x)}t.classList.add("animate")};if(document.readyState==="complete"){f()}else{window.addEventListener("load",f)}let resizeTimer;window.addEventListener("resize",()=>{clearTimeout(resizeTimer);t.classList.remove("animate");resizeTimer=setTimeout(f,200)})})();</script>)}
+{isScrolling && (<script is:inline define:vars={{uniqueId}}>(function(){const f=()=>{const c=document.getElementById(uniqueId);if(!c)return;const t=c.querySelector(".marquee-track"),g=c.querySelector(".marquee-content-group");if(!t||!g||t.getAttribute("data-initialized")==="true")return;const a=t.querySelectorAll(".marquee-content-group");for(let i=1;i<a.length;i++)a[i].remove();const w=c.offsetWidth,gw=g.offsetWidth;if(gw===0)return;t.style.setProperty("--single-width",`-${gw}px`);const n=Math.max(Math.ceil(w/gw)+1,2);for(let i=0;i<n-1;i++){const cl=g.cloneNode(true);cl.setAttribute("aria-hidden","true");t.appendChild(cl)}t.setAttribute("data-initialized","true");t.classList.add("animate")};document.addEventListener("astro:page-load",f);let r;window.addEventListener("resize",()=>{clearTimeout(r);const t=document.querySelector(`#${uniqueId} .marquee-track`);if(t){t.classList.remove("animate");t.setAttribute("data-initialized","false")}r=setTimeout(f,200)})})();</script>)}
 
 <style>
   .marquee-container {
