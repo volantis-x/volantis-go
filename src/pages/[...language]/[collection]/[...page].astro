@@ -23,9 +23,21 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
   for (const collectionName of SUPPORTED_COLLECTIONS) {
     const allItems = await getI18nCollection(collectionName);
 
+    // 如果这个集合里没有任何内容 (或目录不存在返回了空数组)
+    // 直接跳过，不要为它生成任何路由！
+    if (!allItems || allItems.length === 0) {
+      continue;
+    }
+
     // 2. 遍历所有语言
     for (const loc of locales) {
       const itemsInLang = allItems.filter((p) => p.lang === loc.code);
+
+      // 如果希望 "英文版没 Docs 就不生成英文 Docs 首页"，可以在这里也加个判断
+      // if (itemsInLang.length === 0) continue;
+      // 但通常保留一个空列表页也是可以接受的，看你需求。
+      // 既然你希望彻底不生成，建议加上：
+      if (itemsInLang.length === 0) continue;
 
       // 排序
       itemsInLang.sort((a, b) => {
