@@ -19,6 +19,9 @@ const formattedDate = post.data.date
       day: "numeric",
     })
   : "";
+
+// post.data.author 可能是 undefined (因为我们在 config 里去掉了 default)
+const displayAuthor = post.data.author || __t("ui.author", lang);
 ---
 
 <article class="post-container">
@@ -53,7 +56,7 @@ const formattedDate = post.data.date
         post.data.author && (
           <span class="meta-item">
             <span class="meta-label">{__t("ui.author", lang) || "By"}:</span>
-            <span class="author-name">{post.data.author}</span>
+            <span class="author-name">{displayAuthor}</span>
           </span>
         )
       }

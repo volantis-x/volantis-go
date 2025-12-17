@@ -1,6 +1,5 @@
 export type Config = {
   FAVICON: string;
-  DEFAULT_AUTHOR: string;
   ADD_TITLE: boolean;
   DELIMITER: boolean;
   VIEW_TRANSITIONS: boolean;

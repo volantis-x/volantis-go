@@ -1,11 +1,7 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
-import { CONFIG } from "@userConfig/site.config";
 import fs from "node:fs";
 import path from "node:path";
-
-const DEFAULT_AUTHOR =
-  CONFIG.DEFAULT_AUTHOR !== undefined ? CONFIG.DEFAULT_AUTHOR : "Admin";
 
 const commonSchema = z.object({
   title: z
@@ -22,7 +18,7 @@ const commonSchema = z.object({
           WARNING-ZH: 标题【title】字数至少 1 个字符起，请保持标题在 30 个汉字以内。
           WARNING-EN: Title must be at least 1 character long, Please keep title under 60 characters.
           `,
-      }),
+      })
     ),
   description: z
     .string()
@@ -38,7 +34,7 @@ const commonSchema = z.object({
     .nullable()
     .optional()
     .transform((val) => val || new Date()),
-  author: z.string().default(DEFAULT_AUTHOR).optional(),
+  author: z.string().optional(),
 
   // 宽松的 categories 和 tags 处理
   categories: z
@@ -80,11 +76,14 @@ for (const name of POTENTIAL_COLLECTIONS) {
     const files = fs.readdirSync(dirPath);
     // 简单的检查：是否有文件（不一定是 md，但至少要有东西）
     // 如果想要更严谨，可以检查是否有 .md/.mdx 等后缀
-    const hasContent = files.some(file => !file.startsWith('.')); // 忽略 .DS_Store
+    const hasContent = files.some((file) => !file.startsWith(".")); // 忽略 .DS_Store
 
     if (hasContent) {
       loadedCollections[name] = defineCollection({
-        loader: glob({ pattern: '**/*.(md|mdx|mdoc)', base: `./content/${name}` }),
+        loader: glob({
+          pattern: "**/*.(md|mdx|mdoc)",
+          base: `./content/${name}`,
+        }),
         schema: commonSchema,
       });
     }

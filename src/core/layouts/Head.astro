@@ -40,8 +40,7 @@ const siteDescription = __t("ui.description", currentLang); // 站点通用描�
 
 // 优先使用页面特定描述，没有则回退到站点描述
 const description = pageDescription || siteDescription;
-const author =
-  pageAuthor || __t("ui.author", currentLang) || siteConfig.DEFAULT_AUTHOR;
+const author = pageAuthor || __t("ui.author", currentLang) || "";
 const favicon = siteConfig.FAVICON || "favicon.ico";
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 

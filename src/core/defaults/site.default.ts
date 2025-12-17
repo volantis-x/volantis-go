@@ -9,7 +9,6 @@ export const UserTheme: string = "base";
 
 export const CONFIG: Config = {
   FAVICON: "favicon.ico",
-  DEFAULT_AUTHOR: "Admin",
   ADD_TITLE: true,
   DELIMITER: false,
   VIEW_TRANSITIONS: false,

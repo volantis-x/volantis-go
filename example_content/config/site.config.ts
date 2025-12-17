@@ -25,22 +25,6 @@ export const CONFIG: Config = {
   // Set the default icon for the website
   FAVICON: "favicon.ico",
 
-  // 设置网站的默认语言
-  // Set the default language for your website, for example "en"
-  // DEFAULT_LOCALE: "zh-cn",
-
-  // 网站标题。显示在浏览器标签页和社交媒体分享中。
-  // Website title. Displayed in browser tab and social media shares.
-  // DEFAULT_TITLE: "Volantis GO",
-
-  // 网站简短描述。用于搜索引擎优化和社交媒体分享。
-  // Short website description. Used for SEO and social media shares.
-  // DEFAULT_DESCRIPTION: "A content site built with Astro",
-
-  // 默认作者名称。用于文章元数据和作者页面。
-  // Default author name. Used for article metadata and author pages.
-  DEFAULT_AUTHOR: "Admin",
-
   // 是否在页面标题后添加网站标题。仅当标题字数较少时添加，例如 "页面标题 | 网站标题"。
   // Append website title to page titles. Only applied when the title is short, e.g., "Page Title | Website Title".
   ADD_TITLE: true,
