@@ -77,14 +77,31 @@ export function getLocalizedPath(path: string, lang: LocaleCode): string {
   // 移除开头的 /
   const cleanPath = safePath.startsWith("/") ? safePath.slice(1) : safePath;
 
+  let result = "";
+
   // 策略：如果 i18n 关闭，或者目标语言是默认语言 -> 不带前缀
   if (!cfg.ENABLE || lang === cfg.DEFAULT_LOCALE) {
-    return `/${cleanPath}`;
+    // 🟢 修复：赋值给 result，而不是直接 return
+    result = `/${cleanPath}`;
+  } else {
+    // 其他语言 -> 带前缀
+    result = locale ? `/${locale.path}/${cleanPath}` : `/${cleanPath}`;
   }
 
-  // 其他语言 -> 带前缀
-  // 容错处理：万一 locale 没找到 (不太可能)，回退到无前缀
-  return locale ? `/${locale.path}/${cleanPath}` : `/${cleanPath}`;
+  // 强制尾部斜杠逻辑 (Force Trailing Slash)
+  // 逻辑：
+  // a. 不是根路径 "/"
+  // b. 还没有以 "/" 结尾
+  // c. 不是文件 (没有扩展名)
+  if (
+    result !== "/" &&
+    !result.endsWith("/") &&
+    !result.split("/").pop()?.includes(".")
+  ) {
+    result += "/";
+  }
+
+  return result;
 }
 
 /**

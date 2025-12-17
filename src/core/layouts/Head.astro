@@ -42,7 +42,15 @@ const siteDescription = __t("ui.description", currentLang); // 站点通用描�
 const description = pageDescription || siteDescription;
 const author = pageAuthor || __t("ui.author", currentLang) || "";
 const favicon = siteConfig.FAVICON || "favicon.ico";
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// 规格化 Canonical URL (强制目录模式)
+let path = Astro.url.pathname;
+
+// 如果路径不以 / 结尾，且不是文件(没有扩展名)，强制加 /
+if (!path.endsWith("/") && !path.split("/").pop()?.includes(".")) {
+  path += "/";
+}
+const canonicalURL = new URL(path, Astro.site);
 
 // =========================================================
 // 3. Title Logic (Smart Generation)

@@ -195,6 +195,9 @@ async function generateAstroConfig() {
     // 预获取策略
     prefetch: true,
 
+    // 强制所有 URL 以斜杠结尾 (SEO 标准)
+    trailingSlash: "always",
+
     // 构建输出配置
     build: {
       assets: ASSETS_DIR,

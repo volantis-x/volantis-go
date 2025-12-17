@@ -19,7 +19,7 @@ export interface StandardContentEntry {
 }
 
 export async function getI18nCollection(
-  collectionName: string,
+  collectionName: string
 ): Promise<StandardContentEntry[]> {
   let rawItems: any[] = [];
   try {
@@ -49,8 +49,8 @@ export async function getI18nCollection(
     dirToLangCode[loc.path.toLowerCase()] = loc.code;
 
     // 下划线兼容 (zh_CN, zh_cn)
-    if (loc.code.includes('-')) {
-      const underscoreCode = loc.code.replace(/-/g, '_');
+    if (loc.code.includes("-")) {
+      const underscoreCode = loc.code.replace(/-/g, "_");
       dirToLangCode[underscoreCode] = loc.code;
       dirToLangCode[underscoreCode.toLowerCase()] = loc.code;
     }
@@ -134,8 +134,16 @@ export async function getI18nCollection(
       const collectionPrefix = collectionName ? `/${collectionName}` : "";
       const slugPart = cleanSlug ? `/${cleanSlug}` : "";
 
-      const permalink = `${urlPrefix}${collectionPrefix}${slugPart}` || "/";
+      // 拼接基础路径 (并处理多余的双斜杠)
+      let permalink = `${urlPrefix}${collectionPrefix}${slugPart}`.replace(
+        /\/+/g,
+        "/"
+      );
 
+      // 强制规范化：除了根路径 "/" 以外，必须以 "/" 结尾
+      if (permalink !== "/" && !permalink.endsWith("/")) {
+        permalink = `${permalink}/`;
+      }
       return {
         id: item.id,
         slug: rawSlug,
@@ -157,10 +165,10 @@ export async function getI18nCollection(
  */
 export function findAlternates(
   allPosts: StandardContentEntry[],
-  currentPost: StandardContentEntry,
+  currentPost: StandardContentEntry
 ) {
   return allPosts.filter(
-    (p) => p.cleanSlug === currentPost.cleanSlug && p.lang !== currentPost.lang,
+    (p) => p.cleanSlug === currentPost.cleanSlug && p.lang !== currentPost.lang
   );
 }
 
@@ -194,7 +202,7 @@ export async function getAllCollectionsInLang(lang: string) {
     const filtered = items
       .filter((item) => item.lang === lang)
       .sort(
-        (a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0),
+        (a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)
       );
 
     // 只有当有内容时才加入结果
