@@ -6,11 +6,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@THEME/*": ["./src/core/themes/base/*"], // 指向一个示例主题，帮助编辑器（实际构建时由 Vite 处理）
-      "@userConfig/*": ["./content/config/*"],
-      "@components/*": ["./src/core/components/*"],
-      "@layoutComps/*": ["./src/core/layouts/components/*"],
-      "@NormalizeCSS*": ["./src/core/themes/normalize.css"]
+      "@THEME/*": ["./src/core/themes/base/*"] // 指向一个示例主题，帮助编辑器（实际构建时由 Vite 处理）
     },
     "plugins": [
       {

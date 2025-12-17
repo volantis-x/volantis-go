@@ -173,7 +173,6 @@ async function generateAstroConfig() {
     // Vite 构建配置
     vite: {
       define: {
-        // 我们定义一个特殊的全局变量名，通常以下划线开头和结尾
         // 必须用 JSON.stringify 包裹，否则 Vite 会把 'base' 当作变量名而不是字符串
         __VOLANTIS_THEME__: JSON.stringify(ACTIVE_THEME_NAME),
 
@@ -184,10 +183,6 @@ async function generateAstroConfig() {
         alias: {
           "@": "/src",
           "@THEME": `/src/core/themes/${ACTIVE_THEME_NAME}`,
-          "@userConfig": "/content/config",
-          "@components": "/src/core/components",
-          "@layoutComps": "/src/core/layouts/components",
-          "@NormalizeCSS": "/src/core/themes/normalize.css",
         },
       },
     },
