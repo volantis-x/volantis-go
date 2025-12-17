@@ -1,5 +1,8 @@
 export type LocaleCode = string; // e.g. "zh-CN", "en"
 export type TextDirection = "ltr" | "rtl";
+export type TranslationData = {
+  [key: string]: string | TranslationData;
+};
 
 export interface LocaleConfig {
   code: LocaleCode; // 标准代码: "zh-CN"
@@ -42,7 +45,7 @@ export interface I18nConfig {
    * 翻译字典 (UI)
    * { "zh-CN": { "category": "分类", ... } }
    */
-  TRANSLATIONS?: Record<LocaleCode, Record<string, string>>;
+  TRANSLATIONS?: Record<LocaleCode, TranslationData>;
 
   /**
    * x-default 回退策略

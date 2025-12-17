@@ -1,31 +1,29 @@
 ---
-import Layout from "../core/layouts/Layout.astro";
-import { getSupportedLocales, getDefaultLocale, __t } from "../core/i18n";
-import type { LocaleConfig } from "../core/types/i18n";
+import Layout from "@/core/layouts/Layout.astro";
+import { getDefaultLocale, __t } from "@/core/i18n";
 
-export async function getStaticPaths() {
-  const locales = getSupportedLocales();
-  const defaultLoc = getDefaultLocale();
-
-  return locales.map((loc: LocaleConfig) => {
-    return {
-      params: {
-        // TODO: 这里后续需要看看要不要判断默认语言是否有 path
-        language: loc.code === defaultLoc.code ? undefined : loc.path,
-      },
-      props: {
-        currentLang: loc.code,
-      },
-    };
-  });
-}
-
-const { currentLang } = Astro.props;
+const defaultLoc = getDefaultLocale();
+const currentLang = defaultLoc.code;
+const title = __t("ui.page404.title", currentLang) || "404 Not Found";
+const desc = __t("ui.page404.description", currentLang) || "Page not found";
 ---
 
-<Layout
-  title={__t("home_title", currentLang)}
-  description={__t("description", currentLang)}
->
-  404
+<Layout title={title} description={desc} lang={currentLang}>
+  <div class="error-page">
+    <h1>404</h1>
+    <p>{desc}</p>
+    <a href="/">{__t("ui.backToHome", currentLang) || "Back to Home"}</a>
+  </div>
 </Layout>
+
+<style>
+  .error-page {
+    text-align: center;
+    padding: 10vh 1rem;
+  }
+  h1 {
+    font-size: 6rem;
+    margin: 0;
+    line-height: 1;
+  }
+</style>
