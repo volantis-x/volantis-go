@@ -1,0 +1,52 @@
+---
+import Layout from "@/core/layouts/Layout.astro";
+import { getI18nCollection } from "@/core/i18n/content";
+import { getSupportedLocales, getDefaultLocale } from "@/core/i18n";
+import ThemePage from "@THEME/Page.astro";
+
+export async function getStaticPaths() {
+  const locales = getSupportedLocales();
+  const defaultLoc = getDefaultLocale();
+  const paths = [];
+
+  // 1. 只获取 'pages' 集合的内容
+  const allPages = await getI18nCollection("pages");
+
+  // 2. 遍历语言
+  for (const loc of locales) {
+    const itemsInLang = allPages.filter((p) => p.lang === loc.code);
+
+    for (const item of itemsInLang) {
+      paths.push({
+        params: {
+          language: loc.code === defaultLoc.code ? undefined : loc.path,
+          // 这里的 slug 就是 'about' 或 'contact'
+          // Astro 的 [...slug] 会匹配多级路径，所以 'company/about' 也能匹配
+          slug: item.cleanSlug,
+        },
+        props: {
+          post: item,
+          currentLang: loc.code,
+        },
+      });
+    }
+  }
+  return paths;
+}
+
+const { post, currentLang } = Astro.props;
+const cleanPath = post.cleanSlug;
+---
+
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  lang={currentLang}
+  cleanPath={cleanPath}
+  pageType="article"
+  author={post.data.author}
+  image={post.data.image}
+  cover={post.data.cover}
+>
+  <ThemePage post={post} lang={currentLang} />
+</Layout>

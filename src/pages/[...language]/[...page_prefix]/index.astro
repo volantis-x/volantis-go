@@ -79,6 +79,9 @@ export async function getStaticPaths() {
 // =========================================================
 const { currentLang, currentPage, totalPages, slicedData } = Astro.props;
 
+// 第1页为空字符串，第N页为 "page/N"
+const cleanPath = currentPage === 1 ? "" : `page/${currentPage}`;
+
 const prevLink =
   currentPage > 1
     ? getLocalizedPath(
@@ -96,6 +99,7 @@ const nextLink =
 <Layout
   title={__t("ui.title", currentLang)}
   description={__t("ui.description", currentLang)}
+  cleanPath={cleanPath}
 >
   <ThemeHome
     data={slicedData}

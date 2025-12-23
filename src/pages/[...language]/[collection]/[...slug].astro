@@ -18,6 +18,8 @@ export async function getStaticPaths() {
 
   // 1. 遍历所有支持的集合类型 (blog, note, news...)
   for (const collectionName of SUPPORTED_COLLECTIONS) {
+    if (collectionName === "pages") continue; // Pages 由 src/pages/[...language]/[...slug].astro 专用路由处理
+
     // 获取该集合下经过清洗的所有文章
     // (getI18nCollection 内部已经处理了文件夹是否存在、为空的情况，安全)
     const allItems = await getI18nCollection(collectionName);
@@ -51,8 +53,13 @@ export async function getStaticPaths() {
 }
 
 const { post, currentLang, collectionName } = Astro.props;
+const cleanPath = `${collectionName}/${post.cleanSlug}`;
 ---
 
-<Layout title={post.data.title} description={post.data.description}>
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  cleanPath={cleanPath}
+>
   <ThemePost post={post} lang={currentLang} collection={collectionName} />
 </Layout>

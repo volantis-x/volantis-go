@@ -21,6 +21,8 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
 
   // 1. 遍历所有集合
   for (const collectionName of SUPPORTED_COLLECTIONS) {
+    if (collectionName === "pages") continue; // Pages 由 src/pages/[...language]/[...slug].astro 专用路由处理
+
     const allItems = await getI18nCollection(collectionName);
 
     // 如果这个集合里没有任何内容 (或目录不存在返回了空数组)
@@ -34,9 +36,6 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
       const itemsInLang = allItems.filter((p) => p.lang === loc.code);
 
       // 如果希望 "英文版没 Docs 就不生成英文 Docs 首页"，可以在这里也加个判断
-      // if (itemsInLang.length === 0) continue;
-      // 但通常保留一个空列表页也是可以接受的，看你需求。
-      // 既然你希望彻底不生成，建议加上：
       if (itemsInLang.length === 0) continue;
 
       // 排序
@@ -75,8 +74,9 @@ const collectionTitle =
   __t(`ui.collections.${collectionName}`, currentLang) ||
   collectionName.toUpperCase();
 const pageTitle = `${collectionTitle} - ${__t("ui.page", currentLang)} ${page.currentPage}`;
+const cleanPath = `${collectionName}/${page.cleanSlug}`;
 ---
 
-<Layout title={pageTitle}>
+<Layout title={pageTitle} cleanPath={cleanPath}>
   <ThemeArchive page={page} lang={currentLang} collection={collectionName} />
 </Layout>
