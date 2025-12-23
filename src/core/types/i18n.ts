@@ -1,7 +1,7 @@
 export type LocaleCode = string; // e.g. "zh-CN", "en"
 export type TextDirection = "ltr" | "rtl";
 export type TranslationData = {
-  [key: string]: string | TranslationData;
+  [key: string]: string | string[] | boolean | number | TranslationData;
 };
 
 export interface LocaleConfig {
