@@ -51,36 +51,35 @@ function deepMerge(target: any, source: any): any {
 }
 
 // --- 缺失键检查函数 ---
-// function findMissingKeys(
-//   target: any,
-//   source: any,
-//   prefix: string = "",
-// ): string[] {
-//   const missing: string[] = [];
-//   for (const key in target) {
-//     if (Object.prototype.hasOwnProperty.call(target, key)) {
-//       const targetValue = target[key];
-//       const sourceValue = source[key];
-//       const currentPath = prefix ? `${prefix}.${key}` : key;
+function findMissingKeys(
+  target: any,
+  source: any,
+  prefix: string = "",
+): string[] {
+  const missing: string[] = [];
+  for (const key in target) {
+    if (Object.prototype.hasOwnProperty.call(target, key)) {
+      const targetValue = target[key];
+      const sourceValue = source[key];
+      const currentPath = prefix ? `${prefix}.${key}` : key;
 
-//       // 允许 null 或 false，但不能是 undefined
-//       if (sourceValue === undefined) {
-//         missing.push(currentPath);
-//         continue;
-//       }
+      if (sourceValue === undefined) {
+        missing.push(currentPath);
+        continue;
+      }
 
-//       if (isPlainObject(targetValue) && isPlainObject(sourceValue)) {
-//         const nestedMissing = findMissingKeys(
-//           targetValue,
-//           sourceValue,
-//           currentPath,
-//         );
-//         missing.push(...nestedMissing);
-//       }
-//     }
-//   }
-//   return missing;
-// }
+      if (isPlainObject(targetValue) && isPlainObject(sourceValue)) {
+        const nestedMissing = findMissingKeys(
+          targetValue,
+          sourceValue,
+          currentPath,
+        );
+        missing.push(...nestedMissing);
+      }
+    }
+  }
+  return missing;
+}
 
 // =======================================================
 // 2. 处理全站逻辑 (Global Logic - site.config.ts)
@@ -91,25 +90,26 @@ for (const [key, config] of Object.entries(GLOBAL_CONFIG_REGISTRY)) {
   const { defaults, userPath } = config;
   const userModule: any = getUserModule(userPath);
 
-  // --- 缺失文件警告 ---
-  if (isVerbose()) {
-    Logger.warn("Bootstrap_initializer_config_not_found", userPath);
+  if (!userModule) {
+    // 情况 A: 文件完全不存在
+    if (isVerbose()) {
+      Logger.warn("Bootstrap_initializer_config_not_found", userPath);
+    }
+    globalStore[key] = defaults;
+  } else {
+    // 情况 B: 文件存在，但可能缺项
+    if (isVerbose()) {
+      const missingFields = findMissingKeys(defaults, userModule);
+      if (missingFields.length > 0) {
+        const missingStr = missingFields.join(", ");
+        const logMessage = `${userPath} -> [ ${missingStr} ]`;
 
-    // // --- 缺失属性检查 ---
-    // const missingFields = findMissingKeys(defaults, userModule);
-    // if (missingFields.length > 0) {
-    //   const missingStr = missingFields.join(", ");
-    //   const logMessage = `" ${userPath} -> [ ${missingStr} ] "`;
+        Logger.warn("Bootstrap_initializer_missing_config_keys", logMessage);
+      }
+    }
 
-    //   Logger.warn("Bootstrap_initializer_missing_config_keys", logMessage);
-    // }
+    globalStore[key] = deepMerge(defaults, userModule || {});
   }
-
-  // 这里只处理 site.config.ts 里的逻辑 (ENABLE_I18N, UserTheme)
-  // 不处理 Title/Desc，因为它们在 locales 里
-  globalStore[key] = deepMerge(defaults, userModule || {});
-
-  // TODO: 后续增加 UserTheme 变更时提示重新执行 run dev 提示
 }
 
 // =======================================================
@@ -184,8 +184,27 @@ Object.keys(rawLocaleStore).forEach((lang) => {
   if (lang === SYSTEM_BASE_LANG) {
     finalLocaleStore[lang] = baseData;
   } else {
-    // 这里的合并确保拥有 en-US 的结构 + zh-CN 的覆盖
-    finalLocaleStore[lang] = deepMerge(baseData, rawLocaleStore[lang]);
+    const userLangData = rawLocaleStore[lang];
+
+    // --- 检查该语言包相对于基准语言的缺失项 ---
+    if (isVerbose()) {
+      const missingKeys = findMissingKeys(baseData, userLangData);
+      // 这里为了精简日志，只显示前几个
+      if (missingKeys.length > 0) {
+        // 只显示前 5 个，避免刷屏
+        const displayKeys = missingKeys.slice(0, 5).join(", ");
+        const moreCount = missingKeys.length - 5;
+        const suffix = moreCount > 0 ? ` ...and ${moreCount} more` : "";
+
+        Logger.warn(
+          "Bootstrap_initializer_locale_fallback",
+          `Locale [${lang}] missing keys, fallback to ${SYSTEM_BASE_LANG}: [ ${displayKeys}${suffix} ]`,
+        );
+      }
+    }
+
+    // 执行合并
+    finalLocaleStore[lang] = deepMerge(baseData, userLangData);
   }
 });
 

@@ -27,9 +27,11 @@ export const cliMessages: Record<string, string | ((key: any) => string)> = {
   Bootstrap_initializer_config_not_found: (userPath) =>
     `用户配置文件：${userPath} 加载出错，激活默认配置.`,
   Bootstrap_initializer_missing_config_keys: (t) =>
-    `配置未定义的属性将使用默认值: ${t}`,
+    `用户配置未定义的属性将使用默认值: ${t}`,
   Bootstrap_initializer_missing_component_config_keys: (t) =>
     `组件未定义的属性将使用默认值: ${t}`,
+  Bootstrap_initializer_locale_fallback: (t) =>
+    `语言包内容缺失，已回退到默认语言: ${t}`,
 };
 
 export default cliMessages;

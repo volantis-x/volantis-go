@@ -30,6 +30,7 @@ export const cliMessages: Record<string, string | ((key: any) => string)> = {
     `Configuring undefined properties will use default values: ${t}`,
   Bootstrap_initializer_missing_component_config_keys: (t) =>
     `Component undefined properties will use default values: ${t}`,
+  Bootstrap_initializer_locale_fallback: (t) => t,
 };
 
 export default cliMessages;
