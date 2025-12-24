@@ -1,6 +1,6 @@
 # build output
-dist/
 .astro/
+dist/
 
 # content
 # 内容
@@ -11,18 +11,19 @@ tree.md
 /.vscode/settings.json
 
 # dependencies
+bun.lock
 node_modules/
-package-lock.lock
 package-lock.json
-yarn.lock
+package-lock.lock
 pnpm-workspace.yaml
+yarn.lock
 
 # logs
+.pnpm-debug.log*
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-.pnpm-debug.log*
 
 # environment variables
 .env
@@ -35,9 +36,9 @@ pnpm-debug.log*
 .cache
 
 # IDE environments
-.vscode/
 .idea/
-.vimrc
 .nanorc
 .stackblitzrc
+.vimrc
+.vscode/
 sandbox.config.json
