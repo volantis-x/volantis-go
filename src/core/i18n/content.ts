@@ -23,6 +23,10 @@ export async function getI18nCollection(
 ): Promise<StandardContentEntry[]> {
   let rawItems: any[] = [];
   try {
+    // 当没有内容集合时，Astro 推断 collectionName 必须为 never，导致 any 也无法赋值。
+    // 我们强制忽略此行检查，让代码在运行时处理（runtime 会抛错被 catch 捕获）。
+
+    // @ts-ignore
     rawItems = await getCollection(collectionName as any);
   } catch (e) {
     return [];

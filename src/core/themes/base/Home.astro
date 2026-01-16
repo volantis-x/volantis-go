@@ -3,32 +3,58 @@ import Marquee from "@/core/components/marquee/Marquee.astro";
 import { __t } from "@/core/i18n";
 
 interface Props {
-  data: Record<string, any[]>;
+  data: Record<string, any[]>; // 键是集合名(blog/news), 值是文章数组
   lang: string;
-  pagination: any;
+  pagination: {
+    current: number;
+    total: number;
+    prev?: string | null;
+    next?: string | null;
+  };
 }
 
 const { data, lang, pagination } = Astro.props;
 
-const visibleSections = Object.entries(data).filter(([_key, items]) => {
+// 过滤掉空的内容板块
+const visibleSections = Object.entries(data).filter(([_, items]) => {
   return Array.isArray(items) && items.length > 0;
 });
 ---
 
+<!-- 首页顶部可以放置 Marquee，instanceId 对应配置文件里的实例 -->
 <Marquee instanceId="homeTop" />
 
-<main>
+<main class="home-container">
   {
     visibleSections.map(([name, items]) => (
       <section class={`section-${name}`}>
-        <h2>{name}</h2>
+        {/* 板块标题：优先尝试翻译，否则大写集合名 */}
+        <h2 class="section-title">
+          {__t(`ui.collections.${name}`, lang) || name.toUpperCase()}
+        </h2>
+
         <div class="post-list">
           {items.map((post: any) => (
-            <article>
-              <h3>
-                <a href={post.permalink}>{post.data.title}</a>
-              </h3>
-              {post.data.description && <p>{post.data.description}</p>}
+            <article class="post-card">
+              <header>
+                <h3 class="post-title">
+                  {/* 使用 content.ts 计算好的 permalink，无需手动拼接 URL */}
+                  <a href={post.permalink}>{post.data.title}</a>
+                </h3>
+                <div class="post-meta">
+                  <time datetime={new Date(post.data.date).toISOString()}>
+                    {new Date(post.data.date).toLocaleDateString(lang, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </time>
+                </div>
+              </header>
+
+              {post.data.description && (
+                <p class="post-excerpt">{post.data.description}</p>
+              )}
             </article>
           ))}
         </div>
@@ -36,22 +62,97 @@ const visibleSections = Object.entries(data).filter(([_key, items]) => {
     ))
   }
 
+  {/* 分页导航 */}
   {
     pagination.total > 1 && (
-      <nav
-        class="pagination"
-        style="margin-top: 2rem; display: flex; gap: 1rem;"
-      >
-        {pagination.prev && (
-          <a href={pagination.prev}>← {__t("ui.paginationPrev", lang)}</a>
+      <nav class="pagination">
+        {pagination.prev ? (
+          <a href={pagination.prev} class="page-link prev">
+            ← {__t("ui.paginationPrev", lang) || "Prev"}
+          </a>
+        ) : (
+          <span class="page-link disabled">←</span>
         )}
-        <span>
-          Page {pagination.current} / {pagination.total}
+
+        <span class="page-current">
+          {pagination.current} / {pagination.total}
         </span>
-        {pagination.next && (
-          <a href={pagination.next}>{__t("ui.paginationNext", lang)} →</a>
+
+        {pagination.next ? (
+          <a href={pagination.next} class="page-link next">
+            {__t("ui.paginationNext", lang) || "Next"} →
+          </a>
+        ) : (
+          <span class="page-link disabled">→</span>
         )}
       </nav>
     )
   }
 </main>
+
+<style>
+  .home-container {
+    max-width: var(--content-width, 1200px);
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color, #eee);
+    text-transform: capitalize;
+  }
+
+  .post-list {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .post-title a {
+    text-decoration: none;
+    color: var(--text-main, #333);
+  }
+
+  .post-title a:hover {
+    color: var(--primary-color, blue);
+  }
+
+  .post-meta {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 4rem;
+  }
+
+  .page-link {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color, #eee);
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .page-link:hover:not(.disabled) {
+    background: var(--hover-bg, #f5f5f5);
+  }
+
+  .page-link.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+</style>

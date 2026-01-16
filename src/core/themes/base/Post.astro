@@ -1,17 +1,17 @@
 ---
 import { render } from "astro:content";
-import { __t } from "@/core/i18n";
-import { getLocalizedPath } from "@/core/i18n";
+import { __t, getLocalizedPath } from "@/core/i18n";
 
-// 接收 Props
+// 接收来自 pages 路由传递的 props
 const { post, lang, collection } = Astro.props;
 
-// 1. 渲染 Markdown 内容
-// 注意：我们的 post 是经过清洗的 StandardContentEntry 对象
-// 它的 .original 属性才是 Astro 原始的 CollectionEntry，render 函数需要那个原始对象
+// 渲染 Markdown 内容
+// 在没有内容时，Astro 的类型定义会导致 render 接收 never 类型，导致 TS 报错。
+// 这个忽略只在编译检查时生效，不影响运行时。
+// @ts-ignore
 const { Content } = await render(post.original);
 
-// 2. 格式化日期
+// 格式化日期
 const formattedDate = post.data.date
   ? new Date(post.data.date).toLocaleDateString(lang, {
       year: "numeric",
@@ -20,110 +20,78 @@ const formattedDate = post.data.date
     })
   : "";
 
-// post.data.author 可能是 undefined (因为我们在 config 里去掉了 default)
+// 获取作者 (Schema 中允许为空，这里做运行时的 I18n 回退)
 const displayAuthor = post.data.author || __t("ui.author", lang);
 ---
 
 <article class="post-container">
-  {/* --- 头部信息 --- */}
+  {/* --- 头部区域 --- */}
   <header class="post-header">
-    {/* 集合名称 (面包屑导航效果) */}
-    <div class="post-meta-top">
+    {/* 面包屑导航: 回到该集合的首页 */}
+    <div class="breadcrumbs">
       <a href={getLocalizedPath(collection, lang)} class="collection-link">
-        {collection.toUpperCase()}
+        {__t(`ui.collections.${collection}`, lang) || collection.toUpperCase()}
       </a>
     </div>
 
-    {/* 文章标题 */}
     <h1 class="post-title">{post.data.title}</h1>
 
-    {/* 元数据行：日期 / 作者 */}
     <div class="post-meta">
-      {
-        formattedDate && (
-          <span class="meta-item">
-            <span class="meta-label">
-              {__t("ui.date", lang) || "Published on"}:
-            </span>
-            <time datetime={new Date(post.data.date).toISOString()}>
-              {formattedDate}
-            </time>
-          </span>
-        )
-      }
+      {formattedDate && (
+        <span class="meta-item">
+          <span class="label">{__t("ui.date", lang)}:</span>
+          <time datetime={new Date(post.data.date).toISOString()}>
+            {formattedDate}
+          </time>
+        </span>
+      )}
 
-      {
-        post.data.author && (
-          <span class="meta-item">
-            <span class="meta-label">{__t("ui.author", lang) || "By"}:</span>
-            <span class="author-name">{displayAuthor}</span>
-          </span>
-        )
-      }
+      {displayAuthor && (
+        <span class="meta-item">
+          <span class="label">{__t("ui.author", lang)}:</span>
+          <span class="value">{displayAuthor}</span>
+        </span>
+      )}
     </div>
-  </header>
 
-  {/* --- 封面图 (如果有) --- */}
-  {
-    post.data.cover?.src && (
+    {/* 封面图 */}
+    {post.data.cover?.src && (
       <div class="post-cover">
         <img
           src={post.data.cover.src}
           alt={post.data.cover.alt || post.data.title}
         />
       </div>
-    )
-  }
+    )}
+  </header>
 
-  {/* --- 正文内容 --- */}
+  {/* --- 正文区域 --- */}
+  {/* typography 类用于接入排版样式库 (如 Tailwind Typography 或 自定义CSS) */}
   <div class="post-content typography">
     <Content />
   </div>
 
-  {/* --- 底部信息：分类与标签 --- */}
+  {/* --- 底部区域 --- */}
   <footer class="post-footer">
-    {/* 分类 */}
-    {
-      post.data.categories && post.data.categories.length > 0 && (
-        <div class="meta-group">
-          <span class="meta-label">
-            {__t("ui.category", lang) || "Category"}:
-          </span>
-          <div class="tags-list">
-            {post.data.categories.map((cat: string) => (
-              // 这里假设你有分类归档页，如果没有，可以先去掉 href
-              <span class="tag-item category">{cat}</span>
-            ))}
-          </div>
-        </div>
-      )
-    }
-
-    {/* 标签 */}
-    {
-      post.data.tags && post.data.tags.length > 0 && (
-        <div class="meta-group">
-          <span class="meta-label">{__t("ui.tag", lang) || "Tags"}:</span>
-          <div class="tags-list">
-            {post.data.tags.map((tag: string) => (
-              <span class="tag-item">{tag}</span>
-            ))}
-          </div>
-        </div>
-      )
-    }
+    {/* Tags */}
+    {post.data.tags && post.data.tags.length > 0 && (
+      <div class="tags-container">
+        <span class="label">{__t("ui.tag", lang)}:</span>
+        {post.data.tags.map((tag: string) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    )}
   </footer>
 </article>
 
 <style>
-  /* 基础布局 */
   .post-container {
-    max-width: 800px; /* 阅读最佳宽度 */
+    max-width: 800px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 3rem 1rem;
   }
 
-  /* 头部样式 */
   .post-header {
     text-align: center;
     margin-bottom: 3rem;
@@ -136,14 +104,14 @@ const displayAuthor = post.data.author || __t("ui.author", lang);
     color: var(--primary-color, #3b82f6);
     text-decoration: none;
     margin-bottom: 1rem;
-    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
   .post-title {
     font-size: 2.5rem;
     line-height: 1.2;
-    margin-bottom: 1rem;
-    font-weight: 800;
+    margin-bottom: 1.5rem;
   }
 
   .post-meta {
@@ -151,20 +119,14 @@ const displayAuthor = post.data.author || __t("ui.author", lang);
     justify-content: center;
     gap: 1.5rem;
     color: #666;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
-  .meta-label {
-    opacity: 0.7;
-    margin-right: 0.25em;
-  }
-
-  /* 封面图 */
   .post-cover {
-    margin: -1rem 0 3rem;
+    margin-top: 2rem;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
   }
 
   .post-cover img {
@@ -173,63 +135,40 @@ const displayAuthor = post.data.author || __t("ui.author", lang);
     display: block;
   }
 
-  /* 正文排版 (Typography) */
-  /* 这里通常会用 Tailwind 的 prose 或者专门的全局 CSS 来控制 Markdown 样式 */
   .post-content {
-    font-size: 1.125rem;
     line-height: 1.8;
-    color: #333;
+    font-size: 1.1rem;
+    color: var(--text-main, #333);
   }
 
-  /* 为了演示，给一些基础的 Markdown 样式 */
-  .post-content :global(h2) {
-    margin-top: 2em;
-    font-size: 1.8rem;
-  }
-  .post-content :global(p) {
-    margin-bottom: 1.5em;
-  }
-  .post-content :global(img) {
-    max-width: 100%;
-    border-radius: 8px;
-  }
+  /* 简单的 Markdown 样式兜底 */
+  .post-content :global(h2) { margin-top: 2rem; font-size: 1.8rem; }
+  .post-content :global(p) { margin-bottom: 1.5em; }
+  .post-content :global(img) { max-width: 100%; border-radius: 8px; }
   .post-content :global(blockquote) {
-    border-left: 4px solid #ddd;
-    padding-left: 1em;
+    border-left: 4px solid var(--primary-color, blue);
+    padding-left: 1rem;
     color: #666;
     font-style: italic;
   }
 
-  /* 底部样式 */
   .post-footer {
     margin-top: 4rem;
     padding-top: 2rem;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color, #eee);
   }
 
-  .meta-group {
+  .tags-container {
     display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-
-  .tags-list {
-    display: flex;
-    flex-wrap: wrap;
     gap: 0.5rem;
-    margin-left: 0.5rem;
+    align-items: center;
   }
 
-  .tag-item {
+  .tag {
     background: #f3f4f6;
-    padding: 0.2em 0.6em;
+    padding: 0.2rem 0.6rem;
     border-radius: 4px;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: #555;
-  }
-
-  .tag-item.category {
-    background: #e0f2fe;
-    color: #0369a1;
   }
 </style>
