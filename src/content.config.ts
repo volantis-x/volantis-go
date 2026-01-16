@@ -1,4 +1,5 @@
 import { defineCollection, z } from "astro:content";
+import { SUPPORTED_COLLECTIONS } from "@/core/types/collections"
 import { glob } from "astro/loaders";
 import fs from "node:fs";
 import path from "node:path";
@@ -61,12 +62,10 @@ const commonSchema = z.object({
     .optional(),
 });
 
-const POTENTIAL_COLLECTIONS = ["blog", "docs", "news", "note", "vlog"];
-
 // 3. 动态生成集合对象
 const loadedCollections: Record<string, any> = {};
 
-for (const name of POTENTIAL_COLLECTIONS) {
+for (const name of SUPPORTED_COLLECTIONS) {
   // 检查 content/xxx 目录是否存在
   // process.cwd() 获取的是项目根目录
   const dirPath = path.join(process.cwd(), "content", name);
