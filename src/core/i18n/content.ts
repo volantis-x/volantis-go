@@ -5,6 +5,11 @@ import { SUPPORTED_COLLECTIONS } from "../types/collections";
 import fs from "node:fs";
 import path from "node:path";
 
+// 复用内容集合路径
+const CONTENT_DIR = path.resolve(process.cwd(), "content");
+export const getCollectionDirPath = (name: string) =>
+  path.join(CONTENT_DIR, name);
+
 // 定义统一的内容对象结构
 export interface StandardContentEntry {
   id: string;
@@ -21,6 +26,23 @@ export interface StandardContentEntry {
 export async function getI18nCollection(
   collectionName: string
 ): Promise<StandardContentEntry[]> {
+  // 在调用 Astro API 之前，先检查目录是否存在。
+  // 如果不存在，直接返回空数组，彻底避免 Astro 报警告。
+  const dirPath = getCollectionDirPath(collectionName);
+
+  if (!fs.existsSync(dirPath)) {
+    return [];
+  }
+
+  // 即使目录存在，如果是空的，我们也跳过
+  // (注意：这里用 readdirSync 简单判断，更严谨的判断交给后面的 getCollection)
+  try {
+    if (fs.readdirSync(dirPath).length === 0) return [];
+  } catch (e) {
+    return [];
+  }
+  // ---------------------------------
+
   let rawItems: any[] = [];
   try {
     // 当没有内容集合时，Astro 推断 collectionName 必须为 never，导致 any 也无法赋值。
@@ -183,7 +205,7 @@ export function getAvailableCollections(): string[] {
 
   // 注意：SUPPORTED_COLLECTIONS 应该是一个数组 ['blog', 'docs', ...]
   for (const name of SUPPORTED_COLLECTIONS) {
-    const dirPath = path.join(process.cwd(), "content", name);
+    const dirPath = getCollectionDirPath(name);
     // 检查目录是否存在且非空
     if (fs.existsSync(dirPath) && fs.readdirSync(dirPath).length > 0) {
       available.push(name);
@@ -200,6 +222,9 @@ export async function getAllCollectionsInLang(lang: string) {
   const availableCols = getAvailableCollections();
 
   for (const name of availableCols) {
+    // 跳过 pages，因为首页通常不需要显示 pages 集合的内容列表
+    if (name === "pages") continue;
+
     // 现在调用 getI18nCollection 是安全的，因为目录一定存在
     const items = await getI18nCollection(name);
 

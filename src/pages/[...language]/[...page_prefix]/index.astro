@@ -12,6 +12,7 @@ import type { LocaleConfig } from "@/core/types/i18n";
 
 type CollectionMap = Record<string, any[]>;
 
+// TODO: 后续增加可定义显示数量
 export async function getStaticPaths() {
   const PAGE_SIZES: Record<string, number> = {
     blog: 5,
@@ -22,7 +23,6 @@ export async function getStaticPaths() {
 
   const locales = getSupportedLocales();
   const defaultLoc = getDefaultLocale();
-
   const allDataCache: Record<string, CollectionMap> = {};
 
   function sliceCollections(collections: CollectionMap, pageNum: number) {

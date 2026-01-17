@@ -1,15 +1,16 @@
 ---
-// src/pages/[...language]/[collection]/[...page].astro
-
 import Layout from "@/core/layouts/Layout.astro";
-import { getI18nCollection } from "@/core/i18n/content";
+import {
+  getI18nCollection,
+  getAvailableCollections,
+} from "@/core/i18n/content";
 import { getSupportedLocales, getDefaultLocale, __t } from "@/core/i18n";
-import { SUPPORTED_COLLECTIONS } from "@/core/types/collections";
 // import type { LocaleConfig } from "@/core/types/i18n";
 
 // 引入主题的列表组件 (Archive)
 import ThemeArchive from "@THEME/Archive.astro";
 
+// TODO: 后续增加页面显示文章数量定义
 // const PAGE_SIZE = 10;
 
 export async function getStaticPaths({ paginate }: { paginate: any }) {
@@ -19,9 +20,13 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
   // 这里的 flatMap 会返回所有可能的路径组合
   const paths = [];
 
+  // 提高性能, 只遍历存在的目录
+  const availableCollections = getAvailableCollections();
+
   // 1. 遍历所有集合
-  for (const collectionName of SUPPORTED_COLLECTIONS) {
-    if (collectionName === "pages") continue; // Pages 由 src/pages/[...language]/[...slug].astro 专用路由处理
+  for (const collectionName of availableCollections) {
+    // Pages 由 src/pages/[...language]/[...slug].astro 专用路由处理
+    if (collectionName === "pages") continue;
 
     const allItems = await getI18nCollection(collectionName);
 

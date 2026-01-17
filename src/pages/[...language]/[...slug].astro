@@ -12,6 +12,11 @@ export async function getStaticPaths() {
   // 1. 只获取 'pages' 集合的内容
   const allPages = await getI18nCollection("pages");
 
+  // 如果没有页面内容，直接返回空数组，不生成任何路由
+  if (!allPages || allPages.length === 0) {
+    return [];
+  }
+
   // 2. 遍历语言
   for (const loc of locales) {
     const itemsInLang = allPages.filter((p) => p.lang === loc.code);
