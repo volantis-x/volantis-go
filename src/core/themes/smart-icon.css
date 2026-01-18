@@ -1,0 +1,12 @@
+/* SmartIcon 组件的基础样式，确保图标和文字对齐 */
+.smart-icon-img,
+.smart-icon-svg {
+  display: inline-block;
+  vertical-align: middle;
+  object-fit: contain;
+}
+
+/* SVG 图标默认继承文字颜色 */
+.smart-icon-svg {
+  color: currentColor;
+}

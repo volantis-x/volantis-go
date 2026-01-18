@@ -1,0 +1,45 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  name: string; // 可能是 "tabler:home", "home", "my-icon", 或 "/uploads/icon.png"
+  class?: string; // 允许传入样式类名
+  size?: number | string; // 可选大小
+}
+
+const { name, class: className = "", size = 24 } = Astro.props;
+
+// 1. 判断是否为图片路径 (包含 / 或 .png/.jpg/.webp 等后缀)
+const isImagePath =
+  name.startsWith("/") ||
+  name.startsWith("http") ||
+  /\.(png|jpg|jpeg|webp|gif|svg)$/.test(name);
+
+// 2. 判断是否包含集合前缀 (例如 "tabler:home")
+const hasSetPrefix = name.includes(":");
+
+// 3. 处理图标名称
+// 如果用户只传了 "home"，且不是图片，默认使用 mdi 图标集
+// 结果变成 "mdi:home"
+const iconName = !isImagePath && !hasSetPrefix ? `mdi:${name}` : name;
+---
+
+{
+  isImagePath ? (
+    /* 情况 A: 图片 (PNG, JPG, WebP, 或者外部 URL) */
+    <img
+      src={name}
+      alt="icon"
+      class:list={["smart-icon-img", className]}
+      width={size}
+      height={size}
+    />
+  ) : (
+    /* 情况 B: 矢量图标 (Tabler, MDI, 或 content/icons 下的本地 SVG) */
+    <Icon
+      name={iconName}
+      class:list={["smart-icon-svg", className]}
+      size={size}
+    />
+  )
+}

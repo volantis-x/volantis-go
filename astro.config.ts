@@ -28,7 +28,7 @@ const PATHS = {
     process.cwd(),
     "content",
     "config",
-    "site.config.ts"
+    "site.config.ts",
   ),
   relativeUserConfig: "./content/config/site.config.ts",
 };
@@ -60,14 +60,14 @@ function ensureProjectStructure() {
   if (!fs.existsSync(PATHS.userConfig)) {
     Logger.error(
       "Astro_Config_site_config_not_found_error",
-      PATHS.relativeUserConfig
+      PATHS.relativeUserConfig,
     );
     Logger.info("Astro_Config_ensure_site_config_exists");
 
     const exampleConfigPath = path.resolve(
       PATHS.example,
       "config",
-      "site.config.ts"
+      "site.config.ts",
     );
     if (fs.existsSync(exampleConfigPath)) {
       Logger.info("Astro_Config_example_site_config_exists");
@@ -90,7 +90,7 @@ async function loadUserConfig(): Promise<any> {
   } catch (e: any) {
     Logger.error(
       "Astro_Config_load_failed_title_error",
-      PATHS.relativeUserConfig
+      PATHS.relativeUserConfig,
     );
     Logger.error("Astro_Config_load_failed_ensure_file_error");
     Logger.error("Astro_Config_load_failed_original_error", e.message);
@@ -118,7 +118,7 @@ function resolveThemeName(inputTheme: unknown): ThemeKey {
   // 验证失败：打印警告并回退
   Logger.warn(
     "Active_Theme_invalid_user_them",
-    `"${PATHS.relativeUserConfig} -> [UserTheme]"`
+    `"${PATHS.relativeUserConfig} -> [UserTheme]"`,
   );
 
   return defaultTheme;
@@ -167,6 +167,10 @@ async function generateAstroConfig() {
       markdoc(),
       icon({
         iconDir: "content/icons",
+        include: {
+          tabler: ["*"],
+          mdi: ["*"],
+        },
       }),
     ],
 
