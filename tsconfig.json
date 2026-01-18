@@ -6,6 +6,7 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@com/*": ["./src/core/components/*"],
       "@THEME/*": ["./src/core/themes/base/*"] // 指向一个示例主题，帮助编辑器（实际构建时由 Vite 处理）
     },
     "plugins": [
