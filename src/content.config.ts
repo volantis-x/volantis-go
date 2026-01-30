@@ -1,5 +1,5 @@
 import { defineCollection, z } from "astro:content";
-import { SUPPORTED_COLLECTIONS } from "@/core/types/collections"
+import { SUPPORTED_COLLECTIONS } from "@/core/types/collections";
 import { glob } from "astro/loaders";
 import fs from "node:fs";
 import path from "node:path";
@@ -19,7 +19,7 @@ const commonSchema = z.object({
           WARNING-ZH: 标题【title】字数至少 1 个字符起，请保持标题在 30 个汉字以内。
           WARNING-EN: Title must be at least 1 character long, Please keep title under 60 characters.
           `,
-      })
+      }),
     ),
   description: z
     .string()
@@ -62,12 +62,69 @@ const commonSchema = z.object({
     .optional(),
 });
 
-// 3. 动态生成集合对象
+// 支持扩展 Schema
+function createCollection(folderName: string, extraSchema?: z.ZodRawShape) {
+  // 如果传入了 extraSchema，就用 extend 合并；否则直接用 commonSchema
+  const finalSchema = extraSchema
+    ? commonSchema.extend(extraSchema)
+    : commonSchema;
+
+  return defineCollection({
+    loader: glob({
+      pattern: "**/*.(md|mdx|mdoc)",
+      base: `./content/${folderName}`,
+    }),
+    schema: finalSchema,
+  });
+}
+
+// 定义集合
 const loadedCollections: Record<string, any> = {};
 
+// 定义引用 Schema
+// 允许: "Chrome" (纯文本)
+// 允许: { name: "Chrome", slug: "google-chrome", collection: "apps" }
+const referenceSchema = z.union([
+  z.string(),
+  z.object({
+    name: z.string().optional(),
+    slug: z.string().optional(),
+    collection: z.enum(SUPPORTED_COLLECTIONS).optional(), // 限制集合范围更安全，或者用 string()
+    url: z.string().url().optional(),
+    icon: z.string().optional(),
+  }),
+]);
+
+// 定义特殊集合的扩展字段
+const schemaExtensions: Record<string, z.ZodRawShape> = {
+  // === Plugins ===
+  plugins: {
+    // 宿主: 可以是多个，支持跨集合引用
+    plugins_host: z.array(referenceSchema).optional(),
+
+    // 同类/关联插件
+    plugins_related: z.array(referenceSchema).optional(),
+  },
+
+  // === Apps ===
+  apps: {
+    apps_download: z.string().url().optional(),
+    // 关联应用
+    apps_related: z.array(referenceSchema).optional(),
+  },
+
+  // === Projects ===
+  projects: {
+    projects_type: z
+      .enum(["standalone", "library", "plugin", "theme", "other"])
+      .default("standalone"),
+    // 项目依赖/宿主
+    projects_host: z.array(referenceSchema).optional(),
+    projects_related: z.array(referenceSchema).optional(),
+  },
+};
+
 for (const name of SUPPORTED_COLLECTIONS) {
-  // 检查 content/xxx 目录是否存在
-  // process.cwd() 获取的是项目根目录
   const dirPath = path.join(process.cwd(), "content", name);
 
   if (fs.existsSync(dirPath)) {
@@ -78,17 +135,9 @@ for (const name of SUPPORTED_COLLECTIONS) {
     const hasContent = files.some((file) => !file.startsWith(".")); // 忽略 .DS_Store
 
     if (hasContent) {
-      loadedCollections[name] = defineCollection({
-        loader: glob({
-          pattern: "**/*.(md|mdx|mdoc)",
-          base: `./content/${name}`,
-        }),
-        schema: commonSchema,
-      });
+      // 传入对应的扩展 Schema (如果有的话)
+      loadedCollections[name] = createCollection(name, schemaExtensions[name]);
     }
-  } else {
-    // 可以在开发模式下提示一下，或者保持静默
-    // console.log(`⚙️ [ Volantis ] Skipping collection '${name}' (directory not found).`);
   }
 }
 

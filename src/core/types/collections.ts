@@ -19,6 +19,7 @@ export const SUPPORTED_COLLECTIONS = [
 
   // 4. 展示与实体 (项目/产品)
   "apps", // 软件应用
+  "plugins", // 附属插件 (uBlock, Redshift)
   "products", // 产品
   "projects", // 项目/作品集
 
