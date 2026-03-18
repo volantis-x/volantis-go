@@ -15,6 +15,7 @@ bun.lock
 node_modules/
 package-lock.json
 package-lock.lock
+pnpm-lock.yaml
 pnpm-workspace.yaml
 yarn.lock
 
