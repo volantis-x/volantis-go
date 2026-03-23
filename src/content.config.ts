@@ -99,27 +99,35 @@ const referenceSchema = z.union([
 const schemaExtensions: Record<string, z.ZodRawShape> = {
   // === Plugins ===
   plugins: {
+    // 开发者/开发商
+    plugins_developer: z.array(referenceSchema).optional(),
     // 宿主: 可以是多个，支持跨集合引用
     plugins_host: z.array(referenceSchema).optional(),
-
     // 同类/关联插件
     plugins_related: z.array(referenceSchema).optional(),
   },
 
   // === Apps ===
   apps: {
+    // 开发者/开发商
+    apps_developer: z.array(referenceSchema).optional(),
+    // 软件下载页面或地址
     apps_download: z.string().url().optional(),
-    // 关联应用
+    // 同类/关联应用
     apps_related: z.array(referenceSchema).optional(),
   },
 
   // === Projects ===
   projects: {
+    // 开发者/开发商
+    projects_developer: z.array(referenceSchema).optional(),
+    // 项目类型
     projects_type: z
       .enum(["standalone", "library", "plugin", "theme", "other"])
       .default("standalone"),
     // 项目依赖/宿主
     projects_host: z.array(referenceSchema).optional(),
+    // 同类/关联项目
     projects_related: z.array(referenceSchema).optional(),
   },
 };
